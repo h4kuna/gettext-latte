@@ -34,12 +34,15 @@ class Gettext extends TranslatorFake {
         $l = $this->langs[$lang];
         $set = setlocale(\LC_ALL, $l);
         if (strstr(strtolower(php_uname('u')), 'windows') !== FALSE) {
-            putenv('LANG=' . $lang);//only for windows
+            putenv('LANG=' . $lang);
             $set = FALSE;
         }
+
         if (!$set || $this->useHelper) {
             $file = $this->path . $lang . '/' . 'LC_MESSAGES/' . $this->messages . '.mo';
             setlocale(\LC_ALL, '');
+            require_once 'fce.php';
+            $this->useHelper = $useHelper; //bráno ze souboru
             self::$translator = new GettextNatural($file, $lang);
         } elseif (!$set) {
             throw new \RuntimeException($l . ' locale is not supported on your machine. Set useHelper on TRUE.');
