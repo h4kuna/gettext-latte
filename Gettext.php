@@ -23,10 +23,7 @@ class Gettext extends TranslatorFake {
      * @param boolean $useHelper not supported on windows
      * @param type $msg
      */
-    public function __construct($path, $langs, $useHelper = TRUE, $msg = 'messages') {
-        if (strstr(strtolower(php_uname('u')), 'windows') !== FALSE) {
-            $useHelper = TRUE;
-        }
+    public function __construct($path, $langs, $useHelper = FALSE, $msg = 'messages') {
         $this->useHelper = $useHelper;
         $this->langs = $langs;
         $this->path = $path;
@@ -35,11 +32,14 @@ class Gettext extends TranslatorFake {
 
     public function setLanguage($lang) {
         $l = $this->langs[$lang];
-        $set = !setlocale(\LC_ALL, $l);
+        $set = setlocale(\LC_ALL, $l);
+        if (strstr(strtolower(php_uname('u')), 'windows') !== FALSE) {
+            $set = TRUE;
+        }
         if ($set && $this->useHelper) {
             $file = $this->path . $lang . '/' . 'LC_MESSAGES/' . $this->messages . '.mo';
             self::$translator = new GettextNatural($file, $lang);
-        } elseif ($set) {
+        } elseif (!$set) {
             throw new \RuntimeException($l . ' locale is not supported on your machine. Set useHelper on TRUE.');
         } else {
             putenv('LANG=' . $lang);
