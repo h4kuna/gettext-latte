@@ -35,7 +35,7 @@ class Gettext extends TranslatorFake {
 
     public function setLanguage($lang) {
         $l = $this->langs[$lang];
-        $set = !setlocale(\LC_MESSAGES, $l);
+        $set = !setlocale(\LC_ALL, $l);
         if ($set && $this->useHelper) {
             $file = $this->path . $lang . '/' . 'LC_MESSAGES/' . $this->messages . '.mo';
             self::$translator = new GettextNatural($file, $lang);
