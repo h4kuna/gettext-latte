@@ -34,15 +34,16 @@ class Gettext extends TranslatorFake {
         $l = $this->langs[$lang];
         $set = setlocale(\LC_ALL, $l);
         if (strstr(strtolower(php_uname('u')), 'windows') !== FALSE) {
-            $set = TRUE;
+            putenv('LANG=' . $lang);//only for windows
+            $set = FALSE;
         }
-        if ($set && $this->useHelper) {
+        if (!$set || $this->useHelper) {
             $file = $this->path . $lang . '/' . 'LC_MESSAGES/' . $this->messages . '.mo';
+            setlocale(\LC_ALL, '');
             self::$translator = new GettextNatural($file, $lang);
         } elseif (!$set) {
             throw new \RuntimeException($l . ' locale is not supported on your machine. Set useHelper on TRUE.');
         } else {
-            putenv('LANG=' . $lang);
             bindtextdomain($this->messages, $this->path);
             bind_textdomain_codeset($this->messages, 'UTF-8');
             textdomain($this->messages);
