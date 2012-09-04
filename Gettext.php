@@ -94,7 +94,7 @@ class Gettext extends TranslatorFake {
         $name = $node->name;
         $args = $node->args;
         $l = substr($args, 0, 1);
-        if ($l == 'n' || $l == 'c') {
+        if ($l == 'n') {
             $name = '_' . $l;
             $args = substr($args, 1);
         }
@@ -106,9 +106,10 @@ class Gettext extends TranslatorFake {
             $sprint = array_slice($data, 1);
         } else {
             $fce = 'ngettext';
+            $count = -1 * substr_count($data[0], '%s');
             $args = array_slice($data, 0, 3);
-            $sprint = array_slice($data, ($l == 'n') ? 2 : 3);
-            if ($this->useHelper && self::$translator) {
+            $sprint = $count ? array_slice($data, $count) : array();
+            if ($this->useHelper) {
                 $original = $args[2];
                 $args[2] = 1;
             }
