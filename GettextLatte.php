@@ -37,7 +37,7 @@ class GettextLatte extends Object implements ITranslator {
     $set = setlocale(\LC_ALL, $l);
     if (strstr(strtolower(php_uname('u')), 'windows') !== FALSE) {
       putenv('LANG=' . $lang);
-      $set = FALSE;
+      $set = TRUE;
     }
 
     if (!$set && $this->useHelper) {
