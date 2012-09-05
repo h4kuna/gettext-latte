@@ -1,6 +1,6 @@
 services:
     translator:
-        class: \Utility\GettextLatte
+        class: \Utility\GettextLatte(%wwwDir%/../locale/, %langs%)
 
 factories:
     nette.latte:
