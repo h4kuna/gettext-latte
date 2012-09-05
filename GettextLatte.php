@@ -165,6 +165,7 @@ class GettextLatte extends TranslatorFake {
         }
 
         $fce .= 'gettext';
+        return $slice;
     }
 
     private function foundReplce($str) {
