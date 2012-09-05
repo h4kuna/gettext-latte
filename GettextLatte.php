@@ -33,7 +33,7 @@ class GettextLatte extends TranslatorFake {
     public function setLanguage($lang) {
         $l = $this->langs[$lang];
         $set = setlocale(\LC_ALL, $l);
-        if (strstr(strtolower(php_uname('u')), 'windows') !== FALSE) {
+        if (!$set && strstr(strtolower(php_uname('u')), 'windows') !== FALSE) {
             putenv('LANG=' . $lang);
             $set = TRUE;
         }
