@@ -1,9 +1,7 @@
 <?php
 
-$useHelper = FALSE;
+if (!function_exists('gettext')) {
 
-if(!function_exists('gettext'))
-{
   function gettext($message) {
     return \Utility\Gettext::gettext($message);
   }
@@ -15,5 +13,6 @@ if(!function_exists('gettext'))
   function ngettext($msgid1, $msgid2, $n) {
     return \Utility\Gettext::ngettext($msgid1, $msgid2, $n);
   }
-  $useHelper = TRUE;
+  // načítáno v objektu
+  $this->useHelper = FALSE;
 }
