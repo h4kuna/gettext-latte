@@ -14,6 +14,10 @@ class GettextLatte extends TranslatorFake {
     private $useHelper;
     private $langs;
     private $path;
+    /**
+     * if TRUE dictionary file name as language cs.mo, de.mo..., becouse http://www.php.net/manual/en/function.gettext.php#59589
+     * @var type TRUE|string
+     */
     private $messages;
 
     /**
@@ -23,7 +27,7 @@ class GettextLatte extends TranslatorFake {
      * @param boolean $useHelper not supported on windows
      * @param type $msg
      */
-    public function __construct($path, $langs, $useHelper = FALSE, $msg = 'messages') {
+    public function __construct($path, $langs, $useHelper = FALSE, $msg = TRUE) {
         $this->useHelper = $useHelper;
         $this->langs = $langs;
         $this->path = $path;
@@ -32,6 +36,9 @@ class GettextLatte extends TranslatorFake {
 
     public function setLanguage($lang) {
         $l = $this->langs[$lang];
+        if ($this->messages === TRUE) {
+            $this->messages = $lang;
+        }
         $set = setlocale(\LC_ALL, $l);
         if (!$set && strstr(strtolower(php_uname('u')), 'windows') !== FALSE) {
             putenv('LANG=' . $lang);
