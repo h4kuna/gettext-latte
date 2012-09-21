@@ -102,7 +102,11 @@ class GettextLatte extends TranslatorFake {
         $slice = $this->method($name != '_', $fce);
 
         $data = self::stringToArgs($args);
-        $out = $fce . '(' . implode(', ', array_slice($data, 0, $slice)) . ')';
+        $argsGettext = array_slice($data, 0, $slice);
+        if(isset($argsGettext[2])) {
+            $argsGettext[2] = "abs({$argsGettext[2]})";
+        }
+        $out = $fce . '(' . implode(', ', $argsGettext) . ')';
 
         if ($this->useHelper) {
             $out = $prefix . '$translator ? ' . $prefix . $out . ':' . $out;
