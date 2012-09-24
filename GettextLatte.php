@@ -37,19 +37,40 @@ class GettextLatte extends TranslatorFake {
             putenv('LANG=' . $lang);
             $set = TRUE;
         }
+        $lcMessage = $lang . '/' . 'LC_MESSAGES/';
         $bindText = function_exists('bindtextdomain');
         if (!$set && $this->useHelper || !$bindText) {
             require_once 'fce.php';
             setlocale(\LC_ALL, '');
-            $file = $this->path . $lang . '/' . 'LC_MESSAGES/' . $this->messages . '.mo';
+            $file = $this->getFile($lcMessage);
             self::$translator = new GettextNatural($file, $lang);
         } elseif (!$set) {
             throw new \RuntimeException($l . ' locale is not supported on your machine. Set useHelper on TRUE.');
         } else {
+            $this->checkFile($lcMessage);//bug http://www.php.net/manual/en/function.gettext.php#58310
             bindtextdomain($this->messages, $this->path);
             bind_textdomain_codeset($this->messages, 'UTF-8');
             textdomain($this->messages);
         }
+    }
+
+    private function checkFile($lcMessage) {
+        $po = $this->getFile($lcMessage, 'po');
+        $mtime = filemtime($po);
+        $mo = $this->getFile($lcMessage . $mtime);
+        if (!file_exists($mo)) {
+            foreach (\Nette\Utils\Finder::findFiles('*.mo')->in($this->path . $lcMessage) as $file) {
+                if ($file->getFilename() != $this->messages . '.mo') {
+                    unlink($file->getPathname());
+                }
+            }
+            @rename($this->getFile($lcMessage), $this->getFile($lcMessage . $mtime));
+        }
+        $this->messages = $mtime . $this->messages;
+    }
+
+    private function getFile($lcMessage, $extension = 'mo') {
+        return $this->path . $lcMessage . $this->messages . '.' . $extension;
     }
 
     /**
@@ -103,7 +124,7 @@ class GettextLatte extends TranslatorFake {
 
         $data = self::stringToArgs($args);
         $argsGettext = array_slice($data, 0, $slice);
-        if(isset($argsGettext[2])) {
+        if (isset($argsGettext[2])) {
             $argsGettext[2] = "abs({$argsGettext[2]})";
         }
         $out = $fce . '(' . implode(', ', $argsGettext) . ')';
