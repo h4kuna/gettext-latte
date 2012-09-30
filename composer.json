@@ -1,5 +1,4 @@
 {
     "name": "h4kuna/gettext-latte",
-    "description" : "Gettext překladač pro Latte šablony",
-    "version": "1.0.1"
+    "description" : "Gettext translator for Latte template"
 }
