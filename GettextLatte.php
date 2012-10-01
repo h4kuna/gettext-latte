@@ -47,7 +47,7 @@ class GettextLatte extends TranslatorFake {
         } elseif (!$set) {
             throw new \RuntimeException($l . ' locale is not supported on your machine. Set useHelper on TRUE.');
         } else {
-            $this->checkFile($lcMessage);//bug http://www.php.net/manual/en/function.gettext.php#58310
+            $this->checkFile($lcMessage); //bug http://www.php.net/manual/en/function.gettext.php#58310
             bindtextdomain($this->messages, $this->path);
             bind_textdomain_codeset($this->messages, 'UTF-8');
             textdomain($this->messages);
@@ -125,7 +125,9 @@ class GettextLatte extends TranslatorFake {
         $data = self::stringToArgs($args);
         $argsGettext = array_slice($data, 0, $slice);
         if (isset($argsGettext[2])) {
-            $argsGettext[2] = "abs({$argsGettext[2]})";
+            if ($argsGettext[2] < 0) {
+                $argsGettext[2] *= -1;
+            }
         }
         $out = $fce . '(' . implode(', ', $argsGettext) . ')';
 
