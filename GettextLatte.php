@@ -130,7 +130,7 @@ class GettextLatte extends TranslatorFake {
         $out = $fce . '(' . implode(', ', $argsGettext) . ')';
 
         if ($this->useHelper) {
-            $out = $prefix . '$translator ? ' . $prefix . $out . ':' . $out;
+            $out = $prefix . '$translator ? ' . $prefix . $out . ' : ' . $out;
         }
 
         $diff = $this->foundReplce($data[0]);
