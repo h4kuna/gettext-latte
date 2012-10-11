@@ -32,7 +32,8 @@ class GettextLatte extends TranslatorFake {
 
     public function setLanguage($lang) {
         $l = $this->langs[$lang];
-        $set = setlocale(\LC_ALL, $l);
+        $const = defined('\LC_MESSAGES') ? \LC_MESSAGES : \LC_ALL;
+        $set = setlocale($const, $l);
         if (!$set && strstr(strtolower(php_uname('u')), 'windows') !== FALSE) {
             putenv('LANG=' . $lang);
             $set = TRUE;
@@ -41,7 +42,7 @@ class GettextLatte extends TranslatorFake {
         $bindText = function_exists('bindtextdomain');
         if (!$set && $this->useHelper || !$bindText) {
             require_once 'fce.php';
-            setlocale(\LC_ALL, '');
+            setlocale($const, '');
             $file = $this->getFile($lcMessage);
             self::$translator = new GettextNatural($file, $lang);
         } elseif (!$set) {
