@@ -1,6 +1,6 @@
 <?php
 
-namespace Utility;
+namespace h4kuna;
 
 use Nette\DI\Container;
 
