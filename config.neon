@@ -1,9 +1,9 @@
 services:
     translator:
-        class: \Utility\GettextLatte(%wwwDir%/../locale/, %langs%)
+        class: \h4kuna\GettextLatte(%wwwDir%/../locale/, %langs%)
 
 factories:
     nette.latte:
-        factory: \Utility\GettextLatte::latte
+        factory: \h4kuna\GettextLatte::latte
 parameters:
     langs: {'cs' : 'cs_CZ.utf8', 'en' : 'en_US.utf8', 'de' : 'de_DE.utf8', 'it' : 'it_IT.utf8'} # odpovídají sloupců v db
