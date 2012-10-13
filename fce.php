@@ -3,7 +3,7 @@
 if (!$bindText) {
 
     function gettext($message) {
-        return \Utility\GettextLatte::gettext($message);
+        return \h4kuna\GettextLatte::gettext($message);
     }
 
     function _($message) {
@@ -11,7 +11,7 @@ if (!$bindText) {
     }
 
     function ngettext($msgid1, $msgid2, $n) {
-        return \Utility\GettextLatte::ngettext($msgid1, $msgid2, $n);
+        return \h4kuna\GettextLatte::ngettext($msgid1, $msgid2, $n);
     }
 
     // načítáno v objektu
