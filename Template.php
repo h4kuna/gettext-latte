@@ -28,7 +28,7 @@ class Template extends \Nette\Templating\FileTemplate {
 
         if ($compiled === NULL) {
             try {
-                $compiled = "<?php\n\n// source file: $this->getFile()\n\n?>" . $this->compile();
+                $compiled = "<?php\n\n// source file: {$this->getFile()}\n\n?>" . $this->compile();
             } catch (FilterException $e) {
                 $e->setSourceFile($this->getFile());
                 throw $e;
