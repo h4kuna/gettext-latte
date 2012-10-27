@@ -5,5 +5,6 @@ services:
 factories:
     nette.latte:
         factory: \h4kuna\GettextLatte::latte
+
 parameters:
     langs: {'cs' : 'cs_CZ.utf8', 'en' : 'en_US.utf8', 'de' : 'de_DE.utf8', 'it' : 'it_IT.utf8'} # odpovídají sloupců v db

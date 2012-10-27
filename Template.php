@@ -3,7 +3,7 @@
 namespace h4kuna;
 
 use Nette,
-	Nette\Caching;
+    Nette\Caching;
 
 /**
  * Split compilation and rendering

@@ -4,6 +4,8 @@ namespace h4kuna;
 
 use Nette\DI\Container;
 
+require_once 'TranslatorFake.php';
+
 /**
  * @author Milan Matějček <milan.matejcek@gmail.com>
  */
@@ -44,6 +46,7 @@ class GettextLatte extends TranslatorFake {
             require_once 'fce.php';
             setlocale($const, '');
             $file = $this->getFile($lcMessage);
+            require_once 'GettextNatural.php';
             self::$translator = new GettextNatural($file, $lang);
         } elseif (!$set) {
             throw new \RuntimeException($l . ' locale is not supported on your machine. Set useHelper on TRUE.');
