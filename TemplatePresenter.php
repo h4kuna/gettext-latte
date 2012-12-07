@@ -1,5 +1,7 @@
 <?php
 
+namespace h4kuna;
+
 class TemplatePresenter extends BasePresenter {
 
 //------------------------------------------------------------------------------
