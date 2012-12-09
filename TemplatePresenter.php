@@ -16,7 +16,7 @@ class TemplatePresenter extends BasePresenter {
         $tpl = $this->template;
         foreach (\Nette\Utils\Finder::findFiles('*.latte')->from($this->context->parameters['appDir']) as $file) {
             $tpl->setFile($file->getPathname());
-            $tpl->render();
+            $tpl->compileTemplate();
         }
         $this->terminate();
     }
