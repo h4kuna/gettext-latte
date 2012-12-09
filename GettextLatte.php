@@ -129,7 +129,7 @@ class GettextLatte extends TranslatorFake {
         $data = self::stringToArgs($args);
         $argsGettext = array_slice($data, 0, $slice);
         if (isset($argsGettext[2])) {
-            if (strstr($argsGettext[2], 'abs') !== FALSE) {
+            if (stristr($argsGettext[2], 'abs') !== FALSE) {
                 $argsGettext[2] = 'abs(' . $argsGettext[2] . ')';
             }
         }
