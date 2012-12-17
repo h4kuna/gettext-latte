@@ -78,6 +78,11 @@ class GettextLatte extends TranslatorFake {
         new \Nette\FileNotFoundException($file);
     }
 
+    public function upload($lang, FileUpload $po, FileUpload $mo) {
+        $mo->move($this->getFile($lang, '!mo'));
+        $po->move($this->getFile($lang, 'po'));
+    }
+
     /**
      * bug http://www.php.net/manual/en/function.gettext.php#58310
      * @param type $lang
@@ -89,11 +94,10 @@ class GettextLatte extends TranslatorFake {
         if (!$mtime) {
             return;
         }
-        $old = $this->getFile($lang);
         $this->messages = $mtime . $this->messages;
         $mo = $this->getFile($lang);
         if (!file_exists($mo)) {
-            @copy($old, $mo);
+            @copy($this->getFile($lang, '!mo'), $mo);
         }
     }
 
@@ -104,7 +108,14 @@ class GettextLatte extends TranslatorFake {
      * @return type
      */
     private function getFile($lang, $extension = 'mo') {
-        $msg = ($extension == 'po') ? $this->msg : $this->messages;
+        if ($extension == 'po') {
+            $msg = $this->msg;
+        } elseif ($extension == '!mo') {
+            $msg = $this->msg;
+            $extension = 'mo';
+        } else {
+            $msg = $this->messages;
+        }
         return $this->path . $lang . self::PHP_DIR . $msg . '.' . $extension;
     }
 
