@@ -11,12 +11,20 @@ require_once 'TranslatorFake.php';
  */
 class GettextLatte extends TranslatorFake {
 
+    const PHP_DIR = '/LC_MESSAGES/';
+
     /** @var GettextNatural */
     public static $translator;
     private $useHelper;
     private $langs;
     private $path;
+
+    /**
+     * property for temporary resolve bug
+     * @var type
+     */
     private $messages;
+    private $msg;
 
     /**
      *
@@ -29,7 +37,7 @@ class GettextLatte extends TranslatorFake {
         $this->useHelper = $useHelper;
         $this->langs = $langs;
         $this->path = $path;
-        $this->messages = $msg;
+        $this->msg = $this->messages = $msg;
     }
 
     public function setLanguage($lang) {
@@ -40,41 +48,64 @@ class GettextLatte extends TranslatorFake {
             putenv('LANG=' . $lang);
             $set = TRUE;
         }
-        $lcMessage = $lang . '/' . 'LC_MESSAGES/';
+
         $bindText = function_exists('bindtextdomain');
         if (!$set && $this->useHelper || !$bindText) {
             require_once 'fce.php';
             setlocale($const, '');
-            $file = $this->getFile($lcMessage);
-            require_once 'GettextNatural.php';
+            $file = $this->getFile($lang);
             self::$translator = new GettextNatural($file, $lang);
         } elseif (!$set) {
             throw new \RuntimeException($l . ' locale is not supported on your machine. Set useHelper on TRUE.');
         } else {
-            $this->checkFile($lcMessage); //bug http://www.php.net/manual/en/function.gettext.php#58310
+            $this->checkFile($lang);
             bindtextdomain($this->messages, $this->path);
             bind_textdomain_codeset($this->messages, 'UTF-8');
             textdomain($this->messages);
         }
     }
 
-    private function checkFile($lcMessage) {
-        $po = $this->getFile($lcMessage, 'po');
-        $mtime = filemtime($po);
-        $mo = $this->getFile($lcMessage . $mtime);
-        if (!file_exists($mo)) {
-            foreach (\Nette\Utils\Finder::findFiles('*.mo')->in($this->path . $lcMessage) as $file) {
-                if ($file->getFilename() != $this->messages . '.mo') {
-                    unlink($file->getPathname());
-                }
-            }
-            @rename($this->getFile($lcMessage), $this->getFile($lcMessage . $mtime));
+    public function download($lang) {
+        $file = $this->getFile($lang, 'po');
+        if (file_exists($file)) {
+            header('Content-Description: File Transfer');
+            header('Content-Disposition: attachment; filename=' . $lang . '-' . basename($file));
+            header('Content-Length: ' . filesize($file));
+            flush();
+            readfile($file);
+            exit;
         }
-        $this->messages = $mtime . $this->messages;
+        new \Nette\FileNotFoundException($file);
     }
 
-    private function getFile($lcMessage, $extension = 'mo') {
-        return $this->path . $lcMessage . $this->messages . '.' . $extension;
+    /**
+     * bug http://www.php.net/manual/en/function.gettext.php#58310
+     * @param type $lang
+     * @return type
+     */
+    private function checkFile($lang) {
+        $po = $this->getFile($lang, 'po');
+        $mtime = @filemtime($po);
+        if (!$mtime) {
+            return;
+        }
+        $old = $this->getFile($lang);
+        $this->messages = $mtime . $this->messages;
+        $mo = $this->getFile($lang);
+        if (!file_exists($mo)) {
+            @copy($old, $mo);
+        }
+    }
+
+    /**
+     * filesystem path for catalog
+     * @param type $lang
+     * @param type $extension
+     * @return type
+     */
+    private function getFile($lang, $extension = 'mo') {
+        $msg = ($extension == 'po') ? $this->msg : $this->messages;
+        return $this->path . $lang . self::PHP_DIR . $msg . '.' . $extension;
     }
 
     /**
