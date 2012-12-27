@@ -135,9 +135,9 @@ class GettextLatte extends TranslatorFake {
      * @param \Nette\DI\Container $context
      * @return \Nette\Latte\Engine
      */
-    static function latte(Container $context) {
+    static function latte(self $translator) {
         $service = new \Nette\Latte\Engine;
-        self::install($service->compiler, $context->translator);
+        self::install($service->compiler, $translator);
         return $service;
     }
 
