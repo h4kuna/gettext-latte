@@ -16,6 +16,6 @@
         "nette/nette": "2.0.*"
     },
     "autoload": {
-        "files": ["GettextLatte.php", "Template.php"]
+        "files": ["GettextLatte.php", "examples/Template.php"]
     }
 }

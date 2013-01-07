@@ -2,9 +2,7 @@
 
 namespace h4kuna;
 
-use Nette\DI\Container;
-
-require_once 'TranslatorFake.php';
+require_once 'libs/TranslatorFake.php';
 
 /**
  * @author Milan Matějček <milan.matejcek@gmail.com>
@@ -51,7 +49,7 @@ class GettextLatte extends TranslatorFake {
 
         $bindText = function_exists('bindtextdomain');
         if (!$set && $this->useHelper || !$bindText) {
-            require_once 'fce.php';
+            require_once 'libs/fce.php';
             setlocale($const, '');
             $file = $this->getFile($lang);
             self::$translator = new GettextNatural($file, $lang);

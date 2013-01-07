@@ -3,7 +3,7 @@
 namespace h4kuna;
 
 use Nette\Object,
-    \Nette\Localization\ITranslator;
+    Nette\Localization\ITranslator;
 
 class TranslatorFake extends Object implements ITranslator {
 
