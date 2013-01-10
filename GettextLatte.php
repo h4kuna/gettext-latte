@@ -23,6 +23,8 @@ class GettextLatte extends TranslatorFake {
      */
     private $messages;
     private $msg;
+    private $default;
+    private $webLang;
 
     /**
      *
@@ -33,12 +35,15 @@ class GettextLatte extends TranslatorFake {
      */
     public function __construct($path, $langs, $useHelper = FALSE, $msg = 'messages') {
         $this->useHelper = $useHelper;
+        reset($langs);
         $this->langs = $langs;
+        $this->default = key($langs);
         $this->path = $path;
         $this->msg = $this->messages = $msg;
     }
 
     public function setLanguage($lang) {
+        $this->webLang = $lang;
         $l = $this->langs[$lang];
         $const = defined('\LC_MESSAGES') ? \LC_MESSAGES : \LC_ALL;
         $set = setlocale($const, $l);
@@ -61,6 +66,18 @@ class GettextLatte extends TranslatorFake {
             bind_textdomain_codeset($this->messages, 'UTF-8');
             textdomain($this->messages);
         }
+    }
+
+    /**
+     * is active default language?
+     * if return NULL you don't call method setLanguage
+     * @return NULL|TRUE|FALSE
+     */
+    public function isDefault() {
+        if (!$this->webLang) {
+            return NULL;
+        }
+        return $this->webLang == $this->default;
     }
 
     public function download($lang) {
@@ -88,10 +105,13 @@ class GettextLatte extends TranslatorFake {
      */
     private function checkFile($lang) {
         $po = $this->getFile($lang, 'po');
-        $mtime = @filemtime($po);
-        if (!$mtime) {
-            return;
+        if (!file_exists($po)) {
+            if ($this->isDefault()) {
+                return;
+            }
+            throw new \Nette\FileNotFoundException($po);
         }
+        $mtime = filemtime($po);
         $this->messages = $mtime . $this->messages;
         $mo = $this->getFile($lang);
         if (!file_exists($mo)) {
