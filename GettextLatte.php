@@ -45,11 +45,17 @@ class GettextLatte extends TranslatorFake {
     public function setLanguage($lang) {
         $this->webLang = $lang;
         $l = $this->langs[$lang];
+        $system = php_uname('s');
         $const = defined('\LC_MESSAGES') ? \LC_MESSAGES : \LC_ALL;
-        $set = setlocale($const, $l);
-        if (!$set && strstr(strtolower(php_uname('u')), 'windows') !== FALSE) {
+
+        if ($system == 'Windows') {
             putenv('LANG=' . $lang);
             $set = TRUE;
+        } else {
+            if ($system == 'Darwin') {
+                $l = str_replace('utf8', 'UTF-8', $l);
+            }
+            $set = setlocale($const, $l);
         }
 
         $bindText = function_exists('bindtextdomain');
