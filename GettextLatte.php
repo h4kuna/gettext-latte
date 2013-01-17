@@ -2,6 +2,8 @@
 
 namespace h4kuna;
 
+use \Nette\Http\FileUpload;
+
 require_once 'libs/TranslatorFake.php';
 
 /**
