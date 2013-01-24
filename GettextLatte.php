@@ -62,10 +62,13 @@ class GettextLatte extends TranslatorFake {
 
         $bindText = function_exists('bindtextdomain');
         if (!$set && $this->useHelper || !$bindText) {
-            require_once 'libs/fce.php';
+            if (!$bindText) {
+                require_once 'libs/fce.php';
+                $this->useHelper = FALSE;
+            }
             setlocale($const, '');
-            $file = $this->getFile($lang);
-            self::$translator = new GettextNatural($file, $lang);
+            require_once 'libs/GettextNatural.php';
+            self::$translator = new GettextNatural($this->getFile($lang, '!mo'), $lang);
         } elseif (!$set) {
             throw new \RuntimeException($l . ' locale is not supported on your machine. Set useHelper on TRUE.');
         } else {
@@ -83,7 +86,7 @@ class GettextLatte extends TranslatorFake {
      */
     public function isDefault() {
         if (!$this->webLang) {
-            return NULL;
+            return NULL; // exception?
         }
         return $this->webLang == $this->default;
     }
