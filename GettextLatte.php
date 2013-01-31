@@ -50,7 +50,7 @@ class GettextLatte extends TranslatorFake {
         $system = php_uname('s');
         $const = defined('\LC_MESSAGES') ? \LC_MESSAGES : \LC_ALL;
 
-        if ($system == 'Windows') {
+        if ($system == 'Windows NT') {
             putenv('LANG=' . $lang);
             $set = TRUE;
         } else {
