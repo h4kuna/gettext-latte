@@ -219,43 +219,12 @@ class GettextLatte extends TranslatorFake {
     }
 
     /**
-     * @todo přepsat na regulár
      * @param type $s
-     * @return array
+     * @return type
      */
     static private function stringToArgs($s) {
-        $char = str_split($s);
-
-        $arg = $slash = NULL;
-        $args = array();
-
-        foreach ($char as $i => $l) {
-            if (!$slash && !$arg && preg_match("~,|\s~", $l)) {
-                continue;
-            }
-            $arg .= $l;
-
-            if (!$slash && ($l == '"' || $l == "'")) {
-                $slash = $l;
-                continue;
-            }
-
-            if ($l == $slash) {
-                if ($char[$i - 1] == '\\') {
-                    continue;
-                }
-                $args[] = rtrim($arg, ',');
-                $arg = $slash = NULL;
-            } elseif (!$slash) {
-                $slash = ',';
-            }
-        }
-
-        if ($arg) {
-            $args[] = $arg;
-        }
-
-        return $args;
+        preg_match_all("/(?: ?)([^,]*\(.*?\)|[^,]*'[^']*'|[^,]*\"[^\"]*\"|.+?)(?: ?)(?:,|$)/", $s, $found);
+        return $found[1];
     }
 
     private function method($isNgettext, &$fce) {
