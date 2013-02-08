@@ -221,42 +221,41 @@ class GettextLatte extends TranslatorFake {
     /**
      * @todo přepsat na regulár
      * @param type $s
-     * @param type $s
-     * @return type
+     * @return array
      */
     static private function stringToArgs($s) {
-        $len = strlen($s);
-        $out = array();
-        $outI = 0;
+        $char = str_split($s);
 
-        $in = FALSE;
-        $slash = NULL;
-        for ($i = 0; $i < $len; ++$i) {
+        $arg = $slash = NULL;
+        $args = array();
 
-            if ($i + 1 < $len && $s{$i} . $s{$i + 1} == '\\' . $slash) {
-                $out[$outI] .= $s{$i} . $s{$i + 1};
-                ++$i;
+        foreach ($char as $i => $l) {
+            if (!$slash && !$arg && preg_match("~,|\s~", $l)) {
                 continue;
             }
-            if (!isset($out[$outI])) {
-                $out[$outI] = '';
-            }
-            $out[$outI] .= $s{$i};
+            $arg .= $l;
 
-            if ($s{$i} == "'" || $s{$i} == '"') {
-                $in = !$in;
-                $slash = $in ? $s{$i} : NULL;
+            if (!$slash && ($l == '"' || $l == "'")) {
+                $slash = $l;
+                continue;
             }
 
-            if (!$in && $s{$i} == ',') {
-                ++$outI;
+            if ($l == $slash) {
+                if ($char[$i - 1] == '\\') {
+                    continue;
+                }
+                $args[] = rtrim($arg, ',');
+                $arg = $slash = NULL;
+            } elseif (!$slash) {
+                $slash = ',';
             }
         }
 
-        array_walk($out, function(&$s) {
-                    $s = trim($s, "\t \n\r\0\x0B,");
-                });
-        return $out;
+        if ($arg) {
+            $args[] = $arg;
+        }
+
+        return $args;
     }
 
     private function method($isNgettext, &$fce) {
