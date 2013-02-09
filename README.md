@@ -69,7 +69,7 @@ echo _('Hi');
 echo ngettext('dog', 'dogs', 2);
 
 // The following two are the same
-echo srintf(_('%s possible %s %s'), 'another', 'optional', 'params'); // is faster
+echo sprintf(_('%s possible %s %s'), 'another', 'optional', 'params'); // is faster
 echo $this->context->translator->translate(_('%s possible %s %s'), 'another', 'optional', 'params');
 
 ```
