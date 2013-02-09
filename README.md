@@ -18,7 +18,7 @@ Clone of this repository or you can use composer [h4kuna/gettext-latte](https://
 
 ### examples/config.neon
 There are three section **parameters**, where do you define all your languages. Key is web presentation and value in array is value of statement command above **$ locale -a**. First language in array is defined as default.  
-On Mac encoding is represented as 'en_US.UTF-8' everytime dojo format 'en_US.utf8'
+On Mac encoding is represented as 'en_US.UTF-8' everytime dojo format 'en_US.utf8'.
 ```
 parameters:
     langs: {'cs' : 'cs_CZ.utf8', 'en' : 'en_US.utf8'}
