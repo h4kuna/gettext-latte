@@ -10,7 +10,7 @@ Conditions for start-up
 * language instaled on server, you can check the command **$ locale -a**
 * your application written in UTF-8 encoding
 
-In repository is directory _locale_, where is prepard directory structure for your project and it need permision 777 _locale/*_. In folder _example_ are files, whose help you setup this translator. Application, you can write in your native language, here is example in english, but it may be czech, slovak, german language...
+In repository is directory _locale_, where is prepared directory structure for your project and it need permision 777 _locale/*_. In folder _example_ are files, whose help you setup this translator. Application, you can write in your native language, here is example in english, but it may be czech, slovak, german language...
 
 Start-up
 ---------------------
