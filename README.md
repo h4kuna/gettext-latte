@@ -1,7 +1,7 @@
 GettextLatte
 ===========
 
-is localization addon for framework [Nette](http://nette.org/), whose support native [gettext](http://php.net/manual/en/book.gettext.php).  
+is localization addon for framework [Nette](http://nette.org/), whose support native [gettext](http://php.net/manual/en/book.gettext.php).
 [Forum](http://forum.nette.org/cs/12021-gettext-na-100-v-sablonach#p86467)
 
 Conditions for start-up
@@ -17,7 +17,7 @@ Start-up
 Clone of this repository or you can use composer [h4kuna/gettext-latte](https://packagist.org/packages/h4kuna/gettext-latte).
 
 ### examples/config.neon
-There are three section **parameters**, where do you define all your languages. Key is web presentation and value in array is value of statement command above **$ locale -a**. First language in array is defined as default.  
+There are three section **parameters**, where do you define all your languages. Key is web presentation and value in array is value of statement command above **$ locale -a**. First language in array is defined as default.
 On Mac encoding is represented as 'en_US.UTF-8' everytime dojo format 'en_US.utf8'.
 ```
 parameters:
@@ -90,7 +90,7 @@ In template you using macros. Number of parameters is't limited. Function **spri
 <td>{!_n'dog', 'dogs', $count}</td><td>echo ngettext('dog', 'dogs', $count);</td>
 </tr>
 <tr>
-<td>{!_n'%s dog has email %s', '%s dogs have email %s', $count, $email}</td><td>echo sprintf(ngettext('%s dog', '%s dogs', $count), $count, $email);</td>
+<td>{!_n'%s dog has email %s', '%s dogs have email %s', $count, $email}</td><td>echo sprintf(ngettext('%s dog has email %s', '%s dogs have email %s', $count), $count, $email);</td>
 </tr>
 <tr>
 <th colspan="2">If you need to decline to negative, variable must contain abs.</th>
@@ -102,9 +102,9 @@ In template you using macros. Number of parameters is't limited. Function **spri
 
 Let's starting translate
 ---------------------
-Download [PoEdit](http://www.poedit.net/download.php).  
-Before each run Poedit you must have all template compiled to php in temp directory, for this is _examples/TemplatePresenter.php_ and run **actionTranslate()**.  
-You open **.po** file. Setup directory search by default in repository are **temp/cache/_Nette.FileTemplate** and **app**. And click "update catalog", after update catalog you don't need [restart apache](http://php.net/manual/en/function.gettext.php#110735). 
+Download [PoEdit](http://www.poedit.net/download.php).
+Before each run Poedit you must have all template compiled to php in temp directory, for this is _examples/TemplatePresenter.php_ and run **actionTranslate()**.
+You open **.po** file. Setup directory search by default in repository are **temp/cache/_Nette.FileTemplate** and **app**. And click "update catalog", after update catalog you don't need [restart apache](http://php.net/manual/en/function.gettext.php#110735).
 
 
 If you write application in language whose has three levels instead of two inflections, forexample czech. You must have catalog with translation czech to czech but only for plural.
