@@ -81,22 +81,22 @@ In template you using macros. Number of parameters is't limited. Function **spri
 <th>macro in template</th><th>translate to php</th>
 </tr>
 <tr>
-<td>{!_'Hi'}</td><td>echo gettext('Hi');</td>
+<td>{_'Hi'}</td><td>echo gettext('Hi');</td>
 </tr>
 <tr>
-<td>{!_'Today is %s', $date}</td><td>echo sprintf(gettext('Today is %s'), $date);</td>
+<td>{_'Today is %s', $date}</td><td>echo sprintf(gettext('Today is %s'), $date);</td>
 </tr>
 <tr>
-<td>{!_n'dog', 'dogs', $count}</td><td>echo ngettext('dog', 'dogs', $count);</td>
+<td>{_n'dog', 'dogs', $count}</td><td>echo ngettext('dog', 'dogs', $count);</td>
 </tr>
 <tr>
-<td>{!_n'%s dog has email %s', '%s dogs have email %s', $count, $email}</td><td>echo sprintf(ngettext('%s dog has email %s', '%s dogs have email %s', $count), $count, $email);</td>
+<td>{_n'%s dog has email %s', '%s dogs have email %s', $count, $email}</td><td>echo sprintf(ngettext('%s dog has email %s', '%s dogs have email %s', $count), $count, $email);</td>
 </tr>
 <tr>
 <th colspan="2">If you need to decline to negative, variable must contain abs.</th>
 </tr>
 <tr>
-<td>{!_n'today is %s degree temperature', 'today is %s degrees temperature', $absTemperature}</td><td>echo sprintf(ngettext('today is %s degree temperature', 'today is %s degrees temperature', abs($absTemperature)), $absTemperature);</td>
+<td>{_n'today is %s degree temperature', 'today is %s degrees temperature', $absTemperature}</td><td>echo sprintf(ngettext('today is %s degree temperature', 'today is %s degrees temperature', abs($absTemperature)), $absTemperature);</td>
 </tr>
 </table>
 
