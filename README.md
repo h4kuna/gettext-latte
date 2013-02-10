@@ -1,7 +1,8 @@
 GettextLatte
 ===========
 
-is localization addon for framework [Nette](http://nette.org/), whose support native [gettext](http://php.net/manual/en/book.gettext.php).  
+is localization addon for framework [Nette](http://nette.org/), whose support native [gettext](http://php.net/manual/en/book.gettext.php).
+
 [Forum](http://forum.nette.org/cs/12021-gettext-na-100-v-sablonach#p86467)
 
 Conditions for start-up
@@ -17,7 +18,8 @@ Start-up
 Clone of this repository or you can use composer [h4kuna/gettext-latte](https://packagist.org/packages/h4kuna/gettext-latte).
 
 ### examples/config.neon
-There are three section **parameters**, where do you define all your languages. Key is web presentation and value in array is value of statement command above **$ locale -a**. First language in array is defined as default.  
+There are three section **parameters**, where do you define all your languages. Key is web presentation and value in array is value of statement command above **$ locale -a**. First language in array is defined as default.
+
 On Mac encoding is represented as 'en_US.UTF-8' everytime dojo format 'en_US.utf8'.
 ```
 parameters:
@@ -81,39 +83,67 @@ In template you using macros. Number of parameters is't limited. Function **spri
 <th>macro in template</th><th>translate to php</th>
 </tr>
 <tr>
-<td>{!_'Hi'}</td><td>echo gettext('Hi');</td>
+<td>{_'Hi'}</td><td>echo gettext('Hi');</td>
 </tr>
 <tr>
-<td>{!_'Today is %s', $date}</td><td>echo sprintf(gettext('Today is %s'), $date);</td>
+<td>{_'Today is %s', $date}</td><td>echo sprintf(gettext('Today is %s'), $date);</td>
 </tr>
 <tr>
-<td>{!_n'dog', 'dogs', $count}</td><td>echo ngettext('dog', 'dogs', $count);</td>
+<td>{_n'dog', 'dogs', $count}</td><td>echo ngettext('dog', 'dogs', $count);</td>
 </tr>
 <tr>
-<td>{!_n'%s dog has email %s', '%s dogs have email %s', $count, $email}</td><td>echo sprintf(ngettext('%s dog', '%s dogs', $count), $count, $email);</td>
+<td>{_n'%s dog has email %s', '%s dogs have email %s', $count, $email}</td><td>echo sprintf(ngettext('%s dog has email %s', '%s dogs have email %s', $count), $count, $email);</td>
 </tr>
 <tr>
 <th colspan="2">If you need to decline to negative, variable must contain abs.</th>
 </tr>
 <tr>
-<td>{!_n'today is %s degree temperature', 'today is %s degrees temperature', $absTemperature}</td><td>echo sprintf(ngettext('today is %s degree temperature', 'today is %s degrees temperature', abs($absTemperature)), $absTemperature);</td>
+<td>{_n'today is %s degree temperature', 'today is %s degrees temperature', $absTemperature}</td><td>echo sprintf(ngettext('today is %s degree temperature', 'today is %s degrees temperature', abs($absTemperature)), $absTemperature);</td>
 </tr>
 </table>
 
 Let's starting translate
 ---------------------
-Download [PoEdit](http://www.poedit.net/download.php).  
-Before each run Poedit you must have all template compiled to php in temp directory, for this is _examples/TemplatePresenter.php_ and run **actionTranslate()**.  
-You open **.po** file. Setup directory search by default in repository are **temp/cache/_Nette.FileTemplate** and **app**. And click "update catalog", after update catalog you don't need [restart apache](http://php.net/manual/en/function.gettext.php#110735). 
+Download [PoEdit](http://www.poedit.net/download.php).
+Before each run Poedit you must have all template compiled to php in temp directory, for this is _examples/TemplatePresenter.php_ and run **actionTranslate()**.
+
+You open **.po** file. Setup directory search by default in repository are **temp/cache/_Nette.FileTemplate** and **app**. And click "update catalog", after update catalog you don't need [restart apache](http://php.net/manual/en/function.gettext.php#110735).
 
 
 If you write application in language whose has three levels instead of two inflections, forexample czech. You must have catalog with translation czech to czech but only for plural.
+
+Support automatic detection of language
+---------------
+Example for setup router and BasePresenter is in _examples/BasePresenter.php_.
+
+Router:
+```php
+$router[] = new R\Route('[<lang ' . $container->translator->routerAccept() . '>/]<presenter>/<action>/[<id>/]', array(
+            'presenter' => 'Homepage',
+            'action' => 'default',
+            'lang' => $container->translator->getDefault()
+        ));
+```
+
+Presenter:
+```php
+class BasePresenter extends \Nette\Application\UI\Presenter {
+
+    /** @persistent */
+    public $lang;
+
+    protected function startup() {
+        parent::startup();
+        $this->lang = $this->context->translator->setLanguage($this->lang)->getLanguage();
+    }
+
+}
+```
 
 Download catalog
 ---------------
 For your translators can do catalog for download.
 
 ```php
-<php
 $this->context->translator->download('cs'); //Offers catalog download
 ```
