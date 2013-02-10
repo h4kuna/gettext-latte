@@ -21,10 +21,10 @@ class Gettext extends TranslatorFake {
     protected $useHelper;
 
     /** @var array */
-    protected $langs;
+    private $langs;
 
     /** @var string */
-    protected $path;
+    private $path;
 
     /**
      * property for temporary resolve bug
