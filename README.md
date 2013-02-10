@@ -3,7 +3,7 @@ GettextLatte
 
 is localization addon for [Nette framework](http://nette.org/), whose support native [gettext](http://php.net/manual/en/book.gettext.php).
 
-You can use without Nette if you using Gettext.php.
+You can use without Nette if you use Gettext.php.
 
 [Forum](http://forum.nette.org/cs/12021-gettext-na-100-v-sablonach#p86467)
 
