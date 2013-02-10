@@ -66,7 +66,7 @@ class GettextLatte extends Gettext implements ITranslator {
         $argsGettext = array_slice($data, 0, $slice);
 
         if (isset($argsGettext[2])) {
-            if (preg_mach('/abs/i', $argsGettext[2])) {
+            if (preg_match('/abs/i', $argsGettext[2])) {
                 $argsGettext[2] = 'abs(' . $argsGettext[2] . ')';
             }
         }
