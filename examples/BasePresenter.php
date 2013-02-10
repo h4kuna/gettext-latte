@@ -13,7 +13,7 @@ $router[] = new R\Route('[<lang ' . $container->translator->routerAccept() . '>/
 /**
  * How setup BasePresenter for support lang and automatic detect language
  *
- * @author h4kuna
+ * @author Milan Matějček
  */
 abstract class BasePresenter extends \Nette\Application\UI\Presenter {
 
