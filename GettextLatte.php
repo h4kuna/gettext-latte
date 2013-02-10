@@ -28,31 +28,22 @@ class GettextLatte extends Gettext {
         $this->section = $section;
 
         if ($this->section->language === NULL) {
-            $country = NULL;
-            $accept = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-            if (preg_match('/[a-z]{2}-[A-Z]{2}/', $accept, $found)) {
-                $country = str_replace('-', '_', $found[0]);
-            }
-
-            foreach ($this->langs as $k => $v) {
-                if (preg_match('/' . $k . '/', $accept) ||
-                        ($country && preg_match('/' . $country . '/', $v))) {
-                    $this->language = $this->section->language = $k;
-                    break;
-                }
-            }
-
-            $this->language = $this->section->language = $this->default;
+            $this->language = $this->section->language = $this->detectLanguage();
         }
     }
 
+    /**
+     * session expiration
+     * @param string|int $expire
+     * @return \h4kuna\GettextLatte
+     */
     public function setExpiration($expire) {
         $this->section->setExpiration($expire, 'language');
         return $this;
     }
 
     /**
-     * makro pro podporu gettextu
+     * macro for support gettext
      * @param \Nette\Latte\MacroNode $node
      * @param type $writer
      * @return type
@@ -91,6 +82,12 @@ class GettextLatte extends Gettext {
         return $writer->write('echo %modify(' . $out . ')');
     }
 
+    /**
+     * save uploaded files
+     * @param string $lang
+     * @param \Nette\Http\FileUpload $po
+     * @param \Nette\Http\FileUpload $mo
+     */
     public function upload($lang, FileUpload $po, FileUpload $mo) {
         $mo->move($this->getFile($lang, '!mo'));
         $po->move($this->getFile($lang, 'po'));
@@ -119,8 +116,8 @@ class GettextLatte extends Gettext {
     }
 
     /**
-     * @param type $s
-     * @return type
+     * @param string $s
+     * @return string
      */
     static private function stringToArgs($s) {
         preg_match_all("/(?: ?)([^,]*\(.*?\)|[^,]*'[^']*'|[^,]*\"[^\"]*\"|.+?)(?: ?)(?:,|$)/", $s, $found);

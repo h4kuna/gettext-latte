@@ -56,6 +56,33 @@ class Gettext extends TranslatorFake {
         $this->msg = $this->messages = $msg;
     }
 
+    /**
+     * try find users language
+     * @return string
+     */
+    public function detectLanguage() {
+        $accept = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        if ($accept) {
+            $country = NULL;
+            if (preg_match('/[a-z]{2}-[A-Z]{2}/', $accept, $found)) {
+                $country = str_replace('-', '_', $found[0]);
+            }
+
+            foreach ($this->langs as $k => $v) {
+                if (preg_match('/' . $k . '/', $accept) ||
+                        ($country && preg_match('/' . $country . '/', $v))) {
+                    return $k;
+                }
+            }
+        }
+        return $this->default;
+    }
+
+    /**
+     * offer file download
+     * @param string $lang
+     * @throws GettextException
+     */
     public function download($lang) {
         $file = $this->getFile($lang, 'po');
         if (file_exists($file)) {
@@ -69,10 +96,18 @@ class Gettext extends TranslatorFake {
         throw new GettextException('File not found: ' . $file);
     }
 
+    /**
+     * default language
+     * @return string
+     */
     public function getDefault() {
         return $this->default;
     }
 
+    /**
+     * choosen language
+     * @return type
+     */
     public function getLanguage() {
         return $this->language;
     }
@@ -107,6 +142,12 @@ class Gettext extends TranslatorFake {
         return $this->getLanguage() == $this->getDefault();
     }
 
+    /**
+     * @todo switch catalog
+     * @param string $lang
+     * @return \h4kuna\Gettext
+     * @throws \RuntimeException
+     */
     public function setLanguage($lang = NULL) {
         $this->language = $lang ? $lang : $this->getLanguage();
         $l = $this->langs[$this->language];
@@ -160,7 +201,12 @@ class Gettext extends TranslatorFake {
         return $t;
     }
 
-    // metody pri použití berličky když nejsou na stoji nainstalované lokalizace
+//------------------------------------------------------------------------------
+    /**
+     * if gettext extension is not instaled
+     * @param string $message
+     * @return string
+     */
     public static function gettext($message) {
         return self::$translator->gettext($message);
     }
@@ -169,14 +215,26 @@ class Gettext extends TranslatorFake {
         return self::$translator->ngettext($msgid1, $msgid2, $n);
     }
 
+//------------------------------------------------------------------------------
     protected function prefix() {
         return '\\' . __CLASS__ . '::';
     }
 
+    /**
+     * has term for replace
+     * @param string $str
+     * @return int
+     */
     protected function foundReplce($str) {
         return -1 * substr_count($str, '%s');
     }
 
+    /**
+     * logic gettext or ngettext
+     * @param type $isNgettext
+     * @param type $fce
+     * @return int
+     */
     protected function method($isNgettext, &$fce) {
         $slice = 1;
         if ($isNgettext) {
