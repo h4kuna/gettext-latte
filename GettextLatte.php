@@ -3,14 +3,15 @@
 namespace h4kuna;
 
 use \Nette\Http\FileUpload,
-    \Nette\Http\SessionSection;
+    \Nette\Http\SessionSection,
+    \Nette\Localization\ITranslator;
 
 require_once 'Gettext.php';
 
 /**
  * @author Milan Matějček <milan.matejcek@gmail.com>
  */
-class GettextLatte extends Gettext {
+class GettextLatte extends Gettext implements ITranslator {
 
     /** @var SessionSection */
     private $section;
@@ -28,7 +29,8 @@ class GettextLatte extends Gettext {
         $this->section = $section;
 
         if ($this->section->language === NULL) {
-            $this->language = $this->section->language = $this->detectLanguage();
+            $this->setExpiration(0);
+            $this->section->language = $this->language = $this->detectLanguage();
         }
     }
 
@@ -80,6 +82,31 @@ class GettextLatte extends Gettext {
         }
 
         return $writer->write('echo %modify(' . $out . ')');
+    }
+
+    public function translate($message, $count = NULL) {
+        if (!self::$translator) {
+            return call_user_func_array('parent::t', func_get_args());
+        }
+
+        $fce = $this->prefix();
+        $slice = $this->method(func_num_args() > 2, $fce);
+        $data = func_get_args();
+        $t = call_user_func_array($fce, array_slice($data, 0, $slice));
+        $diff = $this->foundReplce($data[0]);
+
+        if ($diff) {
+            return vsprintf($t, array_slice($data, $diff));
+        }
+        return $t;
+    }
+
+    /**
+     * router defined languages
+     * @return type
+     */
+    public function routerAccept() {
+        return implode('|', array_keys($this->langs));
     }
 
     /**

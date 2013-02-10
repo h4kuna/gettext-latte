@@ -21,7 +21,7 @@ class Gettext extends TranslatorFake {
     protected $useHelper;
 
     /** @var array */
-    private $langs;
+    protected $langs;
 
     /** @var string */
     private $path;
@@ -182,23 +182,6 @@ class Gettext extends TranslatorFake {
             textdomain($this->messages);
         }
         return $this;
-    }
-
-    public function translate($message, $count = NULL) {
-        if (!self::$translator) {
-            return call_user_func_array('parent::t', func_get_args());
-        }
-
-        $fce = $this->prefix();
-        $slice = $this->method(func_num_args() > 2, $fce);
-        $data = func_get_args();
-        $t = call_user_func_array($fce, array_slice($data, 0, $slice));
-        $diff = $this->foundReplce($data[0]);
-
-        if ($diff) {
-            return vsprintf($t, array_slice($data, $diff));
-        }
-        return $t;
     }
 
 //------------------------------------------------------------------------------
