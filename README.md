@@ -2,6 +2,7 @@ GettextLatte
 ===========
 
 is localization addon for framework [Nette](http://nette.org/), whose support native [gettext](http://php.net/manual/en/book.gettext.php).
+
 [Forum](http://forum.nette.org/cs/12021-gettext-na-100-v-sablonach#p86467)
 
 Conditions for start-up
@@ -18,6 +19,7 @@ Clone of this repository or you can use composer [h4kuna/gettext-latte](https://
 
 ### examples/config.neon
 There are three section **parameters**, where do you define all your languages. Key is web presentation and value in array is value of statement command above **$ locale -a**. First language in array is defined as default.
+
 On Mac encoding is represented as 'en_US.UTF-8' everytime dojo format 'en_US.utf8'.
 ```
 parameters:
@@ -104,16 +106,45 @@ Let's starting translate
 ---------------------
 Download [PoEdit](http://www.poedit.net/download.php).
 Before each run Poedit you must have all template compiled to php in temp directory, for this is _examples/TemplatePresenter.php_ and run **actionTranslate()**.
+
 You open **.po** file. Setup directory search by default in repository are **temp/cache/_Nette.FileTemplate** and **app**. And click "update catalog", after update catalog you don't need [restart apache](http://php.net/manual/en/function.gettext.php#110735).
 
 
 If you write application in language whose has three levels instead of two inflections, forexample czech. You must have catalog with translation czech to czech but only for plural.
 
+Support automatic detection
+---------------
+Example for setup router and BasePresenter is in _examples/BasePresenter.php_.
+
+Router:
+```php
+$router[] = new R\Route('[<lang ' . $container->translator->routerAccept() . '>/]<presenter>/<action>/[<id>/]', array(
+            'presenter' => 'Homepage',
+            'action' => 'default',
+            'lang' => $container->translator->getDefault()
+        ));
+```
+
+Presenter:
+```php
+class BasePresenter extends \Nette\Application\UI\Presenter {
+
+    /** @persistent */
+    public $lang;
+
+    protected function startup() {
+        parent::startup();
+        $this->lang = $this->context->translator->setLanguage($this->lang)->getLanguage();
+    }
+
+}
+```
+
 Download catalog
 ---------------
 For your translators can do catalog for download.
 
-```php
+```php---------------
 <php
 $this->context->translator->download('cs'); //Offers catalog download
 ```
