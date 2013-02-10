@@ -1,7 +1,9 @@
 GettextLatte
 ===========
 
-is localization addon for framework [Nette](http://nette.org/), whose support native [gettext](http://php.net/manual/en/book.gettext.php).
+is localization addon for [Nette framework](http://nette.org/), whose support native [gettext](http://php.net/manual/en/book.gettext.php).
+
+You can use without Nette if you using Gettext.php.
 
 [Forum](http://forum.nette.org/cs/12021-gettext-na-100-v-sablonach#p86467)
 
@@ -56,7 +58,7 @@ abstract class BasePresenter extends Presenter {
 
     protected function startup() {
         parent::startup();
-        $this->context->translator->setLanguage($this->lang);
+        $this->lang = $this->context->translator->setLanguage($this->lang)->getLanguage();
     }
 }
 ```
