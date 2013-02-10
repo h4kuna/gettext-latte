@@ -144,7 +144,6 @@ Download catalog
 ---------------
 For your translators can do catalog for download.
 
-```php---------------
-<php
+```php
 $this->context->translator->download('cs'); //Offers catalog download
 ```
