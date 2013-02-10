@@ -112,7 +112,7 @@ You open **.po** file. Setup directory search by default in repository are **tem
 
 If you write application in language whose has three levels instead of two inflections, forexample czech. You must have catalog with translation czech to czech but only for plural.
 
-Support automatic detection
+Support automatic detection of language
 ---------------
 Example for setup router and BasePresenter is in _examples/BasePresenter.php_.
 
