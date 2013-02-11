@@ -41,10 +41,10 @@ class Gettext extends TranslatorFake {
 
     /**
      *
-     * @param string $path
-     * @param array $langs
-     * @param boolean $useHelper if gettext extension is not instaled
-     * @param type $msg catalog name
+     * @param string $path locale path
+     * @param array $langs defined language
+     * @param string $msg name of catalog
+     * @param bool $useHelper if gettext extension is not instaled set TRUE
      */
     public function __construct($path, array $langs, $msg = 'messages', $useHelper = FALSE) {
         reset($langs);

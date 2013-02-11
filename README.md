@@ -91,18 +91,29 @@ In template you using macros. Number of parameters is't limited. Function **spri
 <td>{_'Today is %s', $date}</td><td>echo sprintf(gettext('Today is %s'), $date);</td>
 </tr>
 <tr>
+<td colspan="2">In the previous version, the inflection wrote like this.</td>
+</tr>
+<tr>
 <td>{_n'dog', 'dogs', $count}</td><td>echo ngettext('dog', 'dogs', $count);</td>
 </tr>
 <tr>
-<td>{_n'%s dog has email %s', '%s dogs have email %s', $count, $email}</td><td>echo sprintf(ngettext('%s dog has email %s', '%s dogs have email %s', $count), $count, $email);</td>
+<td colspan="2">Now it's off and writes. But it is possible to turn on with third parameter in constructor.</td>
+</tr>
+<tr>
+<td>{_n'dog', $count}</td><td>echo ngettext('dog', 'dog', $count);</td>
+</tr>
+<tr>
+<td>{_n'%s dog has email %s', $count, $email}</td><td>echo sprintf(ngettext('%s dog has email %s', '%s dog has email %s', $count), $count, $email);</td>
 </tr>
 <tr>
 <th colspan="2">If you need to decline to negative, variable must contain abs.</th>
 </tr>
 <tr>
-<td>{_n'today is %s degree temperature', 'today is %s degrees temperature', $absTemperature}</td><td>echo sprintf(ngettext('today is %s degree temperature', 'today is %s degrees temperature', abs($absTemperature)), $absTemperature);</td>
+<td>{_n'today is %s degree temperature', $absTemperature}</td><td>echo sprintf(ngettext('today is %s degree temperature', 'today is %s degree temperature', abs($absTemperature)), $absTemperature);</td>
 </tr>
 </table>
+
+Inflection is defined in catalog everytime for language whose has more than 2 level inflection.
 
 Let's starting translate
 ---------------------

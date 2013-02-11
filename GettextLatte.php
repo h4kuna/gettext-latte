@@ -19,6 +19,14 @@ class GettextLatte extends Gettext implements ITranslator {
     /** @var bool */
     private $oneParam;
 
+    /**
+     *
+     * @param string $path locale path
+     * @param array $langs defined language
+     * @param bool $oneParamPlural changing the number of parameters in the plural in latte macro
+     * @param string $msg name of catalog
+     * @param bool $useHelper if gettext extension is not instaled set TRUE
+     */
     public function __construct($path, array $langs, $oneParamPlural = TRUE, $msg = 'messages', $useHelper = FALSE) {
         $this->oneParam = $oneParamPlural;
         parent::__construct($path, $langs, $msg, $useHelper);
