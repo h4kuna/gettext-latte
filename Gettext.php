@@ -46,7 +46,7 @@ class Gettext extends TranslatorFake {
      * @param boolean $useHelper if gettext extension is not instaled
      * @param type $msg catalog name
      */
-    public function __construct($path, array $langs, $useHelper = FALSE, $msg = 'messages') {
+    public function __construct($path, array $langs, $msg = 'messages', $useHelper = FALSE) {
         reset($langs);
         $this->default = key($langs);
         $this->langs = $langs;
@@ -204,23 +204,14 @@ class Gettext extends TranslatorFake {
     }
 
     /**
-     * has term for replace
-     * @param string $str
-     * @return int
-     */
-    protected function foundReplce($str) {
-        return -1 * substr_count($str, '%s');
-    }
-
-    /**
      * logic gettext or ngettext
      * @param type $isNgettext
      * @param type $fce
      * @return int
      */
-    protected function method($isNgettext, &$fce) {
+    protected function method($isPlural, &$fce) {
         $slice = 1;
-        if ($isNgettext) {
+        if ($isPlural) {
             $fce .= 'n';
             $slice = 3;
         }

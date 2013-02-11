@@ -16,6 +16,14 @@ class GettextLatte extends Gettext implements ITranslator {
     /** @var SessionSection */
     private $section;
 
+    /** @var bool */
+    private $oneParam;
+
+    public function __construct($path, array $langs, $oneParamPlural = TRUE, $msg = 'messages', $useHelper = FALSE) {
+        $this->oneParam = $oneParamPlural;
+        parent::__construct($path, $langs, $msg, $useHelper);
+    }
+
     /**
      *
      * @param \Nette\Http\SessionSection $section
@@ -32,6 +40,11 @@ class GettextLatte extends Gettext implements ITranslator {
             $this->setExpiration(0);
             $this->section->language = $this->language = $this->detectLanguage();
         }
+    }
+
+    public function getLanguage() {
+        $lang = parent::getLanguage();
+        return ($lang === NULL) ? $this->section->language : $lang;
     }
 
     /**
@@ -51,32 +64,31 @@ class GettextLatte extends Gettext implements ITranslator {
      * @return type
      */
     public function macroGettext(\Nette\Latte\MacroNode $node, $writer) {
-        $name = $node->name;
         $args = $node->args;
-        $fce = NULL;
-
-        $l = substr($args, 0, 1);
-        if ($l == 'n') {
-            $name = '_' . $l;
+        $isPlural = 'n' == substr($args, 0, 1);
+        if ($isPlural) {
             $args = substr($args, 1);
         }
-
-        $slice = $this->method($name != '_', $fce);
         $data = self::stringToArgs($args);
+
+        $fce = NULL;
+        $slice = $this->method($isPlural, $fce);
         $argsGettext = array_slice($data, 0, $slice);
 
-        if (isset($argsGettext[2])) {
+        if ($isPlural) {
+            $this->pluralData($argsGettext);
+
             if (preg_match('/abs/i', $argsGettext[2])) {
                 $argsGettext[2] = 'abs(' . $argsGettext[2] . ')';
             }
         }
-        $out = $fce . '(' . implode(', ', $argsGettext) . ')';
 
+        $out = $fce . '(' . implode(', ', $argsGettext) . ')';
         if ($this->useHelper) {
             $out = $this->prefix() . '$translator ? ' . $this->prefix() . $out . ' : ' . $out;
         }
 
-        $diff = $this->foundReplce($data[0]);
+        $diff = $this->foundReplace($data[0]);
         if ($diff) {
             $out = 'sprintf(' . $out . ', ' . implode(', ', array_slice($data, $diff)) . ')';
         }
@@ -84,17 +96,33 @@ class GettextLatte extends Gettext implements ITranslator {
         return $writer->write('echo %modify(' . $out . ')');
     }
 
+    /**
+     *
+     * @param string $message
+     * @param mixed $count
+     * @return string
+     */
     public function translate($message, $count = NULL) {
+        $data = func_get_args();
+
         if (!self::$translator) {
-            return call_user_func_array('parent::t', func_get_args());
+            return call_user_func_array('parent::t', $data);
+        }
+
+        $key = $this->oneParam ? 1 : 2;
+        $numArgs = func_num_args();
+        $isPlural = FALSE;
+
+        if ($numArgs > $key && is_numeric($data[$key])) {
+            $isPlural = TRUE;
+            $this->pluralData($data);
         }
 
         $fce = $this->prefix();
-        $slice = $this->method(func_num_args() > 2, $fce);
-        $data = func_get_args();
+        $slice = $this->method($isPlural, $fce);
         $t = call_user_func_array($fce, array_slice($data, 0, $slice));
-        $diff = $this->foundReplce($data[0]);
 
+        $diff = $this->foundReplace($data[0]);
         if ($diff) {
             return vsprintf($t, array_slice($data, $diff));
         }
@@ -121,6 +149,26 @@ class GettextLatte extends Gettext implements ITranslator {
     }
 
     /**
+     * @see parent
+     */
+    protected function method($isPlural, &$fce) {
+        $slice = parent::method($isPlural, $fce);
+        if ($this->oneParam && $slice == 3) {
+            $slice = 2;
+        }
+        return $slice;
+    }
+
+    /**
+     * has term for replace
+     * @param string $str
+     * @return int
+     */
+    private function foundReplace($str) {
+        return -1 * substr_count($str, '%s');
+    }
+
+    /**
      * macro install
      * @param \Nette\Latte\Compiler $parser
      * @param self $gettext
@@ -140,6 +188,19 @@ class GettextLatte extends Gettext implements ITranslator {
         $service = new \Nette\Latte\Engine;
         self::install($service->compiler, $translator);
         return $service;
+    }
+
+    /**
+     * prepare data to native function, only for plural
+     * @param array $data
+     */
+    private function pluralData(array &$data) {
+        if ($this->oneParam) {
+            array_unshift($data, $data[0]);
+            if (\Nette\Diagnostics\Debugger::isEnabled()) {
+                $data[1] = "'Do not forget to translate inflection!'";
+            }
+        }
     }
 
     /**
