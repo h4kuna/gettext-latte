@@ -41,10 +41,10 @@ class Gettext extends TranslatorFake {
 
     /**
      *
-     * @param string $path locale path
-     * @param array $langs defined language
-     * @param string $msg name of catalog
-     * @param bool $useHelper if gettext extension is not instaled set TRUE
+     * @param string $path
+     * @param array $langs
+     * @param boolean $useHelper if gettext extension is not instaled
+     * @param type $msg catalog name
      */
     public function __construct($path, array $langs, $msg = 'messages', $useHelper = FALSE) {
         reset($langs);
@@ -231,13 +231,24 @@ class Gettext extends TranslatorFake {
             if ($this->isDefault()) {
                 return;
             }
-            throw new \Nette\FileNotFoundException($mo);
+            throw new GettextException('File not found ' . $mo);
         }
         $this->messages = filemtime($mo) . $this->messages;
         $moTemp = $this->getFile($lang);
         if (!file_exists($moTemp)) {
             if (!@copy($mo, $moTemp)) {
                 throw new GettextException('Directory is not writeable: ' . dirname($mo));
+            }
+            $po = basename($this->getFile($lang, 'po'));
+            foreach (new \DirectoryIterator(dirname($mo)) as $file) {
+                switch ($file->getBasename()) {
+                    case basename($mo):
+                    case basename($moTemp):
+                    case $po:
+                        continue 2;
+                }
+
+                unlink($file->getPathname());
             }
         }
     }
