@@ -240,7 +240,7 @@ class Gettext extends TranslatorFake {
                 throw new GettextException('Directory is not writeable: ' . dirname($mo));
             }
             $po = basename($this->getFile($lang, 'po'));
-            foreach (new \DirectoryIterator(dirname($mo)) as $file) {
+            foreach (new \FilesystemIterator(dirname($mo)) as $filepath => $file) {
                 switch ($file->getBasename()) {
                     case basename($mo):
                     case basename($moTemp):
@@ -248,7 +248,7 @@ class Gettext extends TranslatorFake {
                         continue 2;
                 }
 
-                unlink($file->getPathname());
+                unlink($filepath);
             }
         }
     }
