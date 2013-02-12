@@ -11,6 +11,12 @@ class TemplatePresenter extends BasePresenter {
      * vygeneruje sablony
      */
     public function actionTranslate() {
+        //clear directory
+        $temp = $this->context->parameters['tempDir'] . '/cache/_Nette.FileTemplate';
+        foreach (\Nette\Utils\Finder::findFiles('*')->from($temp) as $file) {
+            unlink($file->getPathname());
+        }
+
         // buil template from appDir
         $this->classTemplate = '\h4kuna\Template';
         $tpl = $this->template;
