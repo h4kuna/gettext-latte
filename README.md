@@ -91,13 +91,13 @@ In template you using macros. Number of parameters is't limited. Function **spri
 <td>{_'Today is %s', $date}</td><td>echo sprintf(gettext('Today is %s'), $date);</td>
 </tr>
 <tr>
-<td colspan="2">In the previous version, the inflection wrote like this.</td>
+<th colspan="2">In the previous version, the inflection wrote like this.</th>
 </tr>
 <tr>
 <td>{_n'dog', 'dogs', $count}</td><td>echo ngettext('dog', 'dogs', $count);</td>
 </tr>
 <tr>
-<td colspan="2">Now it's off and writes. But it is possible to turn on with third parameter in constructor.</td>
+<th colspan="2">Now it's off and writes.* But it is possible to turn on with third parameter in constructor.</th>
 </tr>
 <tr>
 <td>{_n'dog', $count}</td><td>echo ngettext('dog', 'dog', $count);</td>
@@ -113,7 +113,7 @@ In template you using macros. Number of parameters is't limited. Function **spri
 </tr>
 </table>
 
-Inflection is defined in catalog everytime for language whose has more than 2 level inflection.
+* It was changed, because inflection is defined in catalog everytime, for language whose has more than 2 level inflection.
 
 Let's starting translate
 ---------------------
