@@ -19,14 +19,6 @@ class GettextLatte extends Gettext implements ITranslator {
     /** @var bool */
     private $oneParam;
 
-    /**
-     *
-     * @param string $path locale path
-     * @param array $langs defined language
-     * @param bool $oneParamPlural changing the number of parameters in the plural in latte macro
-     * @param string $msg name of catalog
-     * @param bool $useHelper if gettext extension is not instaled set TRUE
-     */
     public function __construct($path, array $langs, $oneParamPlural = TRUE, $msg = 'messages', $useHelper = FALSE) {
         $this->oneParam = $oneParamPlural;
         parent::__construct($path, $langs, $msg, $useHelper);
@@ -106,9 +98,9 @@ class GettextLatte extends Gettext implements ITranslator {
 
     /**
      *
-     * @param string $message
-     * @param mixed $count
-     * @return string
+     * @param type $message
+     * @param type $count
+     * @return type
      */
     public function translate($message, $count = NULL) {
         $data = func_get_args();
@@ -205,9 +197,6 @@ class GettextLatte extends Gettext implements ITranslator {
     private function pluralData(array &$data) {
         if ($this->oneParam) {
             array_unshift($data, $data[0]);
-            if (\Nette\Diagnostics\Debugger::isEnabled()) {
-                $data[1] = "'Do not forget to translate inflection!'";
-            }
         }
     }
 
