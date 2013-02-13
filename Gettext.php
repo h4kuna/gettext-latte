@@ -143,12 +143,21 @@ class Gettext extends TranslatorFake {
     }
 
     /**
+     * load language as soon as possible and return default language if parameter $lang is NULL
+     * @param string $lang
+     * @return string
+     */
+    public function loadLanguage($lang = NULL) {
+        return $this->setLanguage($lang)->getLanguage();
+    }
+
+    /**
      * @todo switch catalog
      * @param string $lang
      * @return \h4kuna\Gettext
      * @throws \RuntimeException
      */
-    public function setLanguage($lang = NULL) {
+    public function setLanguage($lang) {
         $this->language = $lang ? $lang : $this->getLanguage();
         $l = $this->langs[$this->language];
         $system = php_uname('s');
