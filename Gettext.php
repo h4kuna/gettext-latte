@@ -46,7 +46,7 @@ class Gettext extends TranslatorFake {
      * @param boolean $useHelper if gettext extension is not instaled
      * @param type $msg catalog name
      */
-    public function __construct($path, array $langs, $useHelper = FALSE, $msg = 'messages') {
+    public function __construct($path, array $langs, $msg = 'messages', $useHelper = FALSE) {
         reset($langs);
         $this->default = key($langs);
         $this->langs = $langs;
@@ -143,12 +143,21 @@ class Gettext extends TranslatorFake {
     }
 
     /**
+     * load language as soon as possible and return default language if parameter $lang is NULL
+     * @param string $lang
+     * @return string
+     */
+    public function loadLanguage($lang = NULL) {
+        return $this->setLanguage($lang)->getLanguage();
+    }
+
+    /**
      * @todo switch catalog
      * @param string $lang
      * @return \h4kuna\Gettext
      * @throws \RuntimeException
      */
-    public function setLanguage($lang = NULL) {
+    public function setLanguage($lang) {
         $this->language = $lang ? $lang : $this->getLanguage();
         $l = $this->langs[$this->language];
         $system = php_uname('s');
@@ -204,23 +213,14 @@ class Gettext extends TranslatorFake {
     }
 
     /**
-     * has term for replace
-     * @param string $str
-     * @return int
-     */
-    protected function foundReplce($str) {
-        return -1 * substr_count($str, '%s');
-    }
-
-    /**
      * logic gettext or ngettext
      * @param type $isNgettext
      * @param type $fce
      * @return int
      */
-    protected function method($isNgettext, &$fce) {
+    protected function method($isPlural, &$fce) {
         $slice = 1;
-        if ($isNgettext) {
+        if ($isPlural) {
             $fce .= 'n';
             $slice = 3;
         }
@@ -240,13 +240,24 @@ class Gettext extends TranslatorFake {
             if ($this->isDefault()) {
                 return;
             }
-            throw new \Nette\FileNotFoundException($mo);
+            throw new GettextException('File not found ' . $mo);
         }
         $this->messages = filemtime($mo) . $this->messages;
         $moTemp = $this->getFile($lang);
         if (!file_exists($moTemp)) {
             if (!@copy($mo, $moTemp)) {
                 throw new GettextException('Directory is not writeable: ' . dirname($mo));
+            }
+            $po = basename($this->getFile($lang, 'po'));
+            foreach (new \FilesystemIterator(dirname($mo)) as $filepath => $file) {
+                switch ($file->getBasename()) {
+                    case basename($mo):
+                    case basename($moTemp):
+                    case $po:
+                        continue 2;
+                }
+
+                unlink($filepath);
             }
         }
     }

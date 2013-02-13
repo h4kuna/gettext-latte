@@ -43,8 +43,19 @@ factories:
     nette.latte:
         factory: \h4kuna\GettextLatte::latte
 ```
-Run service
+Run service and support automatic detection of language
 -------------------
+Example for setup router and BasePresenter is in _examples/BasePresenter.php_.
+
+Router:
+```php
+$router[] = new R\Route('[<lang ' . $container->translator->routerAccept() . '>/]<presenter>/<action>/[<id>/]', array(
+            'presenter' => 'Homepage',
+            'action' => 'default',
+            'lang' => $container->translator->getDefault()
+        ));
+```
+
 Load dictionary as soon as possible.
 
 ```php
@@ -58,7 +69,7 @@ abstract class BasePresenter extends Presenter {
 
     protected function startup() {
         parent::startup();
-        $this->lang = $this->context->translator->setLanguage($this->lang)->getLanguage();
+        $this->lang = $this->context->translator->loadLanguage($this->lang);
     }
 }
 ```
@@ -91,18 +102,29 @@ In template you using macros. Number of parameters is't limited. Function **spri
 <td>{_'Today is %s', $date}</td><td>echo sprintf(gettext('Today is %s'), $date);</td>
 </tr>
 <tr>
+<th colspan="2">In the previous version, the inflection wrote like this.</th>
+</tr>
+<tr>
 <td>{_n'dog', 'dogs', $count}</td><td>echo ngettext('dog', 'dogs', $count);</td>
 </tr>
 <tr>
-<td>{_n'%s dog has email %s', '%s dogs have email %s', $count, $email}</td><td>echo sprintf(ngettext('%s dog has email %s', '%s dogs have email %s', $count), $count, $email);</td>
+<th colspan="2">Now it's off and writes.* But it is possible to turn on with third parameter in constructor.</th>
+</tr>
+<tr>
+<td>{_n'dog', $count}</td><td>echo ngettext('dog', 'dog', $count);</td>
+</tr>
+<tr>
+<td>{_n'%s dog has email %s', $count, $email}</td><td>echo sprintf(ngettext('%s dog has email %s', '%s dog has email %s', $count), $count, $email);</td>
 </tr>
 <tr>
 <th colspan="2">If you need to decline to negative, variable must contain abs.</th>
 </tr>
 <tr>
-<td>{_n'today is %s degree temperature', 'today is %s degrees temperature', $absTemperature}</td><td>echo sprintf(ngettext('today is %s degree temperature', 'today is %s degrees temperature', abs($absTemperature)), $absTemperature);</td>
+<td>{_n'today is %s degree temperature', $absTemperature}</td><td>echo sprintf(ngettext('today is %s degree temperature', 'today is %s degree temperature', abs($absTemperature)), $absTemperature);</td>
 </tr>
 </table>
+
+\* It was changed, because inflection is defined in catalog everytime, for language whose has more than 2 level inflection.
 
 Let's starting translate
 ---------------------
@@ -113,34 +135,6 @@ You open **.po** file. Setup directory search by default in repository are **tem
 
 
 If you write application in language whose has three levels instead of two inflections, forexample czech. You must have catalog with translation czech to czech but only for plural.
-
-Support automatic detection of language
----------------
-Example for setup router and BasePresenter is in _examples/BasePresenter.php_.
-
-Router:
-```php
-$router[] = new R\Route('[<lang ' . $container->translator->routerAccept() . '>/]<presenter>/<action>/[<id>/]', array(
-            'presenter' => 'Homepage',
-            'action' => 'default',
-            'lang' => $container->translator->getDefault()
-        ));
-```
-
-Presenter:
-```php
-class BasePresenter extends \Nette\Application\UI\Presenter {
-
-    /** @persistent */
-    public $lang;
-
-    protected function startup() {
-        parent::startup();
-        $this->lang = $this->context->translator->setLanguage($this->lang)->getLanguage();
-    }
-
-}
-```
 
 Download catalog
 ---------------
