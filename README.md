@@ -43,8 +43,19 @@ factories:
     nette.latte:
         factory: \h4kuna\GettextLatte::latte
 ```
-Run service
+Run service and support automatic detection of language
 -------------------
+Example for setup router and BasePresenter is in _examples/BasePresenter.php_.
+
+Router:
+```php
+$router[] = new R\Route('[<lang ' . $container->translator->routerAccept() . '>/]<presenter>/<action>/[<id>/]', array(
+            'presenter' => 'Homepage',
+            'action' => 'default',
+            'lang' => $container->translator->getDefault()
+        ));
+```
+
 Load dictionary as soon as possible.
 
 ```php
@@ -58,7 +69,7 @@ abstract class BasePresenter extends Presenter {
 
     protected function startup() {
         parent::startup();
-        $this->lang = $this->context->translator->setLanguage($this->lang)->getLanguage();
+        $this->lang = $this->context->translator->loadLanguage($this->lang);
     }
 }
 ```
@@ -113,7 +124,7 @@ In template you using macros. Number of parameters is't limited. Function **spri
 </tr>
 </table>
 
-* It was changed, because inflection is defined in catalog everytime, for language whose has more than 2 level inflection.
+\* It was changed, because inflection is defined in catalog everytime, for language whose has more than 2 level inflection.
 
 Let's starting translate
 ---------------------
@@ -124,34 +135,6 @@ You open **.po** file. Setup directory search by default in repository are **tem
 
 
 If you write application in language whose has three levels instead of two inflections, forexample czech. You must have catalog with translation czech to czech but only for plural.
-
-Support automatic detection of language
----------------
-Example for setup router and BasePresenter is in _examples/BasePresenter.php_.
-
-Router:
-```php
-$router[] = new R\Route('[<lang ' . $container->translator->routerAccept() . '>/]<presenter>/<action>/[<id>/]', array(
-            'presenter' => 'Homepage',
-            'action' => 'default',
-            'lang' => $container->translator->getDefault()
-        ));
-```
-
-Presenter:
-```php
-class BasePresenter extends \Nette\Application\UI\Presenter {
-
-    /** @persistent */
-    public $lang;
-
-    protected function startup() {
-        parent::startup();
-        $this->lang = $this->context->translator->setLanguage($this->lang)->getLanguage();
-    }
-
-}
-```
 
 Download catalog
 ---------------
