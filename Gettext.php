@@ -61,7 +61,7 @@ class Gettext extends TranslatorFake {
      * @return string
      */
     public function detectLanguage() {
-        $accept = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        $accept = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : NULL;
         if ($accept) {
             $country = NULL;
             if (preg_match('/[a-z]{2}-[A-Z]{2}/', $accept, $found)) {
