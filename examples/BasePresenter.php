@@ -29,7 +29,16 @@ abstract class BasePresenter extends \Nette\Application\UI\Presenter {
      */
     public function injectTranslator(\h4kuna\GettextLatte $translator) {
         $this->translator = $translator;
-        $this->lang = $translator->loadLanguage($this->lang);
     }
+
+    protected function startup() {
+        parent::startup();
+        $this->lang = $this->translator->loadLanguage($this->lang);
+    }
+
+//    protected function startup() {
+//        parent::startup();
+//        $this->lang = $this->context->translator->loadLanguage($this->lang);
+//    }
 }
 

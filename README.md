@@ -76,7 +76,11 @@ abstract class BasePresenter extends Presenter {
      */
     public function injectTranslator(\h4kuna\GettextLatte $translator) {
         $this->translator = $translator;
-        $this->lang = $translator->loadLanguage($this->lang);
+    }
+
+    protected function startup() {
+        parent::startup();
+        $this->lang = $this->translator->loadLanguage($this->lang);
     }
 }
 ```
