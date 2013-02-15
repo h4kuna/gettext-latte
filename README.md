@@ -133,6 +133,12 @@ In template you using macros. Number of parameters is't limited. Function **spri
 <tr>
 <td>{_n'today is %s degree temperature', $absTemperature}</td><td>echo sprintf(ngettext('today is %s degree temperature', 'today is %s degree temperature', abs($absTemperature)), $absTemperature);</td>
 </tr>
+<tr>
+<th colspan="2">If you have many variables and replace the first variable not governed translation variable must contain plural.</th>
+</tr>
+<tr>
+<td>{_n'Name: %s, age: %s year old', $name, $pluralYear}</td><td>echo sprintf(ngettext('Name: %s, age: %s year old', 'Name: %s, age: %s year old', $pluralYear), $name, $pluralYear);</td>
+</tr>
 </table>
 
 \* It was changed, because inflection is defined in catalog everytime, for language whose has more than 2 level inflection.

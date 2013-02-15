@@ -25,7 +25,6 @@ class GettextLatte extends Gettext implements ITranslator {
     }
 
     /**
-     *
      * @param \Nette\Http\SessionSection $section
      * @return type
      * @throws Nette\InvalidStateException
@@ -37,7 +36,6 @@ class GettextLatte extends Gettext implements ITranslator {
         $this->section = $section;
 
         if ($this->section->language === NULL) {
-            $this->setExpiration(0);
             $this->section->language = $this->language = $this->detectLanguage();
         }
     }
@@ -45,6 +43,17 @@ class GettextLatte extends Gettext implements ITranslator {
     public function getLanguage() {
         $lang = parent::getLanguage();
         return ($lang === NULL) ? $this->section->language : $lang;
+    }
+
+    /**
+     * set session
+     * @param type $lang
+     * @return \h4kuna\GettextLatte
+     */
+    public function setLanguage($lang) {
+        parent::setLanguage($lang);
+        $this->section->language = $this->language;
+        return $this;
     }
 
     /**
@@ -77,6 +86,13 @@ class GettextLatte extends Gettext implements ITranslator {
 
         if ($isPlural) {
             $this->pluralData($argsGettext);
+
+            foreach ($data as $param) {
+                if (preg_match('/plural/i', $param)) {
+                    $argsGettext[2] = $param;
+                    break;
+                }
+            }
 
             if (preg_match('/abs/i', $argsGettext[2])) {
                 $argsGettext[2] = 'abs(' . $argsGettext[2] . ')';
