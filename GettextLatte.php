@@ -58,16 +58,6 @@ class GettextLatte extends Gettext implements ITranslator {
     }
 
     /**
-     * session expiration
-     * @param string|int $expire
-     * @return \h4kuna\GettextLatte
-     */
-    public function setExpiration($expire) {
-        $this->section->setExpiration($expire, 'language');
-        return $this;
-    }
-
-    /**
      * macro for support gettext
      * @param \Nette\Latte\MacroNode $node
      * @param type $writer
