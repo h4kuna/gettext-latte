@@ -36,7 +36,8 @@ class GettextLatte extends Gettext implements ITranslator {
         $this->section = $section;
 
         if ($this->section->language === NULL) {
-            $this->section->language = $this->language = $this->detectLanguage();
+            $this->section->language = $lang = $this->detectLanguage();
+            $this->setLanguage($lang);
         }
     }
 

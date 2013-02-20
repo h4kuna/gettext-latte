@@ -52,7 +52,11 @@ class Gettext extends TranslatorFake {
         $this->langs = $langs;
         $this->useHelper = (bool) $useHelper;
 
-        $this->path = $path;
+        $this->path = realpath($path);
+        if (!$this->path) {
+            throw new GettextException('Path does not exists: ' . $path);
+        }
+        $this->path .= DIRECTORY_SEPARATOR;
         $this->msg = $this->messages = $msg;
     }
 
@@ -106,10 +110,17 @@ class Gettext extends TranslatorFake {
 
     /**
      * choosen language
-     * @return type
+     * @return string
      */
     public function getLanguage() {
         return $this->language;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLanguages() {
+        return $this->langs;
     }
 
     /**
@@ -158,6 +169,9 @@ class Gettext extends TranslatorFake {
      * @throws \RuntimeException
      */
     public function setLanguage($lang) {
+        if (($lang && $lang == $this->language) || (!$lang && $this->language)) {
+            return $this;
+        }
         $this->language = $lang ? $lang : $this->getLanguage();
         $l = $this->langs[$this->language];
         $system = php_uname('s');
