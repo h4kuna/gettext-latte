@@ -1,6 +1,8 @@
 services:
     translator:
         class: \h4kuna\GettextLatte(%wwwDir%/../locale/, %langs%)
+        setup:
+            - setSection(@sessionSection('translator')) # optional, enable automatic language detection
 
 factories:
     nette.latte:

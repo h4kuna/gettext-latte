@@ -34,6 +34,8 @@ Section **services** has two parametrs. First is path to _locale_ directory and 
 services:
     translator:
         class: \h4kuna\GettextLatte(%appDir%/../locale/, %langs%)
+        setup:
+            - setSection(@sessionSection('translator')) # optional, enable automatic language detection
 ```
 
 Section **factories** install new macro to latte engine. Where are alias for native gettext function [{_'' /*, ...*/}](http://www.php.net/manual/en/function.gettext.php) and [{_n'', '', '' /*, ...*/}](http://www.php.net/manual/en/function.ngettext.php).
@@ -43,6 +45,24 @@ factories:
     nette.latte:
         factory: \h4kuna\GettextLatte::latte
 ```
+
+Optional setup, where you can register callbacks and helpers
+-------------------
+enable only for default language, because it use in compile time
+```
+translator:
+    class: \h4kuna\GettextLatte(%appDir%/../locale/, %langs%)
+    setup:
+        - enableOrphans # look at addMacro()
+```
+or add helper after escape, applied for all language and you must register helper orphans
+```
+translator:
+    class: \h4kuna\GettextLatte(%appDir%/../locale/, %langs%)
+    setup:
+        - addHelper('orphans')
+```
+
 Run service and support automatic detection of language
 -------------------
 Example for setup router and BasePresenter is in _examples/BasePresenter.php_.

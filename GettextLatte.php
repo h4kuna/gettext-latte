@@ -4,7 +4,9 @@ namespace h4kuna;
 
 use \Nette\Http\FileUpload,
     \Nette\Http\SessionSection,
-    \Nette\Localization\ITranslator;
+    \Nette\Localization\ITranslator,
+    \Nette\Latte\Compiler,
+    \Nette\Latte\Engine;
 
 require_once 'Gettext.php';
 
@@ -16,34 +18,54 @@ class GettextLatte extends Gettext implements ITranslator {
     /** @var SessionSection */
     private $section;
 
-    /** @var bool */
-    private $oneParam;
+    /** @var \Nette\Latte\Compiler */
+    private $compiler;
 
-    public function __construct($path, array $langs, $oneParamPlural = TRUE, $msg = 'messages', $useHelper = FALSE) {
-        $this->oneParam = $oneParamPlural;
-        parent::__construct($path, $langs, $msg, $useHelper);
-    }
+    /** @var string */
+    private $helpers;
+
+    /** @var bool */
+    private $escape = TRUE;
 
     /**
+     * callback for prepare text before render
+     * @var type
+     */
+    private $macros = array();
+
+    /**
+     * set how write plural in latte
+     * TRUE {_n'dog', $number}
+     * FALSE {_n'dog', 'dogs', $number}
+     * @var bool
+     */
+    private $oneParam = TRUE;
+
+    /**
+     * optional
      * @param \Nette\Http\SessionSection $section
      * @return type
-     * @throws Nette\InvalidStateException
      */
-    public function injectSection(SessionSection $section) {
-        if ($this->section) {
-            throw new \Nette\InvalidStateException('Settings has already been set');
-        }
+    public function setSection(SessionSection $section) {
         $this->section = $section;
-
         if ($this->section->language === NULL) {
-            $this->section->language = $lang = $this->detectLanguage();
-            $this->setLanguage($lang);
+            $this->setLanguage($this->detectLanguage());
         }
+        return $this;
     }
 
+    /** @param \Nette\Latte\Compiler $compiler */
+    protected function setCompiler(Compiler $compiler) {
+        $this->compiler = $compiler;
+        $set = new \Nette\Latte\Macros\MacroSet($compiler);
+        $set->addMacro('_', callback($this, 'macroGettext'));
+        return $this;
+    }
+
+    /** @return string */
     public function getLanguage() {
         $lang = parent::getLanguage();
-        return ($lang === NULL) ? $this->section->language : $lang;
+        return $this->section($lang);
     }
 
     /**
@@ -53,8 +75,35 @@ class GettextLatte extends Gettext implements ITranslator {
      */
     public function setLanguage($lang) {
         parent::setLanguage($lang);
-        $this->section->language = $this->language;
+        $this->section($this->language);
         return $this;
+    }
+
+//----------------- setup for latte
+    /**
+     * @return GettextLatte
+     */
+    public function addHelper($h) {
+        $this->helpers .= '|' . $h;
+        return $this;
+    }
+
+    public function addMacro(\Nette\Callback $cb) {
+        $this->macros[] = $cb;
+        return $this;
+    }
+
+    public function setEscape($bool) {
+        $this->escape = (bool) $bool;
+    }
+
+    /**
+     * czech orphans
+     * @return type
+     */
+    public function enableOrphans($escape = FALSE) {
+        $this->addMacro(new \Nette\Callback(__CLASS__, 'orphans'));
+        $this->setEscape($escape);
     }
 
     /**
@@ -78,6 +127,7 @@ class GettextLatte extends Gettext implements ITranslator {
         if ($isPlural) {
             $this->pluralData($argsGettext);
 
+            // set another variable as plural
             foreach ($data as $param) {
                 if (preg_match('/plural/i', $param)) {
                     $argsGettext[2] = $param;
@@ -85,23 +135,69 @@ class GettextLatte extends Gettext implements ITranslator {
                 }
             }
 
+            // absolute value
             if (preg_match('/abs/i', $argsGettext[2])) {
                 $argsGettext[2] = 'abs(' . $argsGettext[2] . ')';
             }
         }
 
+
+
+        // accept macros
+        foreach ($this->macros as $macro) {
+            foreach ($argsGettext as $k => $arg) {
+                if ($isPlural && $k == 2) {
+                    continue;
+                }
+                $argsGettext[$k] = $macro->invokeArgs(array($arg));
+            }
+        }
+
         $out = $fce . '(' . implode(', ', $argsGettext) . ')';
+
+        // gettext extension is off
         if ($this->useHelper) {
             $out = $this->prefix() . '$translator ? ' . $this->prefix() . $out . ' : ' . $out;
         }
 
+        // use sprintf?
         $diff = $this->foundReplace($data[0]);
         if ($diff) {
-            $out = 'sprintf(' . $out . ', ' . implode(', ', array_slice($data, $diff)) . ')';
+            $argsSprintf = array_slice($data, $diff);
+            // escape non gettext params
+            if (!$this->escape) {
+                foreach ($argsSprintf as &$v) {
+                    $v = "%escape($v)";
+                }
+                unset($v);
+            }
+
+            $out = 'sprintf(' . $out . ', ' . implode(', ', $argsSprintf) . ')';
         }
 
-        return $writer->write('echo %modify(' . $out . ')');
+        $out = 'echo %modify(' . $out . ')';
+
+        if ($this->helpers || !$this->escape) {
+            $node->modifiers .= $this->helpers;
+            if (!$this->escape) {
+                $node->modifiers = str_replace('|escape', '', $node->modifiers);
+            }
+            return \Nette\Latte\PhpWriter::using($node, $this->compiler)->write($out);
+        }
+
+        return $writer->write($out);
     }
+
+    /**
+     * set default mode for ngettext in latte
+     * @return \h4kuna\GettextLatte
+     */
+    public function oneParamOff() {
+        $this->oneParam = FALSE;
+        return $this;
+    }
+
+//------------------------------------------------------------------------------
 
     /**
      *
@@ -145,6 +241,30 @@ class GettextLatte extends Gettext implements ITranslator {
     }
 
     /**
+     * install this latte macro
+     * @param self $translator
+     * @param \Nette\Latte\Engine $service
+     * @return \Nette\Latte\Engine
+     */
+    static function latte(self $translator, Engine $service = NULL) {
+        if (!$service) {
+            $service = new \Nette\Latte\Engine;
+        }
+
+        $translator->setCompiler($service->compiler);
+        return $service;
+    }
+
+    /**
+     * czech orphans
+     * @param type $s
+     * @return type
+     */
+    static function orphans($s) {
+        return preg_replace('/( +(a|č\.|do|i|k|ke|na|o|od|po|s|tj\.|u|v|z|za) +)/i', ' $2&nbsp;', $s);
+    }
+
+    /**
      * save uploaded files
      * @param string $lang
      * @param \Nette\Http\FileUpload $po
@@ -167,34 +287,27 @@ class GettextLatte extends Gettext implements ITranslator {
     }
 
     /**
+     * set and return language
+     * @param type $val
+     * @return null|string
+     */
+    private function section($val = NULL) {
+        if ($this->section) {
+            if (!$val) {
+                return $this->section->language;
+            }
+            $this->section->language = $val;
+        }
+        return $val;
+    }
+
+    /**
      * has term for replace
      * @param string $str
      * @return int
      */
     private function foundReplace($str) {
         return -1 * substr_count($str, '%s');
-    }
-
-    /**
-     * macro install
-     * @param \Nette\Latte\Compiler $parser
-     * @param self $gettext
-     */
-    static function install(\Nette\Latte\Compiler $parser, self $gettext) {
-        $set = new \Nette\Latte\Macros\MacroSet($parser);
-        $callback = callback($gettext, 'macroGettext');
-        $set->addMacro('_', $callback);
-    }
-
-    /**
-     * použitelná ukázka jak registrovat makro do Latte, podminkou je mít servisu translator a v ní instanci této třídy
-     * @param GettextLatte
-     * @return \Nette\Latte\Engine
-     */
-    static function latte(self $translator) {
-        $service = new \Nette\Latte\Engine;
-        self::install($service->compiler, $translator);
-        return $service;
     }
 
     /**

@@ -18,7 +18,7 @@ class Gettext extends TranslatorFake {
     public static $translator;
 
     /** @var bool */
-    protected $useHelper;
+    protected $useHelper = FALSE;
 
     /** @var array */
     protected $langs;
@@ -43,21 +43,9 @@ class Gettext extends TranslatorFake {
      *
      * @param string $path
      * @param array $langs
-     * @param boolean $useHelper if gettext extension is not instaled
-     * @param type $msg catalog name
      */
-    public function __construct($path, array $langs, $msg = 'messages', $useHelper = FALSE) {
-        reset($langs);
-        $this->default = key($langs);
-        $this->langs = $langs;
-        $this->useHelper = (bool) $useHelper;
-
-        $this->path = realpath($path);
-        if (!$this->path) {
-            throw new GettextException('Path does not exists: ' . $path);
-        }
-        $this->path .= DIRECTORY_SEPARATOR;
-        $this->msg = $this->messages = $msg;
+    public function __construct($path, array $langs) {
+        $this->setPath($path)->setLangs($langs)->setCatalog('messages');
     }
 
     /**
@@ -163,6 +151,16 @@ class Gettext extends TranslatorFake {
     }
 
     /**
+     * *.po file name
+     * @param type $msg
+     * @return \h4kuna\Gettext
+     */
+    public function setCatalog($msg) {
+        $this->msg = $this->messages = $msg;
+        return $this;
+    }
+
+    /**
      * @todo switch catalog
      * @param string $lang
      * @return \h4kuna\Gettext
@@ -207,6 +205,15 @@ class Gettext extends TranslatorFake {
         return $this;
     }
 
+    /**
+     * if gettext extension is not installed
+     * @return \h4kuna\Gettext
+     */
+    public function gettextExtensionOff() {
+        $this->useHelper = TRUE;
+        return $this;
+    }
+
 //------------------------------------------------------------------------------
     /**
      * if gettext extension is not instaled
@@ -242,6 +249,25 @@ class Gettext extends TranslatorFake {
         $fce .= 'gettext';
         return $slice;
     }
+
+//----------------- constructor methods
+    private function setLangs(array $langs) {
+        reset($langs);
+        $this->default = key($langs);
+        $this->langs = $langs;
+        return $this;
+    }
+
+    private function setPath($path) {
+        $this->path = realpath($path);
+        if (!$this->path) {
+            throw new GettextException('Path does not exists: ' . $path);
+        }
+        $this->path .= DIRECTORY_SEPARATOR;
+        return $this;
+    }
+
+//-----------------
 
     /**
      * bug http://www.php.net/manual/en/function.gettext.php#58310
