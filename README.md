@@ -44,6 +44,10 @@ Section **factories** install new macro to latte engine. Where are alias for nat
 factories:
     nette.latte:
         factory: \h4kuna\GettextLatte::latte
+
+    sessionSection: # optional
+        parameters: [section]
+        class: \Nette\Http\SessionSection(@session, %section%)
 ```
 
 Optional setup, where you can register callbacks and helpers
