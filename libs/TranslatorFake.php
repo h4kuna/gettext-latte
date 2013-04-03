@@ -5,6 +5,9 @@ namespace h4kuna;
 use Nette\Object,
     Nette\Localization\ITranslator;
 
+/**
+ * Only replace, this does't translate
+ */
 class TranslatorFake extends Object implements ITranslator {
 
     function translate($message, $count = NULL) {

@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * use only when gettext extension is not instaled
+ */
+
 function gettext($message) {
     return \h4kuna\Gettext::gettext($message);
 }

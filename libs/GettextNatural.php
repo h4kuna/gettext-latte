@@ -6,6 +6,7 @@ require_once 'GettextTranslator.php';
 
 /**
  * GettextTranslator od Romana Sklenáře
+ * Extension when gettext off
  */
 class GettextNatural extends \GettextTranslator {
 
