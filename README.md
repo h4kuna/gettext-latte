@@ -69,15 +69,24 @@ translator:
 
 Run service and support automatic detection of language
 -------------------
-Example for setup router and BasePresenter is in _examples/BasePresenter.php_.
+Example for setup router from [nette sandbox](https://github.com/nette/sandbox/blob/master/app/router/RouterFactory.php) and BasePresenter is in _examples/BasePresenter.php_.
 
 Router:
 ```php
-$router[] = new R\Route('[<lang ' . $container->translator->routerAccept() . '>/]<presenter>/<action>/[<id>/]', array(
-            'presenter' => 'Homepage',
-            'action' => 'default',
-            'lang' => $container->translator->getDefault()
-        ));
+/**
+ * @return Nette\Application\IRouter
+ */
+public function createRouter(\h4kuna\GettextLatte $translator) {
+    $router = new RouteList();
+    $router[] = new Route('index.php', 'Homepage:default', Route::ONE_WAY);
+    $router[] = new Route('[<lang ' . $translator->routerAccept() . '>/]<presenter>/<action>/[<id>/]', array(
+        'presenter' => 'Homepage',
+        'action' => 'default',
+        'lang' => $translator->getDefault()
+    ));
+
+    return $router;
+}
 ```
 
 Load dictionary as soon as possible.
@@ -124,7 +133,7 @@ echo $this->context->translator->translate(_('%s possible %s %s'), 'another', 'o
 
 ```
 
-In template you using macros. Number of parameters is't limited. Function **sprintf** is automatically added.
+In template you using macros. Number of parameters is't limited. Function **sprintf** is automatically added. Look at examples/example.latte
 
 <table>
 <tr>

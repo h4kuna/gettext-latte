@@ -1,0 +1,13 @@
+
+{block content}
+{* Latte zápis *}                           {* ekvivalent psaný v presenteru *}
+{_'Ahoj'}                                   {* _('ahoj') *}
+{_'Tvůj email %s', $email}                  {* sprintf(_('Tvůj email %s'), $email) *}
+
+{* plural *}
+{_n'pes', $count}                           {* ngettext('pes', 'pes', $count) *}
+{_n'%s pes', $count}                        {* sprintf(ngettext('%s pes', '%s pes', $count), $count) *}
+
+{* specální pojmenování pro proměnné, když obsahují řetězec abs a plural *}
+{_n'%s stupeň celsia', $countAbs}           {* sprintf(ngettext('%s stupně celsia', '%s stupně celsia', abs($countAbs)), $countAbs) *}
+{_n'Email %s a máte %s zprávu', $email, $xPlural}   {* sprintf(ngettext('Email %s a máte %s zprávu', 'Email %s a máte %s zprávu', $xPlural), $email, $xPlural) *}
