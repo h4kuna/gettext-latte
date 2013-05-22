@@ -101,6 +101,9 @@ class Gettext extends TranslatorFake {
      * @return string
      */
     public function getLanguage() {
+        if (!$this->language) {
+            $this->language = $this->getDefault();
+        }
         return $this->language;
     }
 
