@@ -117,6 +117,9 @@ abstract class BasePresenter extends Presenter {
     }
 }
 ```
+
+After install translator clear temp directory, else probably you see "Call to undefined method Nette\Templating\FileTemplate::translate()".
+
 How write texts
 ---------------
 Out of the template you are using gettext.
