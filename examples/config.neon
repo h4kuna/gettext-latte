@@ -1,16 +1,12 @@
-services:
-    translator:
-        class: \h4kuna\GettextLatte(%wwwDir%/../locale/, %langs%)
-        setup:
-            - setSection(@sessionSection('translator')) # optional, enable automatic language detection
+# install in bootstrap.php
+# \h4kuna\Config\GettextLatteExtension::register($configurator);
 
-factories:
-    nette.latte:
-        factory: \h4kuna\GettextLatte::latte
+gettextLatte:
+    localePath: %wwwDir%/anotherPath/
+    # default is %wwwDir%/../locale/
 
-    sessionSection: # optional
-        parameters: [section]
-        class: \Nette\Http\SessionSection(@session, %section%)
+    langs: {'cs' : 'cs_CZ.utf8', 'en' : 'en_US.utf8', 'de' : 'de_DE.utf8', 'it' : 'it_IT.utf8'}
+    # default is cs and en
 
-parameters:
-    langs: {'cs' : 'cs_CZ.utf8', 'en' : 'en_US.utf8'} # , 'de' : 'de_DE.utf8', 'it' : 'it_IT.utf8'
+    session: FALSE
+    #default is ON

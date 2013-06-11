@@ -1,21 +1,24 @@
 {
     "name": "h4kuna/gettext-latte",
     "type": "library",
-    "description" : "Gettext translator for Latte template",
+    "description": "Gettext translator for Latte template",
     "homepage": "https://github.com/h4kuna/gettext-latte",
     "license": "MIT",
     "authors": [
-    {
-        "name": "Milan Matějček",
-        "email": "milan.matejcek@gmail.com",
-        "role": "Developer"
-    }
+        {
+            "name": "Milan Matějček",
+            "email": "milan.matejcek@gmail.com",
+            "role": "Developer"
+        }
     ],
     "require": {
-        "php" : ">=5.3.2",
-        "nette/nette": "2.0.*"
+        "nette/nette": ">=2.0.0"
+    },
+    "require-dev": {
+        "nette/tester": "@dev"
     },
     "autoload": {
-        "files": ["GettextLatte.php", "libs/Template.php"]
+        "classmap": ["./"],
+        "files": ["libs/Template.php"]
     }
 }

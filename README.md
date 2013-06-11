@@ -19,36 +19,49 @@ Start-up
 ---------------------
 Clone of this repository or you can use composer [h4kuna/gettext-latte](https://packagist.org/packages/h4kuna/gettext-latte).
 
+And install in bootstrap.php
+```php
+\h4kuna\Config\GettextLatteExtension::register($configurator);
+```
+
+Look at to _examples/RouterFactory.php_.
+
+Example for setup router from [nette sandbox](https://github.com/nette/sandbox/blob/master/app/router/RouterFactory.php);
+```php
+/**
+ * @return Nette\Application\IRouter
+ */
+public function createRouter(\h4kuna\GettextLatte $translator) {
+    $router = new RouteList();
+    $router[] = new Route('index.php', 'Homepage:default', Route::ONE_WAY);
+    $router[] = new Route('[<lang ' . $translator->routerAccept() . '>/]<presenter>/<action>/[<id>/]', array(
+        'presenter' => 'Homepage',
+        'action' => 'default',
+        'lang' => $translator->getDefault()
+    ));
+
+    return $router;
+}
+```
+
 ### examples/config.neon
-There are three section **parameters**, where do you define all your languages. Key is web presentation and value in array is value of statement command above **$ locale -a**. First language in array is defined as default.
+There are three optional **variables**.
 
 On Mac encoding is represented as 'en_US.UTF-8' everytime dojo format 'en_US.utf8'.
 ```
-parameters:
-    langs: {'cs' : 'cs_CZ.utf8', 'en' : 'en_US.utf8'}
+gettextLatte:
+    localePath: %wwwDir%/anotherPath/
+    # default is %wwwDir%/../locale/
+
+    langs: {'cs' : 'cs_CZ.utf8', 'en' : 'en_US.utf8', 'de' : 'de_DE.utf8', 'it' : 'it_IT.utf8'}
+    # default is cs and en
+
+    session: FALSE
+    #default is ON
 ```
 
-Section **services** has two parametrs. First is path to _locale_ directory and second is array above.
+Install new macro to latte engine. Where are alias for native gettext function [{_'' /*, ...*/}](http://www.php.net/manual/en/function.gettext.php) and [{_n'', '', '' /*, ...*/}](http://www.php.net/manual/en/function.ngettext.php).
 
-```
-services:
-    translator:
-        class: \h4kuna\GettextLatte(%appDir%/../locale/, %langs%)
-        setup:
-            - setSection(@sessionSection('translator')) # optional, enable automatic language detection
-```
-
-Section **factories** install new macro to latte engine. Where are alias for native gettext function [{_'' /*, ...*/}](http://www.php.net/manual/en/function.gettext.php) and [{_n'', '', '' /*, ...*/}](http://www.php.net/manual/en/function.ngettext.php).
-
-```
-factories:
-    nette.latte:
-        factory: \h4kuna\GettextLatte::latte
-
-    sessionSection: # optional
-        parameters: [section]
-        class: \Nette\Http\SessionSection(@session, %section%)
-```
 
 Optional setup, where you can register callbacks and helpers
 -------------------
@@ -69,27 +82,7 @@ translator:
 
 Run service and support automatic detection of language
 -------------------
-Example for setup router from [nette sandbox](https://github.com/nette/sandbox/blob/master/app/router/RouterFactory.php) and BasePresenter is in _examples/BasePresenter.php_.
-
-Router:
-```php
-/**
- * @return Nette\Application\IRouter
- */
-public function createRouter(\h4kuna\GettextLatte $translator) {
-    $router = new RouteList();
-    $router[] = new Route('index.php', 'Homepage:default', Route::ONE_WAY);
-    $router[] = new Route('[<lang ' . $translator->routerAccept() . '>/]<presenter>/<action>/[<id>/]', array(
-        'presenter' => 'Homepage',
-        'action' => 'default',
-        'lang' => $translator->getDefault()
-    ));
-
-    return $router;
-}
-```
-
-Load dictionary as soon as possible.
+Load language as soon as possible.
 
 ```php
 <?php
@@ -132,7 +125,7 @@ echo ngettext('dog', 'dogs', 2);
 
 // The following two are the same
 echo sprintf(_('%s possible %s %s'), 'another', 'optional', 'params'); // is faster
-echo $this->context->translator->translate(_('%s possible %s %s'), 'another', 'optional', 'params');
+echo $this->translator->translate(_('%s possible %s %s'), 'another', 'optional', 'params');
 
 ```
 
@@ -194,5 +187,5 @@ Download catalog
 For your translators can do catalog for download.
 
 ```php
-$this->context->translator->download('cs'); //Offers catalog download
+$this->translator->download('cs'); //Offers catalog download
 ```

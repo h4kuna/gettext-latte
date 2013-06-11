@@ -2,14 +2,6 @@
 
 namespace h4kuna;
 
-//----------------- router setup -----------------------------------------------
-$router[] = new R\Route('[<lang ' . $container->translator->routerAccept() . '>/]<presenter>/<action>/[<id>/]', array(
-            'presenter' => 'Homepage',
-            'action' => 'default',
-            'lang' => $container->translator->getDefault()
-        ));
-//------------------------------------------------------------------------------
-
 /**
  * How setup BasePresenter for support lang and automatic detect language
  *

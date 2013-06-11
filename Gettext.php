@@ -2,9 +2,6 @@
 
 namespace h4kuna;
 
-require_once 'libs/GettextException.php';
-require_once 'libs/TranslatorFake.php';
-
 /**
  * Description of Gettext
  *
@@ -236,23 +233,6 @@ class Gettext extends TranslatorFake {
         return '\\' . __CLASS__ . '::';
     }
 
-    /**
-     * logic gettext or ngettext
-     * @param type $isNgettext
-     * @param type $fce
-     * @return int
-     */
-    protected function method($isPlural, &$fce) {
-        $slice = 1;
-        if ($isPlural) {
-            $fce .= 'n';
-            $slice = 3;
-        }
-
-        $fce .= 'gettext';
-        return $slice;
-    }
-
 //----------------- constructor methods
     private function setLangs(array $langs) {
         reset($langs);
@@ -307,3 +287,6 @@ class Gettext extends TranslatorFake {
 
 }
 
+class GettextException extends \RuntimeException {
+
+}
