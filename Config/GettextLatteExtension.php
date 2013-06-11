@@ -17,7 +17,7 @@ class GettextLatteExtension extends Nette\Config\CompilerExtension {
         $config = $this->getConfig($this->defaults);
 
         $client = $builder->addDefinition($this->prefix('translator'))
-                ->setClass('h4kuna\Gettextlatte')
+                ->setClass('h4kuna\GettextLatte')
                 ->setArguments(array($config['localePath'], $config['langs']));
 
         if ($config['session']) {
@@ -28,7 +28,7 @@ class GettextLatteExtension extends Nette\Config\CompilerExtension {
         }
 
         $engine = $builder->getDefinition('nette.latte');
-        $install = 'h4kuna\Macros\Latte::install(?->getCompiler(), ?)';
+        $install = 'h4kuna\Macros\Latte::install(?->getCompiler())->setTranslator(?)';
         $engine->addSetup($install, '@self', $this->prefix('@translator'));
     }
 

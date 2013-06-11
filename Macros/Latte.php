@@ -15,17 +15,17 @@ class Latte extends Nette\Latte\Macros\MacroSet {
     /** @var \h4kuna\GettextLatte */
     private $translator;
 
-    public function __construct(Compiler $compiler, \h4kuna\GettextLatte $translator) {
-        parent::__construct($compiler);
+    public function setTranslator(\h4kuna\GettextLatte $translator) {
         $this->translator = $translator;
+        return $this;
     }
 
     /**
      * @param \Nette\Latte\Compiler $compiler
      * @return ImgMacro|\Nette\Latte\Macros\MacroSet
      */
-    public static function install(Compiler $compiler, \h4kuna\GettextLatte $translator) {
-        $me = new static($compiler, $translator);
+    public static function install(Compiler $compiler) {
+        $me = new static($compiler);
         $me->addMacro('_', callback($me, 'macroGettext'));
         return $me;
     }
