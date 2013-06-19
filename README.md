@@ -1,32 +1,32 @@
 GettextLatte
 ===========
 
-is localization addon for [Nette framework](http://nette.org/), whose support native [gettext](http://php.net/manual/en/book.gettext.php).
+is localization addon for [Nette framework](http://nette.org/), which natively supports [gettext](http://php.net/manual/en/book.gettext.php).
 
-You can use without Nette if you use Gettext.php.
+You can use it without Nette if you use Gettext.php.
 
 [Forum](http://forum.nette.org/cs/12021-gettext-na-100-v-sablonach#p86467)
 
 Conditions for start-up
 ----------------------
 * gettext extension enabled
-* language instaled on server, you can check the command **$ locale -a**
+* language installed on server, you can check by using command **$ locale -a**
 * your application written in UTF-8 encoding
 
-In repository is directory _locale_, where is prepared directory structure for your project and it need permision 777 _locale/*_. In folder _example_ are files, whose help you setup this translator. Application, you can write in your native language, here is example in english, but it may be czech, slovak, german language...
+In the repository is directory _locale_ containing prepared directory structure for your project and it needs permision 777 _locale/*_. In folder _example_ are files, whose help you setup this translator. You can write your application in your native language, here is example in english, but it may be czech, slovak, german language...
 
 Start-up
 ---------------------
-Clone of this repository or you can use composer [h4kuna/gettext-latte](https://packagist.org/packages/h4kuna/gettext-latte).
+Clone this repository or use composer [h4kuna/gettext-latte](https://packagist.org/packages/h4kuna/gettext-latte).
 
 And install in bootstrap.php
 ```php
 \h4kuna\Config\GettextLatteExtension::register($configurator);
 ```
 
-Look at to _examples/RouterFactory.php_.
+Look into _examples/RouterFactory.php_.
 
-Example for setup router from [nette sandbox](https://github.com/nette/sandbox/blob/master/app/router/RouterFactory.php);
+Example for router setup from [nette sandbox](https://github.com/nette/sandbox/blob/master/app/router/RouterFactory.php);
 ```php
 /**
  * @return Nette\Application\IRouter
@@ -54,18 +54,18 @@ gettextLatte:
     # default is %wwwDir%/../locale/
 
     langs: {'cs' : 'cs_CZ.utf8', 'en' : 'en_US.utf8', 'de' : 'de_DE.utf8', 'it' : 'it_IT.utf8'}
-    # default is cs and en
+    # default is cs and en - first language is considered to be default
 
     session: FALSE
     #default is ON
 ```
 
-Install new macro to latte engine. Where are alias for native gettext function [{_'' /*, ...*/}](http://www.php.net/manual/en/function.gettext.php) and [{_n'', '', '' /*, ...*/}](http://www.php.net/manual/en/function.ngettext.php).
+Install new macro to latte engine with alias for native gettext function [{_'' /*, ...*/}](http://www.php.net/manual/en/function.gettext.php) and [{_n'', '', '' /*, ...*/}](http://www.php.net/manual/en/function.ngettext.php).
 
 
 Optional setup, where you can register callbacks and helpers
 -------------------
-enable only for default language, because it use in compile time
+enable only for default language, because it is used in compile time
 ```
 translator:
     class: \h4kuna\GettextLatte(%appDir%/../locale/, %langs%)
@@ -111,11 +111,11 @@ abstract class BasePresenter extends Presenter {
 }
 ```
 
-After install translator clear temp directory, else probably you see "Call to undefined method Nette\Templating\FileTemplate::translate()".
+After install translator please empty temp directory, otherwise you may get "Call to undefined method Nette\Templating\FileTemplate::translate()".
 
-How write texts
+How to write texts
 ---------------
-Out of the template you are using gettext.
+Outside the template using gettext.
 
 ```php
 <?php
@@ -129,7 +129,7 @@ echo $this->translator->translate(_('%s possible %s %s'), 'another', 'optional',
 
 ```
 
-In template you using macros. Number of parameters is't limited. Function **sprintf** is automatically added. Look at examples/example.latte
+In template using macros. Number of parameters isn't limited. Function **sprintf** is automatically added. Look at examples/example.latte
 
 <table>
 <tr>
@@ -142,13 +142,13 @@ In template you using macros. Number of parameters is't limited. Function **spri
 <td>{_'Today is %s', $date}</td><td>echo sprintf(gettext('Today is %s'), $date);</td>
 </tr>
 <tr>
-<th colspan="2">In the previous version, the inflection wrote like this.</th>
+<th colspan="2">In the previous version, the inflection was written like this.</th>
 </tr>
 <tr>
 <td>{_n'dog', 'dogs', $count}</td><td>echo ngettext('dog', 'dogs', $count);</td>
 </tr>
 <tr>
-<th colspan="2">Now it's off and writes.* But it is possible to turn on with third parameter in constructor.</th>
+<th colspan="2">Now it's off and is written following way.* (It is possible to turn on with third parameter in constructor.)</th>
 </tr>
 <tr>
 <td>{_n'dog', $count}</td><td>echo ngettext('dog', 'dog', $count);</td>
@@ -172,19 +172,19 @@ In template you using macros. Number of parameters is't limited. Function **spri
 
 \* It was changed, because inflection is defined in catalog everytime, for language whose has more than 2 level inflection.
 
-Let's starting translate
+Let's start translate
 ---------------------
 Download [PoEdit](http://www.poedit.net/download.php).
-Before each run Poedit you must have all template compiled to php in temp directory, for this is _examples/TemplatePresenter.php_ and run **actionTranslate()**.
+Before each Poedit run you must have all templates compiled to php in temp directory, for this is _examples/TemplatePresenter.php_ and run **actionTranslate()**.
 
-You open **.po** file. Setup directory search by default in repository are **temp/cache/_Nette.FileTemplate** and **app**. And click "update catalog", after update catalog you don't need [restart apache](http://php.net/manual/en/function.gettext.php#110735).
+Open the **.po** file. Setup directory search - by default it is **temp/cache/_Nette.FileTemplate** and **app**  and click "update catalog", after update catalog you don't need [restart apache](http://php.net/manual/en/function.gettext.php#110735).
 
 
-If you write application in language whose has three levels instead of two inflections, forexample czech. You must have catalog with translation czech to czech but only for plural.
+If you write application in language with three inflection levels instead of two, for example czech, you must have catalog with translation czech to czech but only for plural.
 
-Download catalog
+Downloadable catalog
 ---------------
-For your translators can do catalog for download.
+For your translators you provide catalog for download.
 
 ```php
 $this->translator->download('cs'); //Offers catalog download
