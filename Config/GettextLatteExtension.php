@@ -8,7 +8,7 @@ use Nette\Configurator;
 use Nette\Utils\Finder;
 use Nette\DI\Compiler;
 
-if (\Nette\Framework::VERSION_ID < 20100) {
+if (!defined('\Nette\Framework::VERSION_ID') || \Nette\Framework::VERSION_ID < 20100) {
     class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
     class_alias('Nette\Utils\PhpGenerator\ClassType', 'Nette\PhpGenerator\ClassType');
     class_alias('Nette\Config\Compiler', 'Nette\DI\Compiler');
