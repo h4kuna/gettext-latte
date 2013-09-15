@@ -2,9 +2,19 @@
 
 namespace h4kuna\Config;
 
-use Nette;
+use Nette\PhpGenerator\ClassType;
+use Nette\DI\CompilerExtension;
+use Nette\Configurator;
+use Nette\Utils\Finder;
+use Nette\DI\Compiler;
 
-class GettextLatteExtension extends Nette\Config\CompilerExtension {
+if (\Nette\Framework::VERSION_ID < 20100) {
+    class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
+    class_alias('Nette\Utils\PhpGenerator\ClassType', 'Nette\PhpGenerator\ClassType');
+    class_alias('Nette\Config\Compiler', 'Nette\DI\Compiler');
+}
+
+class GettextLatteExtension extends CompilerExtension {
 
     public $defaults = array(
         'langs' => array('cs' => 'cs_CZ.utf8', 'en' => 'en_US.utf8'),
@@ -29,10 +39,10 @@ class GettextLatteExtension extends Nette\Config\CompilerExtension {
 
         $engine = $builder->getDefinition('nette.latte');
         $install = 'h4kuna\Macros\Latte::install(?->getCompiler())->setTranslator(?)';
-        $engine->addSetup($install, '@self', $this->prefix('@translator'));
+        $engine->addSetup($install, array('@self', $this->prefix('@translator')));
     }
 
-    public function afterCompile(Nette\Utils\PhpGenerator\ClassType $class) {
+    public function afterCompile(ClassType $class) {
         /**
          * old template must regenerate
          * if you use translate macro {_''} and after start this extension, you will see only exception
@@ -42,7 +52,7 @@ class GettextLatteExtension extends Nette\Config\CompilerExtension {
          */
         $temp = $this->containerBuilder->parameters['tempDir'] . '/cache/_Nette.FileTemplate';
         if (file_exists($temp) && $this->containerBuilder->parameters['debugMode']) {
-            foreach (Nette\Utils\Finder::find('*')->in($temp) as $file) {
+            foreach (Finder::find('*')->in($temp) as $file) {
                 //$file = new \SplFileInfo;
                 @unlink($file->getPathname());
             }
@@ -52,9 +62,9 @@ class GettextLatteExtension extends Nette\Config\CompilerExtension {
     /**
      * @param \Nette\Configurator $configurator
      */
-    public static function register(Nette\Config\Configurator $configurator) {
+    public static function register(Configurator $configurator) {
         $that = new static;
-        $configurator->onCompile[] = function ($config, Nette\Config\Compiler $compiler) use ($that) {
+        $configurator->onCompile[] = function ($config, Compiler $compiler) use ($that) {
                     $compiler->addExtension('gettextLatte', $that);
                 };
     }
