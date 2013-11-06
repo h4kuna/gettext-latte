@@ -172,6 +172,18 @@ In template using macros. Number of parameters isn't limited. Function **sprintf
 
 \* It was changed, because inflection is defined in catalog everytime, for language whose has more than 2 level inflection.
 
+Hack in Latte
+-------------
+Maybe you want translate sentence containing many apostrophes and quotation marks in latte file.
+
+Forexample:
+```php
+{* not function *}
+{_'We believe in \'streading lightly\', whether on foot, bicycle, horseback or venturing below the ocean\'s surface.'}
+Rewrite like this
+{=_('We believe in \'streading lightly\', whether on foot, bicycle, horseback or venturing below the ocean\'s surface.')}
+```
+
 Let's start translate
 ---------------------
 Download [PoEdit](http://www.poedit.net/download.php).
