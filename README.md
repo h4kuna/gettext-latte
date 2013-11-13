@@ -21,7 +21,7 @@ Clone this repository or use composer [h4kuna/gettext-latte](https://packagist.o
 
 And install in bootstrap.php
 ```php
-\h4kuna\Config\GettextLatteExtension::register($configurator);
+\h4kuna\DI\GettextLatteExtension::register($configurator);
 ```
 
 Look into _examples/RouterFactory.php_.

@@ -1,17 +1,26 @@
 <?php
 
-namespace h4kuna\Config;
+namespace h4kuna\DI;
 
 use Nette\PhpGenerator\ClassType;
 use Nette\DI\CompilerExtension;
 use Nette\Configurator;
 use Nette\Utils\Finder;
 use Nette\DI\Compiler;
+use Nette\Framework;
 
-if (!defined('\Nette\Framework::VERSION_ID') || \Nette\Framework::VERSION_ID < 20100) {
-    class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
-    class_alias('Nette\Utils\PhpGenerator\ClassType', 'Nette\PhpGenerator\ClassType');
-    class_alias('Nette\Config\Compiler', 'Nette\DI\Compiler');
+if (defined('\Nette\Framework::VERSION_ID') || Framework::VERSION_ID < 20100) {
+    if (!class_exists('Nette\DI\CompilerExtension')) {
+        class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
+    }
+
+    if (!class_exists('Nette\DI\Compiler')) {
+        class_alias('Nette\Config\Compiler', 'Nette\DI\Compiler');
+    }
+
+    if (!class_exists('Nette\PhpGenerator\ClassType')) {
+        class_alias('Nette\Utils\PhpGenerator\ClassType', 'Nette\PhpGenerator\ClassType');
+    }
 }
 
 class GettextLatteExtension extends CompilerExtension {
@@ -65,8 +74,8 @@ class GettextLatteExtension extends CompilerExtension {
     public static function register(Configurator $configurator) {
         $that = new static;
         $configurator->onCompile[] = function ($config, Compiler $compiler) use ($that) {
-                    $compiler->addExtension('gettextLatte', $that);
-                };
+            $compiler->addExtension('gettextLatte', $that);
+        };
     }
 
 }
