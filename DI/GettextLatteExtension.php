@@ -1,6 +1,6 @@
 <?php
 
-namespace h4kuna\DI;
+namespace h4kuna\GettextLatte\DI;
 
 use Nette\PhpGenerator\ClassType;
 use Nette\DI\CompilerExtension;
@@ -47,8 +47,7 @@ class GettextLatteExtension extends CompilerExtension {
         }
 
         $engine = $builder->getDefinition('nette.latte');
-        $install = 'h4kuna\Macros\Latte::install(?->getCompiler())->setTranslator(?)';
-        $engine->addSetup($install, array('@self', $this->prefix('@translator')));
+        $engine->addSetup('h4kuna\GettextLatte\Macros\Latte::install(?->getCompiler(), ?)', array('@self', $this->prefix('@translator')));
     }
 
     public function afterCompile(ClassType $class) {

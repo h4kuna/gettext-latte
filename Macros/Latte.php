@@ -1,32 +1,35 @@
 <?php
 
-namespace h4kuna\Macros;
+namespace h4kuna\GettextLatte\Macros;
 
 use Nette;
 use Nette\Latte\Compiler;
 use Nette\Latte\MacroNode;
 use Nette\Latte\PhpWriter;
+use h4kuna\GettextLatte;
+use Nette\Latte\Macros\MacroSet;
 
 /**
  * @author Milan Matějček
  */
-class Latte extends Nette\Latte\Macros\MacroSet {
+class Latte extends MacroSet {
 
-    /** @var \h4kuna\GettextLatte */
+    /** @var GettextLatte */
     private $translator;
 
-    public function setTranslator(\h4kuna\GettextLatte $translator) {
+    public function setTranslator(GettextLatte $translator) {
         $this->translator = $translator;
         return $this;
     }
 
     /**
-     * @param \Nette\Latte\Compiler $compiler
-     * @return ImgMacro|\Nette\Latte\Macros\MacroSet
+     * @param Compiler $compiler
+     * @return ImgMacro|MacroSet
      */
-    public static function install(Compiler $compiler) {
+    public static function install(Compiler $compiler, GettextLatte $translator) {
         $me = new static($compiler);
         $me->addMacro('_', callback($me, 'macroGettext'));
+        $me->setTranslator($translator);
         return $me;
     }
 
