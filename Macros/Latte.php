@@ -26,7 +26,7 @@ class Latte extends MacroSet {
      * @param Compiler $compiler
      * @return ImgMacro|MacroSet
      */
-    public static function install(Compiler $compiler, GettextLatte $translator) {
+    public static function install(Compiler $compiler, GettextLatte $translator = NULL) {
         $me = new static($compiler);
         $me->addMacro('_', callback($me, 'macroGettext'));
         $me->setTranslator($translator);
