@@ -10,7 +10,7 @@ class TemplatePresenter extends BasePresenter {
     /**
      * vygeneruje sablony
      */
-    public function actionTranslate() {
+    public function startup() {
         //clear directory
         $temp = $this->context->parameters['tempDir'] . '/cache/_Nette.FileTemplate';
         foreach (\Nette\Utils\Finder::findFiles('*')->from($temp) as $file) {
@@ -31,7 +31,7 @@ class TemplatePresenter extends BasePresenter {
         if ($this->classTemplate) {
             $class = $this->classTemplate;
         }
-        return parent::createTemplate($class);
+        return \Nette\Application\UI\Control::createTemplate($class);
     }
 
 }
