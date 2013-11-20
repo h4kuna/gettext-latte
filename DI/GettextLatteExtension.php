@@ -43,7 +43,7 @@ class GettextLatteExtension extends CompilerExtension {
             $builder->addDefinition($this->prefix('session'))
                     ->setClass('Nette\Http\SessionSection')
                     ->setArguments(array('@session', $config['session']));
-            $client->addSetup('setSection', $this->prefix('@session'));
+            $client->addSetup('setSection', array($this->prefix('@session')));
         }
 
         $engine = $builder->getDefinition('nette.latte');
