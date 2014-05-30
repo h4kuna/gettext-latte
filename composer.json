@@ -12,13 +12,15 @@
         }
     ],
     "require": {
-        "nette/nette": ">=2.0.6"
+        "nette/nette": ">=2.1.0",
+        "ext-gettext": "*"
     },
     "require-dev": {
         "nette/tester": "@dev"
     },
     "autoload": {
-        "classmap": ["./"],
-        "files": ["libs/Template.php"]
+        "psr-4": {
+            "h4kuna\\": ""
+        }
     }
 }
