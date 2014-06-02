@@ -7,21 +7,38 @@ $container = require_once __DIR__ . '/bootstrap.php';
 
 /* @var $gettext GettextSetup */
 $gettext = $container->getService('gettextExtension.setup');
-dump($gettext);
 
-Assert::equal(gettext('Ahoj světe'), 'Ahoj světe');
+$gettext->loadAllDomains('messages');
+
+
+Assert::equal('Ahoj světe', gettext('Ahoj světe'));
+
+$gettext->setLanguage('cs');
+Assert::equal('Ahoj světe', gettext('Ahoj světe'));
 
 $gettext->setLanguage('EN'); //same en
-Assert::equal(gettext('Ahoj světe'), 'Hello world');
+Assert::equal('Hello world', gettext('Ahoj světe'));
+
+// dcgettext($domain, $message, $category); // unsupported
+dump(dgettext('foo', 'Ahoj světe'));
+// $gettext->setDomain('foo');
+// Assert::equal(gettext('Ahoj světe'), 'Sado maso');
+
 
 $gettext->setLanguage('en');
 Assert::equal(gettext('Ahoj světe'), 'Hello world');
 
 $gettext->setLanguage(NULL);
-Assert::equal(gettext('Ahoj světe'), 'Hello world');
+Assert::equal('Hello world', gettext('Ahoj světe'));
 
-$gettext->setLanguage('Unknownc language');
-Assert::equal(gettext('Ahoj světe'), 'Hello world');
+try {
+    $gettext->setLanguage('Unknown language');
+    Assert::true(FALSE);
+} catch (h4kuna\GettextException $e) {
+    // good
+}
+Assert::equal('Hello world', gettext('Ahoj světe'));
 
+Assert::true(is_array($gettext::showAvailableLanguages()));
 
 dump($gettext);
