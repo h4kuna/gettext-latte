@@ -2,7 +2,6 @@
 
 namespace h4kuna;
 
-use FilesystemIterator;
 use h4kuna\Gettext\Dictionary;
 use h4kuna\Gettext\Os;
 use Nette\Object;
@@ -43,6 +42,15 @@ class GettextSetup extends Object {
         $this->dictionary = $dictionary;
         $this->os = $os;
         $this->setLanguages($languages);
+    }
+
+    public function setDomain($domain) {
+        $this->dictionary->setDomain($domain);
+        return $this;
+    }
+
+    public function loadAllDomains($default) {
+        $this->dictionary->loadAllDomains($default);
     }
 
     /**
@@ -116,6 +124,10 @@ class GettextSetup extends Object {
         return $this->setLanguage($lang)->getLanguage();
     }
 
+    public function bind($domain) {
+        $this->dictionary->bind($domain);
+    }
+
     /**
      * @param string $lang
      * @return self
@@ -123,12 +135,13 @@ class GettextSetup extends Object {
      */
     public function setLanguage($lang) {
         $lang = strtolower($lang);
-        if (!isset($this->languages[$lang])) {
-            throw new GettextException('Language is not defined: ' . $lang);
+
+        if (!$lang || $this->language == $lang) {
+            return $this;
         }
 
-        if ($this->language == $lang) {
-            return $this;
+        if (!isset($this->languages[$lang])) {
+            throw new GettextException('Language is not defined: ' . $lang);
         }
 
         $this->language = $lang;
@@ -145,30 +158,8 @@ class GettextSetup extends Object {
         }
 
         if (!$set) {
-            throw new GettextException('Probaly you have not instaled locale support on your machine. Let\'s command $: locale -a');
+            throw new GettextException('Probaly you have not instaled locale support on your machine. Let\'s try command $: locale -a');
         }
-        $this->dictionary->checkFile($this->language);
-        bindtextdomain($this->getDomain(), $this->path);
-        bind_textdomain_codeset($this->getDomain(), 'UTF-8');
-    }
-
-//------------------------------------------------------------------------------
-    /**
-     * if gettext extension is not instaled
-     * @param string $message
-     * @return string
-     */
-    public static function gettext($message) {
-        return self::$translator->gettext($message);
-    }
-
-    public static function ngettext($msgid1, $msgid2, $n) {
-        return self::$translator->ngettext($msgid1, $msgid2, $n);
-    }
-
-//------------------------------------------------------------------------------
-    protected function prefix() {
-        return '\\' . __CLASS__ . '::';
     }
 
 // <editor-fold defaultstate="collapsed" desc="Constructors setters">    
@@ -192,6 +183,18 @@ class GettextSetup extends Object {
             $this->languages[$lang] = $this->os->isMac() ? str_replace('utf8', 'UTF-8', $encoding) : $encoding;
         }
         return $this;
+    }
+
+    static function showAvailableLanguages() {
+        $return = NULL;
+        exec('locale -a', $return);
+        $out = array();
+        foreach ($return as $line) {
+            if (preg_match('/\w{2,}\.utf-?8/i', $line)) {
+                $out[] = $line;
+            }
+        }
+        return $out;
     }
 
 // </editor-fold>

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2014-05-30 13:49+0100\n"
-"PO-Revision-Date: 2014-05-30 13:49+0100\n"
+"POT-Creation-Date: 2014-06-02 21:01+0100\n"
+"PO-Revision-Date: 2014-06-02 23:02+0100\n"
 "Last-Translator: Milan Matějček <milan.matejcek@gmail.com>\n"
 "Language-Team: \n"
 "Language: cs_CZ\n"
@@ -18,6 +18,14 @@ msgstr ""
 "X-Poedit-SearchPath-1: ../../../temp/cache/_Nette.FileTemplate\n"
 "X-Poedit-SearchPath-2: ../../../tests\n"
 
-#: ../../../tests/gettext.php:10 ../../../tests/gettext.php:13
+#: ../../../tests/GettextSetupTest.php:20
+#: ../../../tests/GettextSetupTest.php:24
+#: ../../../tests/GettextSetupTest.php:28
+#: ../../../tests/GettextSetupTest.php:31
+#: ../../../tests/GettextSetupTest.php:39
 msgid "Ahoj světe"
-msgstr "Hello world"
+msgstr ""
+
+#: ../../../tests/GettextSetupTest.php:42
+msgid "Slaný"
+msgstr "To hard"

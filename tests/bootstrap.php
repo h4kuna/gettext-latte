@@ -2,6 +2,13 @@
 
 include __DIR__ . "/../vendor/autoload.php";
 
+function dd($var /* ... */) {
+    foreach (func_get_args() as $arg) {
+        \Tracy\Debugger::dump($arg);
+    }
+    exit;
+}
+
 // 2# Create Nette Configurator
 $configurator = new Nette\Configurator;
 

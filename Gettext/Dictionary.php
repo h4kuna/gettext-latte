@@ -15,15 +15,7 @@ use SplFileInfo;
  */
 class Dictionary extends Object {
 
-    const DOMAIN = 'message';
-
-    /**
-     * Property for temporary resolve bug
-     * 
-     * @var type
-     */
-    private $messages;
-    private $msg;
+    const DOMAIN = 'messages';
 
     /** @var string */
     private $path;
@@ -36,13 +28,10 @@ class Dictionary extends Object {
     private $domains = array();
 
     /** @var string */
-    private $domain = self::DOMAIN;
+    private $domain;
 
     /** @var Cache */
     private $cache;
-
-    /** @var bool */
-    private $development;
 
     const PHP_DIR = '/LC_MESSAGES/';
 
@@ -52,68 +41,42 @@ class Dictionary extends Object {
      * @param string $path
      * @throws GettextException
      */
-    public function __construct($path, $development, IStorage $storage) {
-        $this->setPath($path);
+    public function __construct($path, IStorage $storage) {
         $this->cache = new Cache($storage, __CLASS__);
-        $this->development = $development;
-        $this->loadDomains();
-        dump($this->domains);
-    }
-
-    private function setPath($path) {
-        $this->path = realpath($path);
-        if (!$this->path) {
-            throw new GettextException('Path does not exists: ' . $path);
+        $this->setPath($path)->loadDomains();
+        if (count($this->domains) === 1) {
+            $this->setDomain(key($this->domains));
         }
-
-        $this->path .= DIRECTORY_SEPARATOR;
     }
 
     /**
-     * filesystem path for catalog
-     * @param type $lang
-     * @param type $extension
-     * @return type
+     * What domain you want.
+     * 
+     * @param string $domain
+     * @throws GettextException
      */
-    public function getFile($lang, $extension = 'mo') {
-        if ($extension == 'po') {
-            $msg = $this->msg;
-        } elseif ($extension == '!mo') {
-            $msg = $this->msg;
-            $extension = 'mo';
-        } else {
-            $msg = $this->getDomain();
-        }
-        return $this->path . $lang . self::PHP_DIR . $msg . '.' . $extension;
-    }
-
-    public function getDomain() {
-        return $this->domain;
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="Setters"> 
     public function setDomain($domain) {
-        $this->domain = $domain;
-    }
-
-    public function setDomains(array $domains) {
-        foreach ($domains as $domain) {
-            $this->setDomain($domain);
+        if (!isset($this->domains[$domain])) {
+            throw new GettextException('This domain does not exests: ' . $domain);
         }
-    }
-
-    /**
-     * *.po file name
-     * @param type $msg
-     * @return self
-     */
-    public function setCatalog($msg) {
-        $this->msg = $this->messages = $msg;
-        textdomain($this->getDomain());
+        if ($this->domains[$domain] === FALSE) {
+            bindtextdomain($domain, $this->path);
+            bind_textdomain_codeset($domain, 'UTF-8');
+            $this->domains[$domain] = TRUE;
+        }
+        textdomain($domain);
+        $this->domain = $domain;
         return $this;
     }
 
-// </editor-fold>
+    public function loadAllDomains($default) {
+        foreach ($this->domains as $domain => $_n) {
+            if ($domain != $default) {
+                $this->setDomain($domain);
+            }
+        }
+        $this->setDomain($default);
+    }
 
     /**
      * Offer file download
@@ -135,6 +98,24 @@ class Dictionary extends Object {
     }
 
     /**
+     * Filesystem path for domain
+     * 
+     * @param string $lang
+     * @param string $extension
+     * @return string
+     */
+    private function getFile($lang, $extension = 'mo') {
+        $file = $this->path . $lang . self::PHP_DIR . $this->getDomain() . '.' . $extension;
+
+        if (!is_file($file)) {
+            throw new GettextException('File not found: ' . $file);
+        }
+
+        return $file;
+    }
+
+    /**
+     * Check for available domain
      * 
      * @return array
      */
@@ -143,51 +124,45 @@ class Dictionary extends Object {
             return $this->domains = $this->cache[self::DOMAIN];
         }
 
-        $math = $domains = array();
-        $find = Finder::findFiles('*.po');
+        $files = $match = $domains = array();
+        $find = Finder::findFiles('*.mo');
         foreach ($find->from($this->path) as $file) {
             /* @var $file SplFileInfo */
-            if (preg_match('~' . $this->path . '(.*)/~U', $file->getPath(), $math)) {
-                $domains[$math[1]] = $file->getBasename('.po');
+            if (preg_match('~' . $this->path . '(.*)/~U', $file->getPath(), $match)) {
+                $domains[$match[1]][$file->getBasename('.mo')] = $file->getBasename('.mo');
+                $files[] = $file->getPathname();
             }
         }
 
-        $options = NULL;
-        if (!$this->development) {
-            $options[Cache::EXPIRATION] = '+10 seconds';
+        $dictionary = $domains;
+        foreach ($domains as $lang => $_domains) {
+            unset($dictionary[$lang]);
+            foreach ($dictionary as $value) {
+                $diff = array_diff($_domains, $value);
+                if ($diff) {
+                    throw new GettextException('For this language (' . $lang . ') you have one or more different dicitonaries: ' . implode('.mo, ', $diff) . '.mo');
+                }
+            }
         }
-        return $this->domains = $this->cache->save(self::DOMAIN, $domains, $options);
+
+        $data = array_combine($_domains, array_fill_keys($_domains, FALSE));
+        return $this->domains = $this->cache->save(self::DOMAIN, $data, array(Cache::FILES => $files));
     }
 
     /**
-     * Bug http://www.php.net/manual/en/function.gettext.php#58310
+     * Check dictionary path
      * 
-     * @param string $lang
-     * @return void
+     * @param string $path
+     * @throws GettextException
      */
-    public function checkFile($lang) {
-        $mo = $this->getFile($lang, '!mo');
-        if (!file_exists($mo)) {
-            throw new GettextException('File not found ' . $mo);
+    private function setPath($path) {
+        $this->path = realpath($path);
+        if (!$this->path) {
+            throw new GettextException('Path does not exists: ' . $path);
         }
-        $this->domain = filemtime($mo) . $this->domain;
-        $moTemp = $this->getFile($lang);
-        if (!file_exists($moTemp)) {
-            if (!@copy($mo, $moTemp)) {
-                throw new GettextException('Directory is not writeable: ' . dirname($mo));
-            }
-            $po = basename($this->getFile($lang, 'po'));
-            foreach (new FilesystemIterator(dirname($mo)) as $filepath => $file) {
-                switch ($file->getBasename()) {
-                    case basename($mo):
-                    case basename($moTemp):
-                    case $po:
-                        continue 2;
-                }
 
-                unlink($filepath);
-            }
-        }
+        $this->path .= DIRECTORY_SEPARATOR;
+        return $this;
     }
 
 }

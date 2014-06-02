@@ -28,7 +28,7 @@ class GettextLatteExtension extends CompilerExtension {
         // dictionary
         $builder->addDefinition($this->prefix('dictionary'))
                 ->setClass('h4kuna\Gettext\Dictionary')
-                ->setArguments(array($config['dictionaryPath'], $config['development'], '@cacheStorage'));
+                ->setArguments(array($config['dictionaryPath'], '@cacheStorage'));
 
         // setup
         $builder->addDefinition($this->prefix('setup'))
