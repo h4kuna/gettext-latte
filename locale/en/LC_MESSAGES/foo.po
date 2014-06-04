@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2014-06-02 23:03+0100\n"
-"PO-Revision-Date: 2014-06-02 23:13+0100\n"
+"PO-Revision-Date: 2014-06-04 07:47+0100\n"
 "Last-Translator: Milan Matějček <milan.matejcek@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_GB\n"
@@ -27,7 +27,7 @@ msgstr ""
 #: ../../../tests/GettextSetupTest.php:29
 #: ../../../tests/GettextSetupTest.php:37
 msgid "Ahoj světe"
-msgstr "Hello world"
+msgstr "Hello world foo"
 
 #~ msgid "Slaný"
 #~ msgstr "To hard"
