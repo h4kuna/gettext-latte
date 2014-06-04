@@ -147,7 +147,10 @@ class Dictionary extends Object {
             }
         }
 
-        @textdomain(NULL);
+        if (!isset($_domains)) {
+            throw new GettextException('Let\'s generate *.mo files.');
+        }
+
 
         $data = array_combine($_domains, array_fill_keys($_domains, FALSE));
         return $this->domains = $this->cache->save(self::DOMAIN, $data, array(Cache::FILES => $files));
