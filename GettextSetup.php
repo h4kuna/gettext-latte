@@ -49,10 +49,6 @@ class GettextSetup extends Object {
         return $this;
     }
 
-    public function loadAllDomains($default) {
-        $this->dictionary->loadAllDomains($default);
-    }
-
     /**
      * try find users language
      * @return string
@@ -106,6 +102,10 @@ class GettextSetup extends Object {
 
 // </editor-fold>
 
+    public function bind($domain) {
+        $this->dictionary->bind($domain);
+    }
+
     /**
      * Is active default language?
      * 
@@ -115,17 +115,8 @@ class GettextSetup extends Object {
         return $this->getLanguage() === $this->getDefault();
     }
 
-    /**
-     * load language as soon as possible and return default language if parameter $lang is NULL
-     * @param string $lang
-     * @return string
-     */
-    public function loadLanguage($lang = NULL) {
-        return $this->setLanguage($lang)->getLanguage();
-    }
-
-    public function bind($domain) {
-        $this->dictionary->bind($domain);
+    public function loadAllDomains($default) {
+        $this->dictionary->loadAllDomains($default);
     }
 
     /**

@@ -8,7 +8,7 @@ $container = require_once __DIR__ . '/bootstrap.php';
 /* @var $gettext GettextSetup */
 $gettext = $container->getService('gettextExtension.setup');
 
-$gettext->loadAllDomains('messages');
+$gettext->setDomain('messages');
 
 
 Assert::equal('Ahoj světe', gettext('Ahoj světe'));
@@ -20,6 +20,7 @@ $gettext->setLanguage('EN'); //same en
 Assert::equal('Hello world', gettext('Ahoj světe'));
 
 // dcgettext($domain, $message, $category); // unsupported
+$gettext->bind('foo');
 dump(dgettext('foo', 'Ahoj světe'));
 // $gettext->setDomain('foo');
 // Assert::equal(gettext('Ahoj světe'), 'Sado maso');

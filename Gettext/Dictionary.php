@@ -56,6 +56,13 @@ class Dictionary extends Object {
      * @throws GettextException
      */
     public function setDomain($domain) {
+        $this->bind($domain);
+        textdomain($domain);
+        $this->domain = $domain;
+        return $this;
+    }
+
+    public function bind($domain) {
         if (!isset($this->domains[$domain])) {
             throw new GettextException('This domain does not exests: ' . $domain);
         }
@@ -64,16 +71,11 @@ class Dictionary extends Object {
             bind_textdomain_codeset($domain, 'UTF-8');
             $this->domains[$domain] = TRUE;
         }
-        textdomain($domain);
-        $this->domain = $domain;
-        return $this;
     }
 
     public function loadAllDomains($default) {
         foreach ($this->domains as $domain => $_n) {
-            if ($domain != $default) {
-                $this->setDomain($domain);
-            }
+            $this->bind($domain);
         }
         $this->setDomain($default);
     }
@@ -144,6 +146,8 @@ class Dictionary extends Object {
                 }
             }
         }
+
+        @textdomain(NULL);
 
         $data = array_combine($_domains, array_fill_keys($_domains, FALSE));
         return $this->domains = $this->cache->save(self::DOMAIN, $data, array(Cache::FILES => $files));
