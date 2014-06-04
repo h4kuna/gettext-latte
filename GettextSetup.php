@@ -4,6 +4,7 @@ namespace h4kuna;
 
 use h4kuna\Gettext\Dictionary;
 use h4kuna\Gettext\Os;
+use Locale;
 use Nette\Object;
 use RuntimeException;
 
@@ -44,30 +45,41 @@ class GettextSetup extends Object {
         $this->setLanguages($languages);
     }
 
-    public function setDomain($domain) {
-        $this->dictionary->setDomain($domain);
-        return $this;
-    }
-
     /**
-     * try find users language
+     * Try find users language
+     * 
      * @return string
      */
-    public function detectLanguage($HTTP_ACCEPT_LANGUAGE) {
-        $accept = $HTTP_ACCEPT_LANGUAGE;
-        if ($accept) {
-            $country = NULL;
-            if (preg_match('/[a-z]{2}-[A-Z]{2}/', $accept, $found)) {
+    public function detectLanguage() {
+        if (empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            return $this->default;
+        }
+
+        $header = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+
+        if (ini_get_all('intl', FALSE)) {
+            $country = Locale::acceptFromHttp($header);
+        } else {
+            $found = $country = NULL;
+            if (preg_match('/[a-z]{2}-[A-Z]{2}/', $header, $found)) {
                 $country = str_replace('-', '_', $found[0]);
             }
+        }
 
-            foreach ($this->languages as $k => $v) {
-                if (preg_match('/' . $k . '/', $accept) ||
-                        ($country && preg_match('/' . $country . '/', $v))) {
-                    return $k;
-                }
+        if (!$country) {
+            return $this->default;
+        }
+
+        if (isset($this->languages[$country])) {
+            return $country;
+        }
+
+        foreach ($this->languages as $k => $v) {
+            if (preg_match('/' . $country . '/i', $v)) {
+                return $k;
             }
         }
+
         return $this->default;
     }
 
@@ -93,15 +105,18 @@ class GettextSetup extends Object {
         return $this->language;
     }
 
-    /**
-     * @return array
-     */
+    /** @return array */
     public function getLanguages() {
         return $this->languages;
     }
 
 // </editor-fold>
 
+    /**
+     * Load language dictionary
+     * 
+     * @param string $domain
+     */
     public function bind($domain) {
         $this->dictionary->bind($domain);
     }
@@ -115,8 +130,24 @@ class GettextSetup extends Object {
         return $this->getLanguage() === $this->getDefault();
     }
 
+    /**
+     * Load all possible language dictionary
+     * 
+     * @param string $default
+     */
     public function loadAllDomains($default) {
         $this->dictionary->loadAllDomains($default);
+    }
+
+    /**
+     * Set default language dictionary
+     * 
+     * @param string $domain
+     * @return self
+     */
+    public function setDomain($domain) {
+        $this->dictionary->setDomain($domain);
+        return $this;
     }
 
     /**
@@ -176,6 +207,11 @@ class GettextSetup extends Object {
         return $this;
     }
 
+    /**
+     * Show you posibble languages
+     * 
+     * @return array
+     */
     static function showAvailableLanguages() {
         $return = NULL;
         exec('locale -a', $return);
