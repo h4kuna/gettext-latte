@@ -11,6 +11,7 @@ $gettext = $container->getService('gettextExtension.setup');
 $gettext->setDomain('messages');
 
 
+Assert::true($gettext->isDefault());
 Assert::equal('Ahoj světe', gettext('Ahoj světe'));
 
 $gettext->setLanguage('cs');
@@ -19,17 +20,11 @@ Assert::equal('Ahoj světe', gettext('Ahoj světe'));
 $gettext->setLanguage('EN'); //same en
 Assert::equal('Hello world', gettext('Ahoj světe'));
 
-// dcgettext($domain, $message, $category); // unsupported
-$gettext->bind('foo');
-dump(dgettext('foo', 'Ahoj světe'));
-// $gettext->setDomain('foo');
-// Assert::equal(gettext('Ahoj světe'), 'Sado maso');
-
+$gettext->bind('foo'); // load dictionary if not loaded
+Assert::equal('Hello world foo', dgettext('foo', 'Ahoj světe'));
+Assert::equal('Hello world', gettext('Ahoj světe'));
 
 $gettext->setLanguage('en');
-Assert::equal(gettext('Ahoj světe'), 'Hello world');
-
-$gettext->setLanguage(NULL);
 Assert::equal('Hello world', gettext('Ahoj světe'));
 
 try {
@@ -38,8 +33,39 @@ try {
 } catch (h4kuna\GettextException $e) {
     // good
 }
+
+$gettext->revertLanguage();
+Assert::equal('Ahoj světe', gettext('Ahoj světe'));
+
+$gettext->setLanguage('en');
 Assert::equal('Hello world', gettext('Ahoj světe'));
 
-Assert::true(is_array($gettext::showAvailableLanguages()));
+$gettext->setLanguage(NULL); // set default
+Assert::equal('Ahoj světe', gettext('Ahoj světe'));
 
-dump($gettext);
+// Only for development information about availeble languages on your machine.
+Assert::true(is_array(GettextSetup::showAvailableLanguages()));
+
+
+// DETECT LANGUAGE
+$_SERVER['HTTP_ACCEPT_LANGUAGE'] = NULL;
+Assert::true($gettext->detectLanguage() == 'cs');
+
+$_SERVER['HTTP_ACCEPT_LANGUAGE'] = '';
+Assert::true($gettext->detectLanguage() == 'cs');
+
+// chrome 35
+$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'cs-CZ,cs;q=0.8,en;q=0.6,sk;q=0.4';
+Assert::true($gettext->detectLanguage() == 'cs');
+
+// firefox 29
+$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'cs,en-us;q=0.7,en;q=0.3';
+Assert::true($gettext->detectLanguage() == 'cs');
+
+// opera 12.16
+$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'cs-CZ,cs;q=0.9,en;q=0.8';
+Assert::true($gettext->detectLanguage() == 'cs');
+
+// IE 8
+$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'cs';
+Assert::true($gettext->detectLanguage() == 'cs');
