@@ -5,6 +5,7 @@ namespace h4kuna;
 use h4kuna\Gettext\Dictionary;
 use h4kuna\Gettext\Os;
 use Locale;
+use Nette\Http\FileUpload;
 use Nette\Object;
 use RuntimeException;
 
@@ -138,6 +139,27 @@ class GettextSetup extends Object {
     }
 
     /**
+     * 
+     * @see Dictionary::download
+     * @param string $language
+     */
+    public function download($language) {
+        $this->checkLanguage($language);
+        $this->dictionary->download($language);
+    }
+
+    /**
+     * @see Dictionary::upload
+     * @param string $language
+     * @param FileUpload $po
+     * @param FileUpload $mo
+     */
+    public function upload($language, FileUpload $po, FileUpload $mo) {
+        $this->checkLanguage($language);
+        $this->dictionary->upload($language, $po, $mo);
+    }
+
+    /**
      * Is active default language?
      * 
      * @return bool
@@ -178,15 +200,29 @@ class GettextSetup extends Object {
             return $this;
         }
 
-        if (!isset($this->languages[$lang])) {
-            throw new GettextException('Language is not defined: ' . $lang);
-        }
+        $this->checkLanguage($lang);
         $this->languagePrev = $this->language;
         $this->language = $lang;
         $this->loadDictionary();
         return $this;
     }
 
+    /**
+     * 
+     * @param string $language
+     * @throws GettextException
+     */
+    final protected function checkLanguage($language) {
+        if (!isset($this->languages[$language])) {
+            throw new GettextException('Language is not defined: ' . $lang);
+        }
+    }
+
+    /**
+     * Load language dictionary
+     * 
+     * @throws GettextException
+     */
     private function loadDictionary() {
         if ($this->os->isWindows()) {
             putenv('LANG=' . $this->language);
@@ -223,6 +259,8 @@ class GettextSetup extends Object {
         return $this;
     }
 
+// </editor-fold>
+
     /**
      * Show you posibble languages
      * 
@@ -240,6 +278,4 @@ class GettextSetup extends Object {
         return $out;
     }
 
-// </editor-fold>
-//-----------------
 }

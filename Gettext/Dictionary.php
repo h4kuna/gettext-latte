@@ -8,6 +8,7 @@ use Nette\Caching\IStorage;
 use Nette\Object;
 use Nette\Utils\Finder;
 use SplFileInfo;
+use Nette\Http\FileUpload;
 
 /**
  *
@@ -108,6 +109,18 @@ class Dictionary extends Object {
             exit;
         }
         throw new GettextException('File not found: ' . $file);
+    }
+
+    /**
+     * Save uploaded files.
+     *
+     * @param string $lang
+     * @param FileUpload $po
+     * @param FileUpload $mo
+     */
+    public function upload($lang, FileUpload $po, FileUpload $mo) {
+        $mo->move($this->getFile($lang, 'mo'));
+        $po->move($this->getFile($lang, 'po'));
     }
 
     /**
