@@ -35,6 +35,14 @@ class GettextSetup extends Object {
     private $dictionary;
 
     /**
+     * Event if language set.
+     * For example use change currency.
+     *
+     * @var array
+     */
+    public $onSetLanguage;
+
+    /**
      * 
      * @param array $languages
      * @param Dictionary $dictionary
@@ -204,6 +212,7 @@ class GettextSetup extends Object {
         $this->languagePrev = $this->language;
         $this->language = $lang;
         $this->loadDictionary();
+        $this->onSetLanguage($lang);
         return $this;
     }
 
@@ -214,7 +223,7 @@ class GettextSetup extends Object {
      */
     final protected function checkLanguage($language) {
         if (!isset($this->languages[$language])) {
-            throw new GettextException('Language is not defined: ' . $lang);
+            throw new GettextException('Language is not defined: ' . $language);
         }
     }
 
