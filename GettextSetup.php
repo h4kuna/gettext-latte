@@ -21,6 +21,9 @@ class GettextSetup extends Object {
     /** @var string */
     private $language;
 
+    /** @var string */
+    private $languagePrev;
+
     /** @var array */
     private $languages;
 
@@ -46,13 +49,13 @@ class GettextSetup extends Object {
     }
 
     /**
-     * Try find users language
+     * Try find user language.
      * 
      * @return string
      */
     public function detectLanguage() {
         if (empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            return $this->default;
+            return $this->getDefault();
         }
 
         $header = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
@@ -63,6 +66,8 @@ class GettextSetup extends Object {
             $found = $country = NULL;
             if (preg_match('/[a-z]{2}-[A-Z]{2}/', $header, $found)) {
                 $country = str_replace('-', '_', $found[0]);
+            } else {
+                $country = strtolower(substr($header, 0, 2));
             }
         }
 
@@ -81,6 +86,17 @@ class GettextSetup extends Object {
         }
 
         return $this->default;
+    }
+
+    /**
+     * 
+     * @return self
+     */
+    public function revertLanguage() {
+        if ($this->languagePrev) {
+            return $this->setLanguage($this->languagePrev);
+        }
+        return $this->setLanguage(NULL);
     }
 
 // <editor-fold defaultstate="collapsed" desc="Getters">
@@ -156,16 +172,16 @@ class GettextSetup extends Object {
      * @throws RuntimeException
      */
     public function setLanguage($lang) {
-        $lang = strtolower($lang);
+        $lang = $lang ? strtolower($lang) : $this->getDefault();
 
-        if (!$lang || $this->language == $lang) {
+        if ($this->language == $lang) {
             return $this;
         }
 
         if (!isset($this->languages[$lang])) {
             throw new GettextException('Language is not defined: ' . $lang);
         }
-
+        $this->languagePrev = $this->language;
         $this->language = $lang;
         $this->loadDictionary();
         return $this;

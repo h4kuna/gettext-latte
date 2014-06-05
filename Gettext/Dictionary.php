@@ -62,6 +62,12 @@ class Dictionary extends Object {
         return $this;
     }
 
+    /**
+     * Load dictionary if not loaded.
+     * 
+     * @param string $domain
+     * @throws GettextException
+     */
     public function bind($domain) {
         if (!isset($this->domains[$domain])) {
             throw new GettextException('This domain does not exests: ' . $domain);
@@ -73,6 +79,11 @@ class Dictionary extends Object {
         }
     }
 
+    /**
+     * Load all dictionaries.
+     * 
+     * @param string $default
+     */
     public function loadAllDomains($default) {
         foreach ($this->domains as $domain => $_n) {
             $this->bind($domain);
@@ -81,7 +92,7 @@ class Dictionary extends Object {
     }
 
     /**
-     * Offer file download
+     * Offer file download.
      * 
      * @param string $language
      * @throws GettextException
@@ -106,8 +117,8 @@ class Dictionary extends Object {
      * @param string $extension
      * @return string
      */
-    private function getFile($lang, $extension = 'mo') {
-        $file = $this->path . $lang . self::PHP_DIR . $this->getDomain() . '.' . $extension;
+    public function getFile($lang, $extension = 'mo') {
+        $file = $this->path . $lang . self::PHP_DIR . $this->domain . '.' . $extension;
 
         if (!is_file($file)) {
             throw new GettextException('File not found: ' . $file);
@@ -117,7 +128,7 @@ class Dictionary extends Object {
     }
 
     /**
-     * Check for available domain
+     * Check for available domain.
      * 
      * @return array
      */
@@ -131,7 +142,8 @@ class Dictionary extends Object {
         foreach ($find->from($this->path) as $file) {
             /* @var $file SplFileInfo */
             if (preg_match('~' . $this->path . '(.*)/~U', $file->getPath(), $match)) {
-                $domains[$match[1]][$file->getBasename('.mo')] = $file->getBasename('.mo');
+                $_dictionary = $file->getBasename('.mo');
+                $domains[$match[1]][$_dictionary] = $file->getBasename($_dictionary);
                 $files[] = $file->getPathname();
             }
         }
@@ -148,6 +160,7 @@ class Dictionary extends Object {
         }
 
         if (!isset($_domains)) {
+            // @todo https://github.com/josscrowcroft/php.mo
             throw new GettextException('Let\'s generate *.mo files.');
         }
 
@@ -157,7 +170,7 @@ class Dictionary extends Object {
     }
 
     /**
-     * Check dictionary path
+     * Check dictionary path.
      * 
      * @param string $path
      * @throws GettextException

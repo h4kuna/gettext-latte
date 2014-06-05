@@ -33,7 +33,7 @@ class Os {
                 $this->os = self::LINUX;
                 break;
             default:
-                throw new GettextException('Unsupported operation system please write to autor. Your system is ' . PHP_OS . '.');
+                throw new GettextException('Unsupported OS please write to autor. Your system is ' . PHP_OS . '.');
         }
         return $this->os;
     }
