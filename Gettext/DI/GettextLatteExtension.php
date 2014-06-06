@@ -4,17 +4,14 @@ namespace h4kuna\Gettext\DI;
 
 use Nette\PhpGenerator\ClassType;
 use Nette\DI\CompilerExtension;
-use Nette\Configurator;
 use Nette\Utils\Finder;
-use Nette\DI\Compiler;
 
 class GettextLatteExtension extends CompilerExtension {
 
     public $defaults = array(
         'langs' => array('cs' => 'cs_CZ.utf8', 'en' => 'en_US.utf8'),
         'dictionaryPath' => '%appDir%/../locale/',
-        'session' => 'gettextLatte',
-        'development' => '%debugMode%',
+        'session' => '+1 week'
     );
 
     public function loadConfiguration() {
@@ -31,20 +28,19 @@ class GettextLatteExtension extends CompilerExtension {
                 ->setArguments(array($config['dictionaryPath'], '@cacheStorage'));
 
         // setup
-        $builder->addDefinition($this->prefix('setup'))
+        $setup = $builder->addDefinition($this->prefix('setup'))
                 ->setClass('h4kuna\GettextSetup')
                 ->setArguments(array($config['langs'], $this->prefix('@dictionary'), $this->prefix('@os')));
 
+        if ($config['session'] !== NULL && $config['session'] !== FALSE) {
+            $setup->addSetup('setSession', array($builder->getDefinition('session'), $config['session']));
+        }
 
+        $latte = $builder->getDefinition('nette.latteFactory');
+        $latte->addSetup('?->onCompile[] = function($engine) { h4kuna\Gettext\Macros\Latte::install($engine->getCompiler()); }', array('@self'));
 
-//        if ($config['session']) {
-//            $builder->addDefinition($this->prefix('session'))
-//                    ->setClass('Nette\Http\SessionSection')
-//                    ->setArguments(array('@session', $config['session']));
-//            $client->addSetup('setSection', array($this->prefix('@session')));
-//        }
         // $engine = $builder->getDefinition('nette.latte');
-        // $engine->addSetup('h4kuna\GettextLatte\Macros\Latte::install(?->getCompiler(), ?)', array('@self', $this->prefix('@translator')));
+        // $engine->addSetup('h4kuna\Gettext\Macros\Latte::install(?->getCompiler(), ?)', array('@self', $this->prefix('@setup')));
     }
 
     public function afterCompile(ClassType $class) {
@@ -54,14 +50,15 @@ class GettextLatteExtension extends CompilerExtension {
          * Nette\MemberAccessException
          * Call to undefined method Nette\Templating\FileTemplate::translate()
          * let's clear temp directory
+         * _Nette.FileTemplate
          */
-//        $temp = $this->containerBuilder->parameters['tempDir'] . '/cache/_Nette.FileTemplate';
-//        if (file_exists($temp) && $this->containerBuilder->parameters['debugMode']) {
-//            foreach (Finder::find('*')->in($temp) as $file) {
-//                //$file = new \SplFileInfo;
-//                @unlink($file->getPathname());
-//            }
-//        }
+        $temp = $this->containerBuilder->parameters['tempDir'] . '/cache/latte';
+        if (file_exists($temp) && $this->containerBuilder->parameters['debugMode']) {
+            foreach (Finder::find('*')->in($temp) as $file) {
+                /* @var $file \SplFileInfo */
+                @unlink($file->getPathname());
+            }
+        }
     }
 
 }

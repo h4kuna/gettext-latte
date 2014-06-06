@@ -6,6 +6,8 @@ use h4kuna\Gettext\Dictionary;
 use h4kuna\Gettext\Os;
 use Locale;
 use Nette\Http\FileUpload;
+use Nette\Http\Session;
+use Nette\Http\SessionSection;
 use Nette\Object;
 use RuntimeException;
 
@@ -41,6 +43,17 @@ class GettextSetup extends Object {
      * @var array
      */
     public $onSetLanguage;
+
+    /** @var SessionSection */
+    private $section;
+
+    /**
+     * Event if language change.
+     * For example use flashmessage.
+     *
+     * @var array
+     */
+    public $onChangeLanguage;
 
     /**
      * 
@@ -106,6 +119,16 @@ class GettextSetup extends Object {
             return $this->setLanguage($this->languagePrev);
         }
         return $this->setLanguage(NULL);
+    }
+
+    /**
+     * Set and return actual language.
+     * 
+     * @param string $language
+     * @return string
+     */
+    public function loadLanguage($language) {
+        return $this->setLanguage($language)->getLanguage();
     }
 
 // <editor-fold defaultstate="collapsed" desc="Getters">
@@ -213,6 +236,26 @@ class GettextSetup extends Object {
         $this->language = $lang;
         $this->loadDictionary();
         $this->onSetLanguage($lang);
+
+        if ($this->section && $this->section->language != $lang) {
+            $this->section->language = $lang;
+            $this->onChangeLanguage($lang);
+        }
+        return $this;
+    }
+
+    /**
+     * Optional, if you set Session than enable automatic language dection.
+     *
+     * @param Session $session
+     * @return self
+     */
+    public function setSession(Session $session, $live = '+7 days') {
+        $this->section = $session->getSection(__CLASS__);
+        if (!isset($this->section->language)) {
+            $this->setLanguage($this->detectLanguage());
+            $this->section->setExpiration($live);
+        }
         return $this;
     }
 
@@ -243,6 +286,25 @@ class GettextSetup extends Object {
         if (!$set) {
             throw new GettextException('Probaly you have not instaled locale support on your machine. Let\'s try command $: locale -a');
         }
+    }
+
+    /**
+     * Router defined languages.
+     *
+     * @return string
+     */
+    public function routerAccept() {
+        return implode('|', array_keys($this->languages));
+    }
+
+    /**
+     *
+     * @param string $message
+     * @param mixed $count
+     * @return string
+     */
+    public function translate($message, $count = NULL) {
+        return call_user_func_array('sprintf', func_get_args());
     }
 
 // <editor-fold defaultstate="collapsed" desc="Constructors setters">    
