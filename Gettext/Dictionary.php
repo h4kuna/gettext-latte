@@ -71,7 +71,7 @@ class Dictionary extends Object {
      */
     public function bind($domain) {
         if (!isset($this->domains[$domain])) {
-            throw new GettextException('This domain does not exests: ' . $domain);
+            throw new GettextException('This domain does not exists: ' . $domain);
         }
         if ($this->domains[$domain] === FALSE) {
             bindtextdomain($domain, $this->path);
