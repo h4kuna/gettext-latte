@@ -77,22 +77,28 @@ class Latte extends MacroSet {
      * @return array
      */
     private function getGettextArgs(array $args) {
-
-
         $argsGettext = array_slice($args, 0, $this->params);
-        if ($this->plural) {
-            $this->pluralData($argsGettext);
-            // set another variable as plural
-            foreach ($args as $param) {
-                if (preg_match('/plural/i', $param)) {
-                    $argsGettext[2] = $param;
-                }
-            }
+        if (!$this->plural) {
+            return $argsGettext;
+        }
 
-            // absolute value
-            if (preg_match('/abs/i', $argsGettext[2])) {
-                $argsGettext[2] = 'abs(' . $argsGettext[2] . ')';
+        $key = (int) ($this->function == 'dngettext');
+        if ($this->oneParam) {
+            array_unshift($argsGettext, $argsGettext[$key]);
+            $n = $argsGettext[0];
+            $argsGettext[0] = $argsGettext[1];
+            $argsGettext[1] = $n;
+        }
+        // set another variable as plural
+        foreach ($args as $param) {
+            if (preg_match('/plural/i', $param)) {
+                $argsGettext[2 + $key] = $param;
             }
+        }
+
+        // absolute value
+        if (preg_match('/abs/i', $argsGettext[2 + $key])) {
+            $argsGettext[2 + $key] = 'abs(' . $argsGettext[2 + $key] . ')';
         }
         return $argsGettext;
     }
@@ -127,20 +133,6 @@ class Latte extends MacroSet {
     static private function stringToArgs($s) {
         preg_match_all("/(?: ?)([^,]*\(.*?\)|[^,]*'[^']*'|[^,]*\"[^\"]*\"|.+?)(?: ?)(?:,|$)/", $s, $found);
         return $found[1];
-    }
-
-    /**
-     * Prepare data to native function, only for plural
-     * 
-     * @param array $data
-     */
-    private function pluralData(array &$data) {
-        if ($this->oneParam) {
-            array_unshift($data, $data[0]);
-            $n = $data[0];
-            $data[0] = $data[1];
-            $data[1] = $n;
-        }
     }
 
     /**
