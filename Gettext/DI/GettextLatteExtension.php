@@ -11,7 +11,8 @@ class GettextLatteExtension extends CompilerExtension {
     public $defaults = array(
         'langs' => array('cs' => 'cs_CZ.utf8', 'en' => 'en_US.utf8'),
         'dictionaryPath' => '%appDir%/../locale/',
-        'session' => '+1 week'
+        'session' => '+1 week',
+        'loadAllDomains' => 'messages'
     );
 
     public function loadConfiguration() {
@@ -28,12 +29,16 @@ class GettextLatteExtension extends CompilerExtension {
                 ->setArguments(array($config['dictionaryPath'], '@cacheStorage'));
 
         // setup
-        $setup = $builder->addDefinition($this->prefix('setup'))
+        $gettext = $builder->addDefinition($this->prefix('gettext'))
                 ->setClass('h4kuna\GettextSetup')
                 ->setArguments(array($config['langs'], $this->prefix('@dictionary'), $this->prefix('@os')));
 
+        if ($config['loadAllDomains']) {
+            $gettext->addSetup('loadAllDomains', array($config['loadAllDomains']));
+        }
+
         if ($config['session'] !== NULL && $config['session'] !== FALSE) {
-            $setup->addSetup('setSession', array($builder->getDefinition('session'), $config['session']));
+            $gettext->addSetup('setSession', array($builder->getDefinition('session'), $config['session']));
         }
 
         $latte = $builder->getDefinition('nette.latteFactory');

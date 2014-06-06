@@ -156,7 +156,7 @@ class Dictionary extends Object {
             /* @var $file SplFileInfo */
             if (preg_match('~' . $this->path . '(.*)/~U', $file->getPath(), $match)) {
                 $_dictionary = $file->getBasename('.mo');
-                $domains[$match[1]][$_dictionary] = $file->getBasename($_dictionary);
+                $domains[$match[1]][$_dictionary] = $_dictionary;
                 $files[] = $file->getPathname();
             }
         }
