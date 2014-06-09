@@ -19,7 +19,7 @@ $configurator->setTempDirectory($tmp);
 $configurator->setDebugMode();
 
 $configurator->defaultExtensions['gettextExtension'] = '\h4kuna\Gettext\DI\GettextLatteExtension';
-
+$configurator->addConfig(__DIR__ . '/test.neon');
 $container = $configurator->createContainer();
 $container->getService('session')->start();
 return $container;

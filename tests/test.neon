@@ -1,0 +1,4 @@
+nette:
+    session:
+        autoStart: yes
+        expiration: 14 days

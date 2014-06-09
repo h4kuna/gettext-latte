@@ -82,7 +82,7 @@ class GettextSetup extends Object {
 
         $header = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
 
-        if (ini_get_all('intl', FALSE)) {
+        if (@ini_get_all('intl', FALSE)) {
             $country = Locale::acceptFromHttp($header);
         } else {
             $found = $country = NULL;
