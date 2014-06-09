@@ -69,3 +69,5 @@ Assert::true($gettext->detectLanguage() == 'cs');
 // IE 8
 $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'cs';
 Assert::true($gettext->detectLanguage() == 'cs');
+
+echo 'ok';
