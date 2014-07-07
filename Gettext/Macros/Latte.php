@@ -119,20 +119,24 @@ class Latte extends MacroSet {
         if ($this->function !== NULL) {
             return $args;
         }
+        $find = NULL;
         if (preg_match('/(.*)(?:"|\')/U', $args, $find) && isset(self::$functions[$find[1] . 'g'])) {
             $this->setFunction($find[1] . 'g_');
-            return preg_replace('/^' . $find[1] . '/', '', $args);
+            if ($find[1]) {
+                return preg_replace('/^' . $find[1] . '/', '', $args);
+            }
+            return $args;
         }
         throw new CompileException('Wrong macro');
     }
 
     /**
      * @param string $s
-     * @return string
+     * @return array
      */
     static private function stringToArgs($s) {
-        preg_match_all("/(?: ?)([^,]*\(.*?\)|[^,]*'[^']*'|[^,]*\"[^\"]*\"|.+?)(?: ?)(?:,|$)/", $s, $found);
-        return $found[1];
+        $args = new Latte2PhpTokenizer($s);
+        return $args->getArgs();
     }
 
     /**
