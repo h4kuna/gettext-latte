@@ -4,6 +4,7 @@ namespace h4kuna;
 
 use h4kuna\Gettext\Dictionary;
 use h4kuna\Gettext\Os;
+use Iterator;
 use Locale;
 use Nette\Http\FileUpload;
 use Nette\Http\Session;
@@ -16,7 +17,7 @@ use RuntimeException;
  *
  * @author Milan Matějček
  */
-class GettextSetup extends Object {
+class GettextSetup extends Object implements Iterator {
 
     /** @var string */
     private $default;
@@ -347,6 +348,36 @@ class GettextSetup extends Object {
             }
         }
         return $out;
+    }
+
+    /**
+     * IMPLEMENTS ITERATOR *****************************************************
+     * *************************************************************************
+     */
+
+    /**
+     * Is language active?
+     * 
+     * @return bool
+     */
+    public function current() {
+        return $this->key() === $this->getLanguage();
+    }
+
+    public function key() {
+        return key($this->languages);
+    }
+
+    public function next() {
+        next($this->languages);
+    }
+
+    public function rewind() {
+        return reset($this->languages);
+    }
+
+    public function valid() {
+        return array_key_exists($this->key(), $this->languages);
     }
 
 }
