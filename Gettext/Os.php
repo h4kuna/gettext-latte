@@ -26,6 +26,7 @@ class Os {
 
         switch (strtolower(substr(PHP_OS, 0, 5))) {
             case 'windo':
+            case 'winnt':
                 $this->os = self::WINDOWS;
                 break;
             case 'darwi':
