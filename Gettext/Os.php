@@ -2,6 +2,8 @@
 
 namespace h4kuna\Gettext;
 
+use h4kuna\GettextException;
+
 /**
  * @author Milan Matějček
  */
