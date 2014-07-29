@@ -18,12 +18,10 @@ class Latte2PhpTokenizer {
 
     public function __construct($string) {
         $this->tokens = new ArrayIterator(array_slice(token_get_all('<?php _(' . $string . ');'), 3, -2));
-        foreach ($this->tokens as $token) {
+        foreach ($this->tokens as $foo) {
             $val = $this->param();
             if ($val) {
                 $this->args[] = $val;
-            } else {
-                dd($token);
             }
         }
     }
