@@ -2,13 +2,19 @@
 
 namespace h4kuna\Gettext;
 
+use h4kuna\GettextSetup;
+
 trait InjectTranslator {
 
     /** @persistent */
     public $lang;
 
-    /** @var \h4kuna\GettextSetup @inject */
-    public $translator;
+    /** @var GettextSetup */
+    protected $translator;
+    
+    public function injectGettexSetup(GettextSetup $translator) {
+        $this->translator = $translator;
+    }
 
     protected function startup() {
         parent::startup();
