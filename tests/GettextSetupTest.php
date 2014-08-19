@@ -16,7 +16,7 @@ Assert::equal('Ahoj světe', gettext('Ahoj světe'));
 $gettext->setLanguage('cs');
 Assert::equal('Ahoj světe', gettext('Ahoj světe'));
 
-$gettext->setLanguage('EN'); //same en
+$gettext->changeHomeLang('EN'); //same en
 Assert::equal('Hello world', gettext('Ahoj světe'));
 
 $gettext->bind('foo'); // load dictionary if not loaded
@@ -33,7 +33,7 @@ try {
     // good
 }
 
-$gettext->revertLanguage();
+$gettext->revertHomeLang();
 Assert::equal('Ahoj světe', gettext('Ahoj světe'));
 
 $gettext->setLanguage('en');
