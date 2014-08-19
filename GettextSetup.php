@@ -112,14 +112,26 @@ class GettextSetup extends Object implements Iterator {
     }
 
     /**
+     * If you need change language in iterator
      * 
+     * @param sring $lang
      * @return self
      */
-    public function revertLanguage() {
-        if ($this->languagePrev) {
-            return $this->setLanguage($this->languagePrev);
+    public function changeHomeLang($lang) {
+        if ($this->languagePrev === NULL) {
+            $this->languagePrev = $this->language;
         }
-        return $this->setLanguage(NULL);
+        $this->setLanguage($lang);
+    }
+
+    /**
+     * If iterator is end call this method
+     */
+    public function revertHomeLang() {
+        if ($this->languagePrev) {
+            $this->setLanguage($this->languagePrev);
+            $this->languagePrev = NULL;
+        }
     }
 
     /**
@@ -233,7 +245,6 @@ class GettextSetup extends Object implements Iterator {
         }
 
         $this->checkLanguage($lang);
-        $this->languagePrev = $this->language;
         $this->language = $lang;
         $this->loadDictionary();
         $this->onSetLanguage($lang);
