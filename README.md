@@ -19,11 +19,6 @@ Start-up
 ---------------------
 Clone this repository or use composer [h4kuna/gettext-latte](https://packagist.org/packages/h4kuna/gettext-latte).
 
-And install in bootstrap.php
-```php
-\h4kuna\DI\GettextLatteExtension::register($configurator);
-```
-
 Look into _examples/RouterFactory.php_.
 
 Example for router setup from [nette sandbox](https://github.com/nette/sandbox/blob/master/app/router/RouterFactory.php);
@@ -64,7 +59,7 @@ Install new macro to latte engine with alias for native gettext function [{_'' /
 
 Run service and support automatic detection of language
 -------------------
-Load language as soon as possible.
+Load language as soon as possible. **examples/BasePresenter.php** or you can use trit InjectTranslator in **Gettext/InjectTranslator.php**
 
 ```php
 <?php
@@ -95,7 +90,7 @@ abstract class BasePresenter extends Presenter {
 
 After install translator please empty temp directory, otherwise you may get "Call to undefined method Nette\Templating\FileTemplate::translate()".
 
-How to write texts
+How to write texts in PHP files
 ---------------
 Outside the template using gettext.
 
@@ -107,7 +102,6 @@ echo ngettext('dog', 'dogs', 2);
 
 // The following two are the same
 echo sprintf(_('%s possible %s %s'), 'another', 'optional', 'params'); // is faster
-echo $this->translator->translate(_('%s possible %s %s'), 'another', 'optional', 'params');
 
 ```
 
@@ -158,9 +152,9 @@ In template using macros. Number of parameters isn't limited. Function **sprintf
 Let's start translate
 ---------------------
 Download [PoEdit](http://www.poedit.net/download.php).
-Before each Poedit run you must have all templates compiled to php in temp directory, for this is use script like _examples/latte-compiler_.
+Before each Poedit run you must have all templates compiled to php in temp directory, for this is use script like **examples/latte-compiler**.
 
-Open the **.po** file. Setup directory search - by default it is **temp/cache/_Nette.FileTemplate** and **app**  and click "update catalog", after update catalog you don't need [restart apache](http://php.net/manual/en/function.gettext.php#110735).
+Open the **.po** file. Setup directory search - by default it is **temp/cache/latte** and **app**  and click "update catalog", after update catalog you don't need [restart apache](http://php.net/manual/en/function.gettext.php#110735).
 
 
 If you write application in language with three inflection levels instead of two, for example czech, you must have catalog with translation czech to czech but only for plural.
