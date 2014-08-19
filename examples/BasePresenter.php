@@ -28,9 +28,9 @@ abstract class BasePresenter extends \Nette\Application\UI\Presenter {
         $this->lang = $this->translator->loadLanguage($this->lang);
     }
 
-//    protected function startup() {
-//        parent::startup();
-//        $this->lang = $this->context->translator->loadLanguage($this->lang);
-//    }
+    /**
+     * PHP 5.4+ ****************************************************************
+     * *************************************************************************
+     */
+    use \h4kuna\Gettext\InjectTranslator;
 }
-
