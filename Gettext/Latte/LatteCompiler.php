@@ -2,11 +2,14 @@
 
 namespace h4kuna\Gettext\Latte;
 
-use Latte\RuntimeException;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
+use InvalidArgumentException;
 use Nette\Latte\CompileException;
+use Nette\Latte\Engine;
 use Nette\Utils\Finder;
+use Latte\RuntimeException;
+use SplFileInfo;
 
 class LatteCompiler {
 
@@ -16,10 +19,10 @@ class LatteCompiler {
     /** @var Template */
     private $template;
 
-    /** @var \SplFileInfo[] */
+    /** @var SplFileInfo[] */
     private $skippedFiles = array();
 
-    /** @var \SplFileInfo[] */
+    /** @var SplFileInfo[] */
     private $files = array();
 
     /** @var string */
@@ -47,10 +50,10 @@ class LatteCompiler {
     /**
      * 
      * @param string $path
-     * @return \SplFileInfo[]
+     * @return SplFileInfo[]
      */
     private function getFiles($path) {
-        $fileInfo = new \SplFileInfo($path);
+        $fileInfo = new SplFileInfo($path);
         if ($fileInfo->isFile()) {
             return array($fileInfo->getRealPath() => $fileInfo);
         }
@@ -68,6 +71,10 @@ class LatteCompiler {
         foreach (Finder::findFiles('*')->from($this->temp) as $file) {
             @unlink($file->getPathname());
         }
+    }
+
+    public function getTemplate() {
+        return $this->template;
     }
 
     public function prepareFiles() {
@@ -106,7 +113,7 @@ class LatteCompiler {
                 }
 
                 $macroName = $find[1];
-                $this->template->getLatte()->onCompile[] = function(Latte\Engine $engine) use ($macroName) {
+                $this->template->getLatte()->onCompile[] = function(Engine $engine) use ($macroName) {
                     $engine->addMacro($macroName, new EmptyMacro());
 //goto checkFile;
                 };
