@@ -13,38 +13,59 @@ class LatteCompiler {
     /** @var array */
     private $mask = array('*.latte');
 
-    /** @var array */
-    private $include;
-
-    /** @var array */
-    private $exclude;
-
-    /** @var string */
-    private $tempLatte;
-
     /** @var Template */
     private $template;
 
-    /** @var array */
+    /** @var \SplFileInfo[] */
     private $skippedFiles = array();
 
-    public function __construct(TemplateFactory $templateFactory, array $include) {
+    /** @var \SplFileInfo[] */
+    private $files = array();
+
+    /** @var string */
+    private $temp;
+
+    public function __construct(TemplateFactory $templateFactory) {
         $this->template = $templateFactory->createTemplate(new FakeControl());
-        $this->tempLatte = dirname($this->template->getLatte()->getCacheFile('foo'));
-        $this->include = $include;
+        $this->temp = dirname($this->template->getLatte()->getCacheFile('foo'));
     }
 
-    public function setMask($mask) {
-        $this->mask = $mask;
+    public function addMask($mask) {
+        $this->mask[] = $mask;
     }
 
-    public function setExclude(array $exclude) {
-        $this->exclude = $exclude;
+    public function addExclude($path) {
+        $this->files = array_diff_key($this->files, $this->getFiles($path));
+        return $this;
+    }
+
+    public function addInclude($path) {
+        $this->files += $this->getFiles($path);
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $path
+     * @return \SplFileInfo[]
+     */
+    private function getFiles($path) {
+        $fileInfo = new \SplFileInfo($path);
+        if ($fileInfo->isFile()) {
+            return array($fileInfo->getRealPath() => $fileInfo);
+        }
+
+        $found = array();
+        $finder = call_user_func_array('\Nette\Utils\Finder::findFiles', $this->mask);
+        foreach ($finder->from($fileInfo->getRealPath()) as $file) {
+            $found[$file->getRealPath()] = $file;
+        }
+        return $found;
     }
 
     private function clearTemp() {
         /* @var $file SplFileInfo  */
-        foreach (Finder::findFiles('*')->from($this->tempLatte) as $file) {
+        foreach (Finder::findFiles('*')->from($this->temp) as $file) {
             @unlink($file->getPathname());
         }
     }
@@ -55,40 +76,12 @@ class LatteCompiler {
             $this->skippedFiles = array();
             return $out;
         }
-        $found = array();
 
-        $finder = call_user_func_array('\Nette\Utils\Finder::findFiles', $this->mask);
-        /* @var $file SplFileInfo */
-        foreach (call_user_func_array(array(clone $finder, 'from'), $this->include) as $file) {
-            $found[$file->getRealPath()] = $file;
-        }
-
-        if (!$this->exclude) {
-            return $found;
-        }
-
-        foreach ($this->exclude as $k => $file) {
-            if (is_file($file) && $path = realpath($file)) {
-                unset($found[realpath($path)]);
-                unset($this->exclude[$k]);
-            } elseif (!file_exists($file)) {
-                unset($this->exclude[$k]);
-            }
-        }
-
-        if (!$this->exclude) {
-            return $found;
-        }
-
-        foreach (call_user_func_array(array($finder, 'from'), $this->exclude) as $file) {
-            unset($found[$file->getRealPath()]);
-        }
-
-
-        return $found;
+        return $this->files;
     }
 
     public function run() {
+        error_reporting(E_ALL & ~(E_NOTICE));
         if (!$this->skippedFiles) {
             $this->clearTemp();
         }
