@@ -13,7 +13,7 @@ class RouterFactory {
     /**
      * @return Nette\Application\IRouter
      */
-    public function createRouter(\h4kuna\GettextLatte $translator) {
+    public function createRouter(\h4kuna\GettextSetup $translator) {
         $router = new RouteList();
         $router[] = new Route('index.php', 'Homepage:default', Route::ONE_WAY);
         $router[] = new Route('[<lang ' . $translator->routerAccept() . '>/]<presenter>/<action>/[<id>/]', array(

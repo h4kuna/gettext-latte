@@ -1,12 +1,1 @@
-# install in bootstrap.php
-# \h4kuna\Config\GettextLatteExtension::register($configurator);
-
-gettextLatte:
-    localePath: %wwwDir%/anotherPath/
-    # default is %wwwDir%/../locale/
-
-    langs: {'cs' : 'cs_CZ.utf8', 'en' : 'en_US.utf8', 'de' : 'de_DE.utf8', 'it' : 'it_IT.utf8'}
-    # default is cs and en
-
-    session: FALSE
-    #default is ON
+# Look at to /tests/test.neon
