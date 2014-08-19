@@ -19,6 +19,18 @@ class Os {
     /** @var string */
     private $os;
 
+    /** @var array */
+    private $translateLocale = array();
+
+    public function __construct(array $winLocaleTranslate) {
+        $this->translateLocale[self::WINDOWS] = $winLocaleTranslate;
+    }
+
+    public function getWindowsLocale($key) {
+        $key = preg_replace('/\.utf8$/', '', $key);
+        return $this->translateLocale[self::WINDOWS][$key];
+    }
+
     public function getOs() {
         if ($this->os !== NULL) {
             return $this->os;
