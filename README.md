@@ -62,16 +62,6 @@ gettextLatteExtension:
 Install new macro to latte engine with alias for native gettext function [{_'' /*, ...*/}](http://www.php.net/manual/en/function.gettext.php) and [{_n'', '', '' /*, ...*/}](http://www.php.net/manual/en/function.ngettext.php).
 
 
-Optional setup, where you can register callbacks and helpers
--------------------
-enable only for default language, because it is used in compile time
-```
-translator:
-    class: \h4kuna\GettextSetup(%appDir%/../locale/, %langs%)
-    setup:
-        - enableOrphans # look at addMacro()
-```
-
 Run service and support automatic detection of language
 -------------------
 Load language as soon as possible.
