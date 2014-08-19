@@ -151,11 +151,11 @@ class Dictionary extends Object {
         }
 
         $files = $match = $domains = array();
-        $find = Finder::findFiles('*.mo');
+        $find = Finder::findFiles('*.po');
         foreach ($find->from($this->path) as $file) {
             /* @var $file SplFileInfo */
             if (preg_match('/' . preg_quote($this->path, '/') . '(.*)(?:\\\|\/)/U', $file->getPath(), $match)) {
-                $_dictionary = $file->getBasename('.mo');
+                $_dictionary = $file->getBasename('.po');
                 $domains[$match[1]][$_dictionary] = $_dictionary;
                 $files[] = $file->getPathname();
             }
