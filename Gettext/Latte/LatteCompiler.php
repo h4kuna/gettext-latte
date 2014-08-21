@@ -2,13 +2,14 @@
 
 namespace h4kuna\Gettext\Latte;
 
+use InvalidArgumentException;
+use Latte\RuntimeException;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
-use InvalidArgumentException;
 use Nette\Latte\CompileException;
 use Nette\Latte\Engine;
+use Nette\UnexpectedValueException;
 use Nette\Utils\Finder;
-use Latte\RuntimeException;
 use SplFileInfo;
 
 class LatteCompiler {
@@ -104,8 +105,10 @@ class LatteCompiler {
                 if (substr($e->getMessage(), 0, 30) !== 'Cannot include undefined block') {
                     throw $e;
                 }
+            } catch (UnexpectedValueException $e) {
+                // uninteresting
             } catch (InvalidArgumentException $e) {
-// uninteresting
+                // uninteresting
             } catch (CompileException $e) {
                 $find = NULL;
                 if (!preg_match('/Unknown macro \{(.*)\}/U', $e->getMessage(), $find)) {
