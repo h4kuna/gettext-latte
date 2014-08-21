@@ -288,12 +288,13 @@ class GettextSetup extends Object implements Iterator {
      * @throws GettextException
      */
     private function loadDictionary() {
+        $constLC = defined('LC_MESSAGES') ? LC_MESSAGES : LC_ALL;
         if ($this->os->isWindows()) {
             putenv('LANG=' . $this->language);
-            setlocale($this->os->getWindowsLocale($this->languages[$this->language]));
+            setlocale($constLC, $this->os->getWindowsLocale($this->languages[$this->language]));
             $set = TRUE;
         } else {
-            $set = setlocale(defined('LC_MESSAGES') ? LC_MESSAGES : LC_ALL, $this->languages[$this->language]);
+            $set = setlocale($constLC, $this->languages[$this->language]);
         }
 
         if (!$set) {
