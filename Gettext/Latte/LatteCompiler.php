@@ -67,6 +67,10 @@ class LatteCompiler {
         return $found;
     }
 
+    public function getTemp() {
+        return $this->temp;
+    }
+
     private function clearTemp() {
         /* @var $file SplFileInfo  */
         foreach (Finder::findFiles('*')->from($this->temp) as $file) {
