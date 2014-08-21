@@ -15,6 +15,7 @@ class GettextLatteExtension extends CompilerExtension {
         'loadAllDomains' => 'messages',
         'localeTranslate' => array(
             'en_US' => 'English_United_States',
+            'en_EN' => 'English_United_Kingdom',
             'de_DE' => 'German_Standard',
             'sk_SK' => 'Slovak',
             'cs_CZ' => 'Czech',
