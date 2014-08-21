@@ -6,9 +6,9 @@ use InvalidArgumentException;
 use Latte\RuntimeException;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
+use Nette\InvalidStateException;
 use Nette\Latte\CompileException;
 use Nette\Latte\Engine;
-use Nette\UnexpectedValueException;
 use Nette\Utils\Finder;
 use SplFileInfo;
 
@@ -109,7 +109,7 @@ class LatteCompiler {
                 if (substr($e->getMessage(), 0, 30) !== 'Cannot include undefined block') {
                     throw $e;
                 }
-            } catch (UnexpectedValueException $e) {
+            } catch (InvalidStateException $e) {
                 // uninteresting
             } catch (InvalidArgumentException $e) {
                 // uninteresting
