@@ -2,13 +2,11 @@
 
 namespace h4kuna\Gettext\Latte;
 
-use InvalidArgumentException;
 use Latte\RuntimeException;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
-use Nette\InvalidStateException;
 use Nette\Latte\CompileException;
-use Latte\Engine;
+use Nette\Latte\Engine;
 use Nette\Utils\Finder;
 use SplFileInfo;
 
@@ -97,22 +95,18 @@ class LatteCompiler {
         if (!$this->skippedFiles) {
             $this->clearTemp();
         }
+
+        $latte = $this->template->getLatte();
         /* @var $file SplFileInfo */
         foreach ($this->prepareFiles() as $file) {
-
             try {
                 echo $file->getPathname() . "\n";
-                ob_end_clean();
-                ob_start();
-                $this->template->setFile($file->getPathname())->render();
+                $code = $latte->compile($file->getPathname());
+                file_put_contents($latte->getCacheFile($file->getPathname()), $code);
             } catch (RuntimeException $e) {
                 if (substr($e->getMessage(), 0, 30) !== 'Cannot include undefined block') {
                     throw $e;
                 }
-            } catch (InvalidStateException $e) {
-                // uninteresting
-            } catch (InvalidArgumentException $e) {
-                // uninteresting
             } catch (CompileException $e) {
                 $find = NULL;
                 if (!preg_match('/Unknown macro \{(.*)\}/U', $e->getMessage(), $find)) {
@@ -126,7 +120,6 @@ class LatteCompiler {
                 };
                 $this->skippedFiles[] = $file;
             }
-            ob_end_clean();
         }
         if ($this->skippedFiles) {
             $this->run();
