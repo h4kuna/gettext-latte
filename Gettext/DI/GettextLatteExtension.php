@@ -9,19 +9,31 @@ use Nette\Utils\Finder;
 class GettextLatteExtension extends CompilerExtension {
 
     public $defaults = array(
-        'langs' => array('cs' => 'cs_CZ.utf8', 'en' => 'en_US.utf8'),
+        'langs' => array(),
         'dictionaryPath' => '%appDir%/../locale/',
         'session' => '+1 week',
-        'loadAllDomains' => 'messages'
+        'loadAllDomains' => 'messages',
+        'localeTranslate' => array(
+            'en_US' => 'English_United_States',
+            'en_EN' => 'English_United_Kingdom',
+            'de_DE' => 'German_Standard',
+            'sk_SK' => 'Slovak',
+            'cs_CZ' => 'Czech',
+            'it_IT' => 'Italian_Standard'
+        )
     );
 
     public function loadConfiguration() {
         $builder = $this->getContainerBuilder();
-        $config = $this->getConfig($this->defaults);
 
+        $config = $this->getConfig($this->defaults);
+        if (!$config['langs']) {
+            $config['langs'] = array('cs' => 'cs_CZ.utf8', 'en' => 'en_US.utf8');
+        }
         // os
         $builder->addDefinition($this->prefix('os'))
-                ->setClass('h4kuna\Gettext\Os');
+                ->setClass('h4kuna\Gettext\Os')
+                ->setArguments(array($config['localeTranslate']));
 
         // dictionary
         $builder->addDefinition($this->prefix('dictionary'))
@@ -41,11 +53,13 @@ class GettextLatteExtension extends CompilerExtension {
             $gettext->addSetup('setSession', array($builder->getDefinition('session'), $config['session']));
         }
 
+        // compiler
+        $builder->addDefinition($this->prefix('compiler'))
+                ->setClass('h4kuna\Gettext\Latte\LatteCompiler')
+                ->setArguments(array($builder->getDefinition('nette.templateFactory')));
+
         $latte = $builder->getDefinition('nette.latteFactory');
         $latte->addSetup('?->onCompile[] = function($engine) { h4kuna\Gettext\Macros\Latte::install($engine->getCompiler()); }', array('@self'));
-
-        // $engine = $builder->getDefinition('nette.latte');
-        // $engine->addSetup('h4kuna\Gettext\Macros\Latte::install(?->getCompiler(), ?)', array('@self', $this->prefix('@setup')));
     }
 
     public function afterCompile(ClassType $class) {

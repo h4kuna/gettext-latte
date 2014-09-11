@@ -6,18 +6,17 @@ use Tester\Assert;
 $container = require_once __DIR__ . '/bootstrap.php';
 
 /* @var $gettext GettextSetup */
-$gettext = $container->getService('gettextExtension.setup');
-
+$gettext = $container->getService('gettextLatteExtension.gettext');
 $gettext->setDomain('messages');
 
-
+Assert::same('cs', $gettext->getDefault());
 Assert::true($gettext->isDefault());
 Assert::equal('Ahoj světe', gettext('Ahoj světe'));
 
 $gettext->setLanguage('cs');
 Assert::equal('Ahoj světe', gettext('Ahoj světe'));
 
-$gettext->setLanguage('EN'); //same en
+$gettext->changeHomeLang('EN'); //same en
 Assert::equal('Hello world', gettext('Ahoj světe'));
 
 $gettext->bind('foo'); // load dictionary if not loaded
@@ -34,7 +33,7 @@ try {
     // good
 }
 
-$gettext->revertLanguage();
+$gettext->revertHomeLang();
 Assert::equal('Ahoj světe', gettext('Ahoj světe'));
 
 $gettext->setLanguage('en');
@@ -70,4 +69,14 @@ Assert::true($gettext->detectLanguage() == 'cs');
 $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'cs';
 Assert::true($gettext->detectLanguage() == 'cs');
 
+/**
+ * COMPILATOR ******************************************************************
+ * *****************************************************************************
+ */
+/* @var $compiler h4kuna\Gettext\Latte\LatteCompiler */
+$compiler = $container->getService('gettextLatteExtension.compiler');
+$compiler->addInclude(__DIR__ . '/../examples');
+$compiler->addExclude(__DIR__ . '/../examples/example.latte');
+$compiler->addInclude(__DIR__ . '/../examples');
+$compiler->run();
 echo 'ok';

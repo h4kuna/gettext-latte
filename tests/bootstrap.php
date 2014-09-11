@@ -16,12 +16,9 @@ $tmp = __DIR__ . '/temp/' . php_sapi_name();
 @mkdir($tmp, 0777, TRUE);
 $configurator->enableDebugger($tmp);
 $configurator->setTempDirectory($tmp);
-$configurator->setDebugMode();
-
-$configurator->defaultExtensions['gettextExtension'] = '\h4kuna\Gettext\DI\GettextLatteExtension';
+$configurator->setDebugMode(FALSE);
 $configurator->addConfig(__DIR__ . '/test.neon');
 $container = $configurator->createContainer();
-$container->getService('session')->start();
 return $container;
 
 
