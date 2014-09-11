@@ -5,8 +5,8 @@ namespace h4kuna\Gettext\Latte;
 use Latte\RuntimeException;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Bridges\ApplicationLatte\TemplateFactory;
-use Nette\Latte\CompileException;
-use Nette\Latte\Engine;
+use Latte\CompileException;
+use Latte\Engine;
 use Nette\Utils\Finder;
 use SplFileInfo;
 
