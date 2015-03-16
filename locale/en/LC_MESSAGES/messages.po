@@ -14,8 +14,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 1.5.4\n"
-"X-Poedit-SearchPath-0: ../../../web_app\n"
-"X-Poedit-SearchPath-1: ../../../web_temp/cache/latte\n"
+"X-Poedit-SearchPath-0: ../../../app\n"
+"X-Poedit-SearchPath-1: ../../../temp/cache/latte\n"
 
 #: ../../../tests/GettextSetupTest.php:11
 #: ../../../tests/GettextSetupTest.php:14

@@ -146,8 +146,8 @@ class Dictionary extends Object {
      * @return array
      */
     private function loadDomains() {
-        if (isset($this->cache[self::DOMAIN])) {
-            return $this->domains = $this->cache[self::DOMAIN];
+        if ($this->cache->load(self::DOMAIN) !== NULL) {
+            return $this->domains = $this->cache->load(self::DOMAIN);
         }
 
         $files = $match = $domains = array();

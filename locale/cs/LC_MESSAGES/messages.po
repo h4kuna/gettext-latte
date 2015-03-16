@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: ../../../app\n"
-"X-Poedit-SearchPath-1: ../../../temp/cache/_Nette.FileTemplate\n"
+"X-Poedit-SearchPath-1: ../../../temp/cache/latte\n"
 "X-Poedit-SearchPath-2: ../../../tests\n"
 
 #: ../../../tests/GettextSetupTest.php:20
