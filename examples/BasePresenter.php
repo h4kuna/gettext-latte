@@ -8,6 +8,10 @@ namespace h4kuna;
  * @author Milan Matějček
  */
 abstract class BasePresenter extends \Nette\Application\UI\Presenter {
+    /**
+     * PHP < 5.4 ***************************************************************
+     * *************************************************************************
+     */
 
     /** @persistent */
     public $lang;
@@ -29,7 +33,7 @@ abstract class BasePresenter extends \Nette\Application\UI\Presenter {
     }
 
     /**
-     * PHP 5.4+ ****************************************************************
+     * or PHP 5.4+ *************************************************************
      * *************************************************************************
      */
     use \h4kuna\Gettext\InjectTranslator;
