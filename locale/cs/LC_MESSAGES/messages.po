@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2014-06-02 21:01+0100\n"
 "PO-Revision-Date: 2014-06-03 15:50+0100\n"
-"Last-Translator: Milan Matějček <milan.matejcek@gmail.com>\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs_CZ\n"
 "MIME-Version: 1.0\n"
@@ -16,16 +16,3 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: ../../../app\n"
 "X-Poedit-SearchPath-1: ../../../temp/cache/latte\n"
-"X-Poedit-SearchPath-2: ../../../tests\n"
-
-#: ../../../tests/GettextSetupTest.php:20
-#: ../../../tests/GettextSetupTest.php:24
-#: ../../../tests/GettextSetupTest.php:28
-#: ../../../tests/GettextSetupTest.php:31
-#: ../../../tests/GettextSetupTest.php:39
-msgid "Ahoj světe"
-msgstr ""
-
-#: ../../../tests/GettextSetupTest.php:42
-msgid "Slaný"
-msgstr "To hard"
