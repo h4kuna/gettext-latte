@@ -12,14 +12,21 @@
         }
     ],
     "require": {
-        "nette/nette": "~2.0"
+        "tracy/tracy": "~2.0",
+        "nette/application": "~2.0",
+        "nette/bootstrap": "~2.0",
+        "nette/caching": "~2.0",
+        "nette/di": "~2.0",
+        "nette/finder": "~2.0",
+        "nette/http": "~2.0",
+        "latte/latte": "~2.0"
     },
     "require-dev": {
         "nette/tester": "@dev"
     },
     "autoload": {
         "psr-4": {
-            "h4kuna\\": ""
+            "h4kuna\\Gettext\\": "src\\"
         }
     }
 }
