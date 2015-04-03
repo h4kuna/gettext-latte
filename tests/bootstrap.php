@@ -9,11 +9,14 @@ function dd($var /* ... */) {
     exit;
 }
 
+Tester\Environment::setup();
+
 // 2# Create Nette Configurator
 $configurator = new Nette\Configurator;
 
 $tmp = __DIR__ . '/temp/' . php_sapi_name();
-@mkdir($tmp, 0777, TRUE);
+@mkdir($tmp, 0755, TRUE);
+@mkdir($tmp . '/cache/latte', 0755, TRUE);
 $configurator->enableDebugger($tmp);
 $configurator->setTempDirectory($tmp);
 $configurator->setDebugMode(FALSE);
