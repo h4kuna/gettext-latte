@@ -30,10 +30,7 @@ class Latte2PhpTokenizer {
         return implode(',', $this->args);
     }
 
-    /**
-     * 
-     * @return array
-     */
+    /** @return array */
     public function getArgs() {
         return $this->args;
     }
