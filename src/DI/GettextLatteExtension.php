@@ -49,7 +49,7 @@ class GettextLatteExtension extends CompilerExtension {
             $gettext->addSetup('loadAllDomains', array($config['loadAllDomains']));
         }
 
-        if ($config['session'] !== NULL && $config['session'] !== FALSE) {
+        if ($config['session'] !== NULL && $config['session'] !== FALSE && PHP_SAPI != 'cli') {
             $gettext->addSetup('setSession', array($builder->getDefinition('session'), $config['session']));
         }
 
