@@ -61,6 +61,8 @@ class GettextSetup extends Object implements Iterator {
     public function __construct(array $languages, Dictionary $dictionary, Os $os, Http\Request $request) {
         if (!function_exists('bindtextdomain')) {
             throw new GettextException('You have not instaled gettext extension.');
+        } elseif (PHP_SAPI === 'cli') {
+            putenv("LANGUAGE=");
         }
         $this->dictionary = $dictionary;
         $this->os = $os;
@@ -92,9 +94,9 @@ class GettextSetup extends Object implements Iterator {
      */
     public function changeHomeLang($lang) {
         if ($this->languagePrev === NULL) {
-            $this->languagePrev = $this->language;
+            $this->languagePrev = $this->getLanguage();
         }
-        $this->setLanguage($lang);
+        return $this->setLanguage($lang);
     }
 
     /**
@@ -105,16 +107,6 @@ class GettextSetup extends Object implements Iterator {
             $this->setLanguage($this->languagePrev);
             $this->languagePrev = NULL;
         }
-    }
-
-    /**
-     * Set and return actual language.
-     * 
-     * @param string $language
-     * @return string
-     */
-    public function loadLanguage($language) {
-        return $this->setLanguage($language)->getLanguage();
     }
 
     /**
@@ -148,8 +140,8 @@ class GettextSetup extends Object implements Iterator {
      * 
      * @param string $domain
      */
-    public function bind($domain) {
-        $this->dictionary->bind($domain);
+    public function loadDomain($domain) {
+        $this->dictionary->loadDomain($domain);
     }
 
     /**
@@ -192,26 +184,15 @@ class GettextSetup extends Object implements Iterator {
     }
 
     /**
-     * Set default language dictionary
-     * 
-     * @param string $domain
-     * @return self
-     */
-    public function setDomain($domain) {
-        $this->dictionary->setDomain($domain);
-        return $this;
-    }
-
-    /**
      * @param string $lang
-     * @return self
+     * @return string
      * @throws RuntimeException
      */
     public function setLanguage($lang) {
         $lang = $lang ? strtolower($lang) : $this->getDefault();
 
         if ($this->language == $lang) {
-            return $this;
+            return $this->language;
         }
 
         $this->checkLanguage($lang);
@@ -223,7 +204,7 @@ class GettextSetup extends Object implements Iterator {
             $this->section->language = $lang;
             $this->onChangeLanguage($lang);
         }
-        return $this;
+        return $this->language;
     }
 
     /**
@@ -232,7 +213,7 @@ class GettextSetup extends Object implements Iterator {
      * @param Http\Session $session
      * @return self
      */
-    public function setSession(Http\Session $session, $live = '+7 days') {
+    public function setSession(Http\Session $session, $live = '+1 week') {
         $this->section = $session->getSection(__CLASS__);
         if (!isset($this->section->language)) {
             $this->setLanguage($this->detectLanguage());

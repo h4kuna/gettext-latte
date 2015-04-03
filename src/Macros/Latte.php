@@ -44,9 +44,9 @@ class Latte extends MacroSet {
      */
     public static function install(Compiler $compiler) {
         $me = new static($compiler);
-        $me->addMacro('_', callback($me, 'unknown'));
+        $me->addMacro('_', array($me, 'unknown'));
         foreach (self::$functions as $prefix => $_n) {
-            $me->addMacro($prefix . '_', callback($me, self::GETTEXT));
+            $me->addMacro($prefix . '_', array($me, self::GETTEXT));
         }
         return $me;
     }
