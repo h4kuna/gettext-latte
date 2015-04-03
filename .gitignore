@@ -1,4 +1,4 @@
 nbproject/
-*.mo
+locale/*.mo
 composer.lock
 vendor/

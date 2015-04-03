@@ -37,7 +37,7 @@ class Dictionary extends Object {
 
     /**
      * Check path wiht dictionary
-     * 
+     *
      * @param string $path
      * @throws GettextException
      */
@@ -51,7 +51,7 @@ class Dictionary extends Object {
 
     /**
      * What domain you want.
-     * 
+     *
      * @param string $domain
      * @return self
      * @throws GettextException
@@ -65,9 +65,28 @@ class Dictionary extends Object {
         return $this;
     }
 
+    public function setLanguage($language) {
+        $constLC = defined('LC_MESSAGES') ? LC_MESSAGES : LC_ALL;
+
+        dump(getenv('LANG'), getenv('LC_ALL'));
+$l = $language;
+$language = '0';
+        if (!putenv('LANG=' . $language)) {
+            throw new GettextException('Constant LANG not set.');
+        }
+
+        if (!putenv('LC_ALL=' . $language)) {
+            throw new GettextException('Constant LC_ALL not set.');
+        }
+        $language = $l;
+        if (($x = setlocale($constLC, $language))) {
+            throw new GettextException('Locale is not set for: ' . $language);
+        }
+    }
+
     /**
      * Load dictionary if not loaded.
-     * 
+     *
      * @param string $domain
      * @throws GettextException
      */
@@ -76,8 +95,10 @@ class Dictionary extends Object {
             throw new GettextException('This domain does not exists: ' . $domain);
         }
         if ($this->domains[$domain] === FALSE) {
-            bindtextdomain($domain, $this->path);
-            bind_textdomain_codeset($domain, 'UTF-8');
+            if (!bindtextdomain($domain, $this->path) || !is_dir($this->path)) {
+                throw new GettextException('Path is not loaded, probably does not exists. ' . $this->path);
+            }
+            // bind_textdomain_codeset($domain, 'UTF-8');
             $this->domains[$domain] = TRUE;
         }
         return $domain;
@@ -90,7 +111,7 @@ class Dictionary extends Object {
 
     /**
      * Load all dictionaries.
-     * 
+     *
      * @param string $default
      */
     public function loadAllDomains($default) {
@@ -102,7 +123,7 @@ class Dictionary extends Object {
 
     /**
      * Offer file download.
-     * 
+     *
      * @param string $language
      * @throws GettextException
      */
@@ -133,7 +154,7 @@ class Dictionary extends Object {
 
     /**
      * Filesystem path for domain
-     * 
+     *
      * @param string $lang
      * @param string $extension
      * @return string
@@ -150,7 +171,7 @@ class Dictionary extends Object {
 
     /**
      * Check for available domain.
-     * 
+     *
      * @return array
      */
     private function loadDomains() {
@@ -192,7 +213,7 @@ class Dictionary extends Object {
 
     /**
      * Check dictionary path.
-     * 
+     *
      * @param string $path
      * @throws GettextException
      */

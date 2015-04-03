@@ -53,7 +53,7 @@ class GettextSetup extends Object implements Iterator {
     public $onChangeLanguage;
 
     /**
-     * 
+     *
      * @param array $languages
      * @param Dictionary $dictionary
      * @throws GettextException
@@ -72,7 +72,7 @@ class GettextSetup extends Object implements Iterator {
 
     /**
      * Try find user language.
-     * 
+     *
      * @return string
      */
     public function detectLanguage() {
@@ -88,7 +88,7 @@ class GettextSetup extends Object implements Iterator {
 
     /**
      * If you need change language in iterator
-     * 
+     *
      * @param sring $lang
      * @return self
      */
@@ -111,7 +111,7 @@ class GettextSetup extends Object implements Iterator {
 
     /**
      * Default language
-     * 
+     *
      * @return string
      */
     public function getDefault() {
@@ -120,7 +120,7 @@ class GettextSetup extends Object implements Iterator {
 
     /**
      * Actived language
-     * 
+     *
      * @return string
      */
     public function getLanguage() {
@@ -137,7 +137,7 @@ class GettextSetup extends Object implements Iterator {
 
     /**
      * Load language dictionary
-     * 
+     *
      * @param string $domain
      */
     public function loadDomain($domain) {
@@ -145,7 +145,7 @@ class GettextSetup extends Object implements Iterator {
     }
 
     /**
-     * 
+     *
      * @see Dictionary::download
      * @param string $language
      */
@@ -167,7 +167,7 @@ class GettextSetup extends Object implements Iterator {
 
     /**
      * Is active default language?
-     * 
+     *
      * @return bool
      */
     public function isDefault() {
@@ -176,7 +176,7 @@ class GettextSetup extends Object implements Iterator {
 
     /**
      * Load all possible language dictionary
-     * 
+     *
      * @param string $default
      */
     public function loadAllDomains($default) {
@@ -223,7 +223,7 @@ class GettextSetup extends Object implements Iterator {
     }
 
     /**
-     * 
+     *
      * @param string $language
      * @throws GettextException
      */
@@ -235,13 +235,14 @@ class GettextSetup extends Object implements Iterator {
 
     /**
      * Load language dictionary
-     * 
+     *
      * @throws GettextException
      */
     private function loadDictionary() {
         $constLC = defined('LC_MESSAGES') ? LC_MESSAGES : LC_ALL;
         if ($this->os->isWindows()) {
             putenv('LANG=' . $this->language);
+            putenv('LC_ALL='.$this->language); 
             setlocale($constLC, $this->os->getWindowsLocale($this->languages[$this->language]));
             $set = TRUE;
         } else {
@@ -274,7 +275,7 @@ class GettextSetup extends Object implements Iterator {
 
     /**
      * List of avaible languages
-     * 
+     *
      * @param array $langs
      * @return self
      */
@@ -295,7 +296,7 @@ class GettextSetup extends Object implements Iterator {
 
     /**
      * Show you posibble languages
-     * 
+     *
      * @return array
      */
     static function showAvailableLanguages() {
@@ -317,7 +318,7 @@ class GettextSetup extends Object implements Iterator {
 
     /**
      * Is language active?
-     * 
+     *
      * @return bool
      */
     public function current() {
