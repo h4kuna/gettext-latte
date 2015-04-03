@@ -25,13 +25,13 @@ class LatteCompilerTest extends Tester\TestCase {
     }
 
     public function testCompile() {
+        Tester\Environment::skip();
         $compiler = $this->compiler;
         $path = self::getBasePath();
         $compiler->addInclude($path);
         $compiler->addExclude($path . '/example.latte');
         $compiler->addInclude($path);
         $compiler->run();
-        Tester\Environment::skip();
     }
 
     private static function getBasePath() {
