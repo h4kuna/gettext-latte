@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-02 07:05+0100\n"
-"PO-Revision-Date: 2015-04-03 23:03+0100\n"
+"PO-Revision-Date: 2015-04-04 14:56+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_GB\n"
@@ -27,7 +27,3 @@ msgstr ""
 #: ../../../src/GettextSetupTest.phpt:85 ../../../src/GettextSetupTest.phpt:88
 msgid "Ahoj světe"
 msgstr "Hello world"
-
-#, fuzzy
-#~ msgid "Ahoj kemo"
-#~ msgstr "Hello world"

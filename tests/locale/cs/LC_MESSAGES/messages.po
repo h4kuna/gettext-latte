@@ -1,25 +1,29 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2015-03-26 10:38+0100\n"
-"PO-Revision-Date: 2015-04-03 23:28+0100\n"
+"POT-Creation-Date: 2015-04-02 07:05+0100\n"
+"PO-Revision-Date: 2015-04-04 15:30+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: cs_CZ\n"
+"Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: _;gettext;ngettext\n"
 "X-Poedit-Basepath: .\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4 ? 1 : 2);\n"
+"Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 1.7.5\n"
 "X-Poedit-SearchPath-0: ../../../src\n"
 
-#: ../../../src/GettextSetupTest.phpt:29 ../../../src/GettextSetupTest.phpt:34
-#: ../../../src/GettextSetupTest.phpt:36 ../../../src/GettextSetupTest.phpt:56
-#: ../../../src/GettextSetupTest.phpt:57 ../../../src/GettextSetupTest.phpt:60
-#: ../../../src/GettextSetupTest.phpt:70 ../../../src/GettextSetupTest.phpt:73
-#: ../../../src/GettextSetupTest.phpt:76
+#: ../../../src/GettextSetupTest.php:33 ../../../src/GettextSetupTest.php:38
+#: ../../../src/GettextSetupTest.php:40 ../../../src/GettextSetupTest.php:45
+#: ../../../src/GettextSetupTest.php:46 ../../../src/GettextSetupTest.php:72
+#: ../../../src/GettextSetupTest.php:82 ../../../src/GettextSetupTest.php:85
+#: ../../../src/GettextSetupTest.php:88 ../../../src/GettextSetupTest.phpt:33
+#: ../../../src/GettextSetupTest.phpt:38 ../../../src/GettextSetupTest.phpt:40
+#: ../../../src/GettextSetupTest.phpt:45 ../../../src/GettextSetupTest.phpt:46
+#: ../../../src/GettextSetupTest.phpt:72 ../../../src/GettextSetupTest.phpt:82
+#: ../../../src/GettextSetupTest.phpt:85 ../../../src/GettextSetupTest.phpt:88
 msgid "Ahoj světe"
-msgstr "český Ahoj světe"
+msgstr "Ahoj světe cs"
