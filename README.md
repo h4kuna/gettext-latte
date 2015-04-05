@@ -1,10 +1,7 @@
 GettextLatte
 ===========
 
-For Nette 2.3 look at to dev branch "h4kuna/gettext-latte": "1.3.*@dev".
-----------------------------------------------------------------------
-
-is localization addon for [Nette framework](http://nette.org/), which natively supports [gettext](http://php.net/manual/en/book.gettext.php).
+is localization addon for [Nette framework 2.3](http://nette.org/), which natively supports [gettext](http://php.net/manual/en/book.gettext.php).
 
 You can use it without Nette if you use Gettext.php.
 
