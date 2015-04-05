@@ -1,6 +1,8 @@
 GettextLatte
 ===========
 
+[![Build Status](https://travis-ci.org/h4kuna/gettext-latte.svg?branch=master)](https://travis-ci.org/h4kuna/gettext-latte)
+
 is localization addon for [Nette framework 2.3](http://nette.org/), which natively supports [gettext](http://php.net/manual/en/book.gettext.php).
 
 You can use it without Nette if you use Gettext.php.
