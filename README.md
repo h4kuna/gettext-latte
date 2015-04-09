@@ -31,7 +31,7 @@ Example for router setup from [nette sandbox](https://github.com/h4kuna/gettext-
 /**
  * @return Nette\Application\IRouter
  */
-public static function createRouter(\h4kuna\GettextSetup $translator) {
+public static function createRouter(\h4kuna\Gettext\GettextSetup $translator) {
     $router = new RouteList();
     $router[] = new Route('index.php', 'Homepage:default', Route::ONE_WAY);
     $router[] = new Route('[<lang ' . $translator->routerAccept() . '>/]<presenter>/<action>/[<id>/]', array(
@@ -87,7 +87,7 @@ abstract class BasePresenter extends Presenter {
 
     protected function startup() {
         parent::startup();
-        $this->lang = $this->translator->loadLanguage($this->lang);
+        $this->lang = $this->translator->setLanguage($this->lang);
     }
     
     /**
