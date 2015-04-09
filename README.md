@@ -19,11 +19,14 @@ In the repository is directory **locale** containing prepared directory structur
 
 Start-up
 ---------------------
-Clone this repository or use composer [h4kuna/gettext-latte](https://packagist.org/packages/h4kuna/gettext-latte).
+Clone this repository or use composer.
+```sh
+composer require h4kuna/gettext-latte
+```
 
 Look into _examples/RouterFactory.php_.
 
-Example for router setup from [nette sandbox](https://github.com/nette/sandbox/blob/master/app/router/RouterFactory.php);
+Example for router setup from [nette sandbox](https://github.com/h4kuna/gettext-latte/blob/master/examples/RouterFactory.php);
 ```php
 /**
  * @return Nette\Application\IRouter
