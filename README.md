@@ -1,13 +1,9 @@
 GettextLatte
-===========
+============
 
 [![Build Status](https://travis-ci.org/h4kuna/gettext-latte.svg?branch=master)](https://travis-ci.org/h4kuna/gettext-latte)
 
 is localization addon for [Nette framework 2.3](http://nette.org/), which natively supports [gettext](http://php.net/manual/en/book.gettext.php).
-
-You can use it without Nette if you use Gettext.php.
-
-[Forum](http://forum.nette.org/cs/12021-gettext-na-100-v-sablonach#p86467)
 
 Conditions for start-up
 ----------------------
@@ -24,9 +20,7 @@ Clone this repository or use composer.
 composer require h4kuna/gettext-latte
 ```
 
-Look into _examples/RouterFactory.php_.
-
-Example for router setup from [nette sandbox](https://github.com/h4kuna/gettext-latte/blob/master/examples/RouterFactory.php);
+Router keep language.
 ```php
 /**
  * @return Nette\Application\IRouter
@@ -63,7 +57,7 @@ Install new macro to latte engine with alias for native gettext function [{_'' /
 
 Run service and support automatic detection of language
 -------------------
-Load language as soon as possible. **examples/BasePresenter.php** or you can use trit InjectTranslator in **Gettext/InjectTranslator.php**
+Load language as soon as possible.
 
 ```php
 <?php
@@ -110,8 +104,7 @@ echo gettext('Hi'); //or alias _
 echo _('Hi');
 echo ngettext('dog', 'dogs', 2);
 
-// The following two are the same
-echo sprintf(_('%s possible %s %s'), 'another', 'optional', 'params'); // is faster
+echo sprintf(_('%s possible %s %s'), 'another', 'optional', 'params');
 
 ```
 
