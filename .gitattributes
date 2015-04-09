@@ -3,5 +3,4 @@
 .travis.yml export-ignore
 tests/ export-ignore
 examples/ export-ignore
-locale/ export-ignore
 *.sh eol=lf
