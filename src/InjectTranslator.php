@@ -20,7 +20,7 @@ trait InjectTranslator {
 
     protected function startup() {
         parent::startup();
-        $this->lang = $this->translator->loadLanguage($this->lang);
+        $this->lang = $this->translator->setLanguage($this->lang);
     }
 
 }
