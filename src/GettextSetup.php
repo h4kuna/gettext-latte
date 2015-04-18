@@ -6,11 +6,12 @@ use Iterator;
 use Nette\Http;
 use Nette\Object;
 use RuntimeException;
+use Nette\Localization\ITranslator;
 
 /**
  * @author Milan Matějček
  */
-class GettextSetup extends Object implements Iterator {
+class GettextSetup extends Object implements Iterator, ITranslator {
 
     /** @var string */
     private $default;
