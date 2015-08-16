@@ -170,3 +170,10 @@ For your translators you provide catalog for download.
 ```php
 $this->translator->download('cs'); //Offers catalog download
 ```
+
+Run Tests
+---------
+Composer must be instaled. And than you execute only script.
+```sh
+./tests/run-tests.sh
+```
