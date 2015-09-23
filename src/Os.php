@@ -2,7 +2,7 @@
 
 namespace h4kuna\Gettext;
 
-use h4kuna\GettextException;
+use h4kuna\Gettext\GettextException;
 
 /**
  * @author Milan Matějček
