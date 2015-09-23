@@ -12,9 +12,10 @@ class Os {
     /**
      * OS platforms
      */
-    const LINUX = 'linux';
-    const MAC = 'mac';
-    const WINDOWS = 'windows';
+    const
+        LINUX = 'linux',
+        MAC = 'mac',
+        WINDOWS = 'windows';
 
     /** @var string */
     private $os;
@@ -45,6 +46,7 @@ class Os {
                 $this->os = self::MAC;
                 break;
             case 'linux':
+            case 'freeb':
                 $this->os = self::LINUX;
                 break;
             default:
