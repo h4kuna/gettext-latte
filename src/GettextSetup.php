@@ -247,6 +247,9 @@ class GettextSetup extends Object implements Iterator, ITranslator {
             putenv('LC_ALL=' . $this->language);
             setlocale($constLC, $this->language);
             $set = TRUE;
+        } elseif ($this->os->isMac()) {
+            putenv('LANG=' . $this->language);
+            $set = setlocale(LC_ALL, $this->languages[$this->language]);
         } else {
             $set = setlocale($constLC, $this->languages[$this->language]);
         }
