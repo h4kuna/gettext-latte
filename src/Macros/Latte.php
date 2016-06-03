@@ -2,17 +2,14 @@
 
 namespace h4kuna\Gettext\Macros;
 
-use Latte\Compiler;
-use Latte\Macros\MacroSet;
-use Latte\CompileException;
-use Latte\MacroNode;
-use Latte\PhpWriter;
+use h4kuna,
+    Latte;
 
 /**
  * plural moznost zapisovat jednim parametrem
  * prepinani kontextu a nacteni slovniku
  * přidání helperů
- * 
+ *
  * @author Milan Matějček
  */
 class Latte extends MacroSet {
@@ -33,16 +30,15 @@ class Latte extends MacroSet {
 
     /**
      * Name => count of arguments
-     * 
-     * @var array 
+     * @var array
      */
     static private $functions = array('g' => 1, 'ng' => 3, 'dg' => 2, 'dng' => 4);
 
     /**
-     * @param Compiler $compiler
+     * @param Latte\Compiler $compiler
      * @return self
      */
-    public static function install(Compiler $compiler) {
+    public static function install(Latte\Compiler $compiler) {
         $me = new static($compiler);
         $me->addMacro('_', array($me, 'unknown'));
         foreach (self::$functions as $prefix => $_n) {
@@ -51,14 +47,14 @@ class Latte extends MacroSet {
         return $me;
     }
 
-    public function unknown(MacroNode $node, PhpWriter $writer) {
+    public function unknown(Latte\MacroNode $node, Latte\PhpWriter $writer) {
         $node->args = $this->detectFunction($node->args);
         return $this->ettext($node, $writer);
     }
 
-    public function ettext(MacroNode $node, PhpWriter $writer) {
+    public function ettext(Latte\MacroNode $node, Latte\PhpWriter $writer) {
         $this->setFunction($node->name);
-        $args = self::stringToArgs($node->args);
+        $args = h4kuna\Template\LattePhpTokenizer::toArray($node);
         $argsGettext = $this->getGettextArgs($args);
 
         $out = $this->function . '(' . implode(', ', $argsGettext) . ')';
@@ -72,7 +68,6 @@ class Latte extends MacroSet {
     }
 
     /**
-     * 
      * @param array $args
      * @return array
      */
@@ -131,17 +126,7 @@ class Latte extends MacroSet {
     }
 
     /**
-     * @param string $s
-     * @return array
-     */
-    static private function stringToArgs($s) {
-        $args = new Latte2PhpTokenizer($s);
-        return $args->getArgs();
-    }
-
-    /**
      * Has term for replace?
-     * 
      * @param string $str
      * @return int
      */
