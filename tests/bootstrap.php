@@ -20,7 +20,7 @@ $tmp = __DIR__ . '/temp/' . php_sapi_name();
 $configurator->enableDebugger($tmp);
 $configurator->setTempDirectory($tmp);
 $configurator->setDebugMode(FALSE);
-$configurator->addConfig(__DIR__ . '/test.neon');
+$configurator->addConfig(__DIR__ . '/config/test.neon');
 $container = $configurator->createContainer();
 return $container;
 
