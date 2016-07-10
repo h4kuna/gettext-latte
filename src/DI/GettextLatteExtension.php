@@ -71,8 +71,8 @@ class GettextLatteExtension extends CompilerExtension {
          * let's clear temp directory
          * _Nette.FileTemplate
          */
-        $temp = $this->containerBuilder->parameters['tempDir'] . '/cache/latte';
-        if (file_exists($temp) && $this->containerBuilder->parameters['debugMode']) {
+        $temp = $this->getContainerBuilder()->parameters['tempDir'] . '/cache/latte';
+        if (file_exists($temp) && $this->getContainerBuilder()->parameters['debugMode']) {
             foreach (Finder::find('*')->in($temp) as $file) {
                 /* @var $file \SplFileInfo */
                 @unlink($file->getPathname());
