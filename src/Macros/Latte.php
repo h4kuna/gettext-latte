@@ -12,7 +12,7 @@ use h4kuna,
  *
  * @author Milan Matějček
  */
-class Latte extends MacroSet {
+class Latte extends Latte\Macros\MacroSet {
 
     const GETTEXT = 'ettext';
 
@@ -122,7 +122,7 @@ class Latte extends MacroSet {
             }
             return $args;
         }
-        throw new CompileException('Wrong macro');
+        throw new Latte\CompileException('Wrong macro');
     }
 
     /**
