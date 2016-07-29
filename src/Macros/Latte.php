@@ -2,8 +2,7 @@
 
 namespace h4kuna\Gettext\Macros;
 
-use h4kuna,
-    Latte;
+use h4kuna;
 
 /**
  * plural moznost zapisovat jednim parametrem
@@ -12,7 +11,7 @@ use h4kuna,
  *
  * @author Milan Matějček
  */
-class Latte extends Latte\Macros\MacroSet {
+class Latte extends \Latte\Macros\MacroSet {
 
     const GETTEXT = 'ettext';
 
@@ -35,10 +34,10 @@ class Latte extends Latte\Macros\MacroSet {
     static private $functions = array('g' => 1, 'ng' => 3, 'dg' => 2, 'dng' => 4);
 
     /**
-     * @param Latte\Compiler $compiler
+     * @param \Latte\Compiler $compiler
      * @return self
      */
-    public static function install(Latte\Compiler $compiler) {
+    public static function install(\Latte\Compiler $compiler) {
         $me = new static($compiler);
         $me->addMacro('_', array($me, 'unknown'));
         foreach (self::$functions as $prefix => $_n) {
@@ -47,12 +46,12 @@ class Latte extends Latte\Macros\MacroSet {
         return $me;
     }
 
-    public function unknown(Latte\MacroNode $node, Latte\PhpWriter $writer) {
+    public function unknown(\Latte\MacroNode $node, \Latte\PhpWriter $writer) {
         $node->args = $this->detectFunction($node->args);
         return $this->ettext($node, $writer);
     }
 
-    public function ettext(Latte\MacroNode $node, Latte\PhpWriter $writer) {
+    public function ettext(\Latte\MacroNode $node, \Latte\PhpWriter $writer) {
         $this->setFunction($node->name);
         $args = h4kuna\Template\LattePhpTokenizer::toArray($node);
         $argsGettext = $this->getGettextArgs($args);
@@ -122,7 +121,7 @@ class Latte extends Latte\Macros\MacroSet {
             }
             return $args;
         }
-        throw new Latte\CompileException('Wrong macro');
+        throw new \Latte\CompileException('Wrong macro');
     }
 
     /**
