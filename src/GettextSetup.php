@@ -2,17 +2,16 @@
 
 namespace h4kuna\Gettext;
 
-use Iterator;
-use Nette\Http;
-use Nette\Object;
-use RuntimeException;
-use Nette\Localization\ITranslator;
+use Nette,
+	Nette\Http;
 
 /**
  * @author Milan Matějček
  */
-class GettextSetup extends Object implements Iterator, ITranslator
+class GettextSetup implements \Iterator, Localization\ITranslator
 {
+
+	use Nette\SmartObject;
 
 	/** @var string */
 	private $default;

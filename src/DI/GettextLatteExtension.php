@@ -2,11 +2,11 @@
 
 namespace h4kuna\Gettext\DI;
 
-use Nette\PhpGenerator\ClassType;
-use Nette\DI\CompilerExtension;
-use Nette\Utils\Finder;
+use Nette\PhpGenerator,
+	Nette\DI,
+	Nette\Utils;
 
-class GettextLatteExtension extends CompilerExtension
+class GettextLatteExtension extends DI\CompilerExtension
 {
 
 	public $defaults = [
@@ -64,7 +64,7 @@ class GettextLatteExtension extends CompilerExtension
 		$latte->addSetup('?->onCompile[] = function($engine) { h4kuna\Gettext\Macros\Latte::install($engine->getCompiler()); }', ['@self']);
 	}
 
-	public function afterCompile(ClassType $class)
+	public function afterCompile(PhpGenerator\ClassType $class)
 	{
 		/**
 		 * old template must regenerate
@@ -76,7 +76,7 @@ class GettextLatteExtension extends CompilerExtension
 		 */
 		$temp = $this->getContainerBuilder()->parameters['tempDir'] . '/cache/latte';
 		if (file_exists($temp) && $this->getContainerBuilder()->parameters['debugMode']) {
-			foreach (Finder::find('*')->in($temp) as $file) {
+			foreach (Utils\Finder::find('*')->in($temp) as $file) {
 				/* @var $file \SplFileInfo */
 				@unlink($file->getPathname());
 			}

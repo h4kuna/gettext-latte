@@ -17,15 +17,15 @@ use Nette\Http\FileUpload;
 class Dictionary extends Object
 {
 
-	const PHP_DIR = '/LC_MESSAGES/';
-	const DOMAIN = 'messages';
+	const
+		PHP_DIR = '/LC_MESSAGES/',
+		DOMAIN = 'messages';
 
 	/** @var string */
 	private $path;
 
 	/**
 	 * List of domains
-	 *
 	 * @var array
 	 */
 	private $domains = [];
@@ -37,8 +37,7 @@ class Dictionary extends Object
 	private $cache;
 
 	/**
-	 * Check path wiht dictionary
-	 *
+	 * Check path wiht dictionary.
 	 * @param string $path
 	 * @throws GettextException
 	 */
@@ -53,7 +52,6 @@ class Dictionary extends Object
 
 	/**
 	 * What domain you want.
-	 *
 	 * @param string $domain
 	 * @return self
 	 * @throws GettextException
@@ -70,7 +68,6 @@ class Dictionary extends Object
 
 	/**
 	 * Load dictionary if not loaded.
-	 *
 	 * @param string $domain
 	 * @throws GettextException
 	 */
@@ -95,7 +92,6 @@ class Dictionary extends Object
 
 	/**
 	 * Load all dictionaries.
-	 *
 	 * @param string $default
 	 */
 	public function loadAllDomains($default)
@@ -108,7 +104,6 @@ class Dictionary extends Object
 
 	/**
 	 * Offer file download.
-	 *
 	 * @param string $language
 	 * @throws GettextException
 	 */
@@ -128,7 +123,6 @@ class Dictionary extends Object
 
 	/**
 	 * Save uploaded files.
-	 *
 	 * @param string $lang
 	 * @param FileUpload $po
 	 * @param FileUpload $mo
@@ -140,8 +134,7 @@ class Dictionary extends Object
 	}
 
 	/**
-	 * Filesystem path for domain
-	 *
+	 * Filesystem path for domain.
 	 * @param string $lang
 	 * @param string $extension
 	 * @return string
@@ -159,7 +152,6 @@ class Dictionary extends Object
 
 	/**
 	 * Check for available domain.
-	 *
 	 * @return array
 	 */
 	private function loadDomains()
@@ -202,7 +194,6 @@ class Dictionary extends Object
 
 	/**
 	 * Check dictionary path.
-	 *
 	 * @param string $path
 	 * @throws GettextException
 	 */

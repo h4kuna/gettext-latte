@@ -2,17 +2,13 @@
 
 namespace h4kuna\Gettext;
 
-use h4kuna\Gettext\GettextException;
-
 /**
  * @author Milan Matějček
  */
 class Os
 {
 
-	/**
-	 * OS platforms
-	 */
+	/** OS platforms */
 	const
 		LINUX = 'linux',
 		MAC = 'mac',
@@ -54,7 +50,7 @@ class Os
 				$this->os = self::LINUX;
 				break;
 			default:
-				throw new GettextException('Unsupported OS please write to autor. Your system is ' . PHP_OS . '.');
+				throw new UnsupportedOperationSystemException('Please write to autor. Your system is: "' . PHP_OS . '".');
 		}
 		return $this->os;
 	}
