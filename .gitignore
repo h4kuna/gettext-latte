@@ -1,5 +1,5 @@
 nbproject/
 *.mo
 composer.lock
-vendor/
+/vendor/
 *~

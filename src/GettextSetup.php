@@ -328,7 +328,7 @@ class GettextSetup extends Object implements Iterator, ITranslator
 	{
 		$return = NULL;
 		exec('locale -a', $return);
-		$out = array();
+		$out = [];
 		foreach ($return as $line) {
 			if (preg_match('/\w{2,}\.utf-?8/i', $line)) {
 				$out[] = $line;

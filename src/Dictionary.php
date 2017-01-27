@@ -28,7 +28,7 @@ class Dictionary extends Object
 	 *
 	 * @var array
 	 */
-	private $domains = array();
+	private $domains = [];
 
 	/** @var string */
 	private $domain;
@@ -168,7 +168,7 @@ class Dictionary extends Object
 			return $this->domains = $this->cache->load(self::DOMAIN);
 		}
 
-		$files = $match = $domains = array();
+		$files = $match = $domains = [];
 		$find = Finder::findFiles('*.po');
 		foreach ($find->from($this->path) as $file) {
 			/* @var $file SplFileInfo */
@@ -197,7 +197,7 @@ class Dictionary extends Object
 
 
 		$data = array_combine($_domains, array_fill_keys($_domains, FALSE));
-		return $this->domains = $this->cache->save(self::DOMAIN, $data, array(Cache::FILES => $files));
+		return $this->domains = $this->cache->save(self::DOMAIN, $data, [Cache::FILES => $files]);
 	}
 
 	/**

@@ -22,7 +22,7 @@ class Os
 	private $os;
 
 	/** @var array */
-	private $translateLocale = array();
+	private $translateLocale = [];
 
 	public function __construct(array $winLocaleTranslate)
 	{

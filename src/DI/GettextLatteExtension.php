@@ -9,20 +9,20 @@ use Nette\Utils\Finder;
 class GettextLatteExtension extends CompilerExtension
 {
 
-	public $defaults = array(
-		'langs' => array(),
+	public $defaults = [
+		'langs' => [],
 		'dictionaryPath' => '%appDir%/../locale/',
 		'session' => '+1 week',
 		'loadAllDomains' => 'messages',
-		'localeTranslate' => array(
+		'localeTranslate' => [
 			'en_US' => 'English_United_States',
 			'en_EN' => 'English_United_Kingdom',
 			'de_DE' => 'German_Standard',
 			'sk_SK' => 'Slovak',
 			'cs_CZ' => 'Czech',
 			'it_IT' => 'Italian_Standard'
-		)
-	);
+		]
+	];
 
 	public function loadConfiguration()
 	{
@@ -30,38 +30,38 @@ class GettextLatteExtension extends CompilerExtension
 
 		$config = $this->getConfig($this->defaults);
 		if (!$config['langs']) {
-			$config['langs'] = array('cs' => 'cs_CZ.utf8', 'en' => 'en_US.utf8');
+			$config['langs'] = ['cs' => 'cs_CZ.utf8', 'en' => 'en_US.utf8'];
 		}
 		// os
 		$builder->addDefinition($this->prefix('os'))
 			->setClass('h4kuna\Gettext\Os')
-			->setArguments(array($config['localeTranslate']));
+			->setArguments([$config['localeTranslate']]);
 
 		// dictionary
 		$builder->addDefinition($this->prefix('dictionary'))
 			->setClass('h4kuna\Gettext\Dictionary')
-			->setArguments(array($config['dictionaryPath'], '@cacheStorage'));
+			->setArguments([$config['dictionaryPath'], '@cacheStorage']);
 
 		// setup
 		$gettext = $builder->addDefinition($this->prefix('gettext'))
 			->setClass('h4kuna\Gettext\GettextSetup')
-			->setArguments(array($config['langs'], $this->prefix('@dictionary'), $this->prefix('@os')));
+			->setArguments([$config['langs'], $this->prefix('@dictionary'), $this->prefix('@os')]);
 
 		if ($config['loadAllDomains']) {
-			$gettext->addSetup('loadAllDomains', array($config['loadAllDomains']));
+			$gettext->addSetup('loadAllDomains', [$config['loadAllDomains']]);
 		}
 
 		if ($config['session'] !== NULL && $config['session'] !== FALSE && PHP_SAPI != 'cli') {
-			$gettext->addSetup('setSession', array($builder->getDefinition('session'), $config['session']));
+			$gettext->addSetup('setSession', [$builder->getDefinition('session'), $config['session']]);
 		}
 
 		// compiler
 		$builder->addDefinition($this->prefix('compiler'))
 			->setClass('h4kuna\Gettext\Latte\LatteCompiler')
-			->setArguments(array($builder->getDefinition('nette.templateFactory')));
+			->setArguments([$builder->getDefinition('nette.templateFactory')]);
 
 		$latte = $builder->getDefinition('nette.latteFactory');
-		$latte->addSetup('?->onCompile[] = function($engine) { h4kuna\Gettext\Macros\Latte::install($engine->getCompiler()); }', array('@self'));
+		$latte->addSetup('?->onCompile[] = function($engine) { h4kuna\Gettext\Macros\Latte::install($engine->getCompiler()); }', ['@self']);
 	}
 
 	public function afterCompile(ClassType $class)

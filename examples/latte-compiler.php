@@ -12,5 +12,5 @@ $compiler->addInclude(__DIR__ . '/../examples');
 
 // undefoned property
 $template = $compiler->getTemplate();
-$template->languages = $template->mail = $template->menu = new MagicObject(array());
+$template->languages = $template->mail = $template->menu = new MagicObject([]);
 $compiler->run();

@@ -32,7 +32,7 @@ class Latte extends \Latte\Macros\MacroSet
 	 * Name => count of arguments
 	 * @var array
 	 */
-	static private $functions = array('g' => 1, 'ng' => 3, 'dg' => 2, 'dng' => 4);
+	static private $functions = ['g' => 1, 'ng' => 3, 'dg' => 2, 'dng' => 4];
 
 	/**
 	 * @param \Latte\Compiler $compiler
@@ -41,9 +41,9 @@ class Latte extends \Latte\Macros\MacroSet
 	public static function install(\Latte\Compiler $compiler)
 	{
 		$me = new static($compiler);
-		$me->addMacro('_', array($me, 'unknown'));
+		$me->addMacro('_', [$me, 'unknown']);
 		foreach (self::$functions as $prefix => $_n) {
-			$me->addMacro($prefix . '_', array($me, self::GETTEXT));
+			$me->addMacro($prefix . '_', [$me, self::GETTEXT]);
 		}
 		return $me;
 	}

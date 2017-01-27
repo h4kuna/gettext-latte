@@ -14,16 +14,16 @@ class LatteCompiler
 {
 
 	/** @var array */
-	private $mask = array('*.latte');
+	private $mask = ['*.latte'];
 
 	/** @var Template */
 	private $template;
 
 	/** @var SplFileInfo[] */
-	private $skippedFiles = array();
+	private $skippedFiles = [];
 
 	/** @var SplFileInfo[] */
-	private $files = array();
+	private $files = [];
 
 	/** @var string */
 	private $temp;
@@ -60,10 +60,10 @@ class LatteCompiler
 	{
 		$fileInfo = new SplFileInfo($path);
 		if ($fileInfo->isFile()) {
-			return array($fileInfo->getRealPath() => $fileInfo);
+			return [$fileInfo->getRealPath() => $fileInfo];
 		}
 
-		$found = array();
+		$found = [];
 		$finder = call_user_func_array('\Nette\Utils\Finder::findFiles', $this->mask);
 		foreach ($finder->from($fileInfo->getRealPath()) as $file) {
 			$found[$file->getRealPath()] = $file;
@@ -93,7 +93,7 @@ class LatteCompiler
 	{
 		if ($this->skippedFiles) {
 			$out = $this->skippedFiles;
-			$this->skippedFiles = array();
+			$this->skippedFiles = [];
 			return $out;
 		}
 
