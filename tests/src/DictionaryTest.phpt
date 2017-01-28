@@ -2,12 +2,11 @@
 
 namespace h4kuna\Gettext;
 
-use Tester,
-	Tester\Assert;
+use Tester\Assert;
 
-$container = require_once __DIR__ . '/../bootstrap.php';
+$container = include __DIR__ . '/../bootstrap.php';
 
-class DictionaryTest extends Tester\TestCase
+class DictionaryTest extends \Tester\TestCase
 {
 
 	/** @var Dictionary */
@@ -16,12 +15,12 @@ class DictionaryTest extends Tester\TestCase
 	/** @var callable */
 	private $factory;
 
-	function __construct($factory)
+	public function __construct($factory)
 	{
 		$this->factory = $factory;
 	}
 
-	function setUp()
+	public function setUp()
 	{
 		$factory = $this->factory;
 		$this->dictionary = $factory();
@@ -37,7 +36,7 @@ class DictionaryTest extends Tester\TestCase
 		$dictionary = $this->dictionary;
 		Assert::exception(function() use ($dictionary) {
 			$dictionary->getFile('fr', 'po');
-		}, \h4kuna\Gettext\GettextException::class);
+		}, \h4kuna\Gettext\FileNotFoundException::class);
 	}
 
 	public function testDomain()
@@ -55,7 +54,7 @@ class DictionaryTest extends Tester\TestCase
 		$dictionary = $this->dictionary;
 		Assert::exception(function() use ($dictionary) {
 			$dictionary->loadDomain('unknown');
-		}, \h4kuna\Gettext\GettextException::class);
+		}, \h4kuna\Gettext\DomainDoesNotExistsException::class);
 	}
 
 }
@@ -64,5 +63,4 @@ $factory = function() use ($container) {
 	return $container->createService('gettextLatteExtension.dictionary');
 };
 
-$test = new DictionaryTest($factory);
-$test->run();
+(new DictionaryTest($factory))->run();

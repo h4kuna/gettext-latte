@@ -2,5 +2,4 @@
 .gitignore export-ignore
 .travis.yml export-ignore
 tests/ export-ignore
-examples/ export-ignore
 *.sh eol=lf

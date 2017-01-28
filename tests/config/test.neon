@@ -1,25 +1,23 @@
-nette:
-    session:
-        autoStart: yes
-        expiration: 14 days
+session:
+	autoStart: yes
+	expiration: 14 days
 
-    container:
-        debugger: TRUE
-
-    application:
-        catchExceptions: FALSE
+application:
+	catchExceptions: FALSE
+	scanDirs: false
 
 extensions:
     gettextLatteExtension: h4kuna\Gettext\DI\GettextLatteExtension
 
 gettextLatteExtension:
-    langs:
-        cs: cs_CZ.utf8
-        en: en_US.utf8
+    langs: # default is cs and en
+        # cs: cs_CZ.utf8
+        # en: en_US.utf8
         # sk: sk_SK.utf8
-    # default is cs and en
 
     dictionaryPath: %appDir%/locale
+    session: FALSE #default is ON
 
-    session: FALSE
-    #default is ON
+services:
+	gettextLatteExtension.dictionary:
+		arguments: ['...', Nette\Caching\Storages\MemoryStorage()]

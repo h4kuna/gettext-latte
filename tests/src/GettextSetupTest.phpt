@@ -2,12 +2,11 @@
 
 namespace h4kuna\Gettext;
 
-use Tester,
-	Tester\Assert;
+use Tester\Assert;
 
-$container = require_once __DIR__ . '/../bootstrap.php';
+$container = include __DIR__ . '/../bootstrap.php';
 
-class GettextSetupTest extends Tester\TestCase
+class GettextSetupTest extends \Tester\TestCase
 {
 
 	/** @var GettextSetup */

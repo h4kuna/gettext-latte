@@ -2,20 +2,17 @@
 
 namespace h4kuna\Gettext;
 
-use h4kuna\Gettext\GettextException;
-use Nette\Caching\Cache;
-use Nette\Caching\IStorage;
-use Nette\Object;
-use Nette\Utils\Finder;
-use SplFileInfo;
-use Nette\Http\FileUpload;
+use Nette\Caching,
+	Nette\Http,
+	Nette\Utils;
 
 /**
- *
  * @author Milan Matějček
  */
-class Dictionary extends Object
+class Dictionary
 {
+
+	use \Nette\SmartObject;
 
 	const
 		PHP_DIR = '/LC_MESSAGES/',
@@ -33,17 +30,12 @@ class Dictionary extends Object
 	/** @var string */
 	private $domain;
 
-	/** @var Cache */
+	/** @var Caching\Cache */
 	private $cache;
 
-	/**
-	 * Check path wiht dictionary.
-	 * @param string $path
-	 * @throws GettextException
-	 */
-	public function __construct($path, IStorage $storage)
+	public function __construct($path, Caching\IStorage $storage)
 	{
-		$this->cache = new Cache($storage, __CLASS__);
+		$this->cache = new Caching\Cache($storage, 'h4kuna.gettext.dictionary');
 		$this->setPath($path)->loadDomains();
 		if (count($this->domains) === 1) {
 			$this->setDomain(key($this->domains));
@@ -69,12 +61,12 @@ class Dictionary extends Object
 	/**
 	 * Load dictionary if not loaded.
 	 * @param string $domain
-	 * @throws GettextException
+	 * @throws DomainDoesNotExistsException
 	 */
 	public function loadDomain($domain)
 	{
 		if (!isset($this->domains[$domain])) {
-			throw new GettextException('This domain does not exists: ' . $domain);
+			throw new DomainDoesNotExistsException('This domain does not exists: ' . $domain);
 		}
 		if ($this->domains[$domain] === FALSE) {
 			bindtextdomain($domain, $this->path);
@@ -124,10 +116,10 @@ class Dictionary extends Object
 	/**
 	 * Save uploaded files.
 	 * @param string $lang
-	 * @param FileUpload $po
-	 * @param FileUpload $mo
+	 * @param Http\FileUpload $po
+	 * @param Http\FileUpload $mo
 	 */
-	public function upload($lang, FileUpload $po, FileUpload $mo)
+	public function upload($lang, Http\FileUpload $po, Http\FileUpload $mo)
 	{
 		$mo->move($this->getFile($lang, 'mo'));
 		$po->move($this->getFile($lang, 'po'));
@@ -144,7 +136,7 @@ class Dictionary extends Object
 		$file = $this->path . $lang . self::PHP_DIR . $this->domain . '.' . $extension;
 
 		if (!is_file($file)) {
-			throw new GettextException('File not found: ' . $file);
+			throw new FileNotFoundException($file);
 		}
 
 		return $file;
@@ -156,14 +148,15 @@ class Dictionary extends Object
 	 */
 	private function loadDomains()
 	{
-		if ($this->cache->load(self::DOMAIN) !== NULL) {
-			return $this->domains = $this->cache->load(self::DOMAIN);
+		$this->domains = $this->cache->load(self::DOMAIN);
+		if ($this->domains !== NULL) {
+			return $this->domains;
 		}
 
 		$files = $match = $domains = [];
-		$find = Finder::findFiles('*.po');
+		$find = Utils\Finder::findFiles('*.po');
 		foreach ($find->from($this->path) as $file) {
-			/* @var $file SplFileInfo */
+			/* @var $file \SplFileInfo */
 			if (preg_match('/' . preg_quote($this->path, '/') . '(.*)(?:\\\|\/)/U', $file->getPath(), $match)) {
 				$_dictionary = $file->getBasename('.po');
 				$domains[$match[1]][$_dictionary] = $_dictionary;
@@ -189,19 +182,19 @@ class Dictionary extends Object
 
 
 		$data = array_combine($_domains, array_fill_keys($_domains, FALSE));
-		return $this->domains = $this->cache->save(self::DOMAIN, $data, [Cache::FILES => $files]);
+		return $this->domains = $this->cache->save(self::DOMAIN, $data, [Caching\Cache::FILES => $files]);
 	}
 
 	/**
 	 * Check dictionary path.
 	 * @param string $path
-	 * @throws GettextException
+	 * @throws DirectoryNotFoundException
 	 */
 	private function setPath($path)
 	{
 		$this->path = realpath($path);
 		if (!$this->path) {
-			throw new GettextException('Path does not exists: ' . $path);
+			throw new DirectoryNotFoundException($path);
 		}
 
 		$this->path .= DIRECTORY_SEPARATOR;

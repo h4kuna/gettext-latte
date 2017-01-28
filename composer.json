@@ -13,19 +13,16 @@
 	],
 	"require": {
 		"h4kuna/latte-php-tokenizer": "^1.0",
+		"latte/latte": "^2.0",
 		"nette/application": "^2.0",
-		"nette/bootstrap": "^2.0",
 		"nette/caching": "^2.0",
-		"nette/di": "^2.0",
-		"nette/finder": "^2.0",
-		"nette/http": "^2.0",
-		"nette/robot-loader": "^2.0",
-		"latte/latte": "^2.0"
+		"nette/http": "^2.0"
 	},
 	"require-dev": {
-		"tracy/tracy": "^2.0",
-		"nette/tester": "^1.0"
+		"nette/bootstrap": "^2.0",
+		"salamium/testinium": "^0.1"
 	},
+	"bin": ["compiler/latte-compiler"],
 	"autoload": {
 		"psr-4": {
 			"h4kuna\\Gettext\\": "src\\"

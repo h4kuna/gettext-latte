@@ -8,7 +8,7 @@ use h4kuna,
 /**
  * @author Milan Matějček
  */
-class Latte extends Latte\Macros\MacroSet
+class Gettext extends Latte\Macros\MacroSet
 {
 
 	const GETTEXT = 'ettext';

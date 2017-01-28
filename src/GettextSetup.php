@@ -8,10 +8,22 @@ use Nette,
 /**
  * @author Milan Matějček
  */
-class GettextSetup implements \Iterator, Localization\ITranslator
+class GettextSetup implements Nette\Localization\ITranslator, \Iterator
 {
 
 	use Nette\SmartObject;
+
+	/** @var string[] */
+	private $languages;
+
+	/** @var Dictionary */
+	private $dictionary;
+
+	/** @var Os */
+	private $os;
+
+	/** @var Http\Request */
+	private $request;
 
 	/** @var string */
 	private $default;
@@ -22,43 +34,21 @@ class GettextSetup implements \Iterator, Localization\ITranslator
 	/** @var string */
 	private $languagePrev;
 
-	/** @var string[] */
-	private $languages;
-
-	/** @var Os */
-	private $os;
-
-	/** @var Dictionary */
-	private $dictionary;
-
 	/** @var Http\SessionSection */
 	private $section;
 
-	/** @var Http\Request */
-	private $request;
-
 	/**
 	 * Event if language set.
-	 * For example use change currency.
-	 *
 	 * @var array
 	 */
 	public $onSetLanguage;
 
 	/**
 	 * Event if language change.
-	 * For example use flashmessage.
-	 *
 	 * @var array
 	 */
 	public $onChangeLanguage;
 
-	/**
-	 *
-	 * @param array $languages
-	 * @param Dictionary $dictionary
-	 * @throws GettextException
-	 */
 	public function __construct(array $languages, Dictionary $dictionary, Os $os, Http\Request $request)
 	{
 		if (!function_exists('bindtextdomain')) {
@@ -74,7 +64,6 @@ class GettextSetup implements \Iterator, Localization\ITranslator
 
 	/**
 	 * Try find user language.
-	 *
 	 * @return string
 	 */
 	public function detectLanguage()
@@ -125,8 +114,7 @@ class GettextSetup implements \Iterator, Localization\ITranslator
 	}
 
 	/**
-	 * Actived language
-	 *
+	 * Actived language.
 	 * @return string
 	 */
 	public function getLanguage()
@@ -145,7 +133,6 @@ class GettextSetup implements \Iterator, Localization\ITranslator
 
 	/**
 	 * Load language dictionary
-	 *
 	 * @param string $domain
 	 */
 	public function loadDomain($domain)
@@ -154,7 +141,6 @@ class GettextSetup implements \Iterator, Localization\ITranslator
 	}
 
 	/**
-	 *
 	 * @see Dictionary::download
 	 * @param string $language
 	 */
@@ -167,10 +153,10 @@ class GettextSetup implements \Iterator, Localization\ITranslator
 	/**
 	 * @see Dictionary::upload
 	 * @param string $language
-	 * @param FileUpload $po
-	 * @param FileUpload $mo
+	 * @param Http\FileUpload $po
+	 * @param Http\FileUpload $mo
 	 */
-	public function upload($language, FileUpload $po, FileUpload $mo)
+	public function upload($language, Http\FileUpload $po, Http\FileUpload $mo)
 	{
 		$this->checkLanguage($language);
 		$this->dictionary->upload($language, $po, $mo);
@@ -178,7 +164,6 @@ class GettextSetup implements \Iterator, Localization\ITranslator
 
 	/**
 	 * Is active default language?
-	 *
 	 * @return bool
 	 */
 	public function isDefault()
@@ -188,7 +173,6 @@ class GettextSetup implements \Iterator, Localization\ITranslator
 
 	/**
 	 * Load all possible language dictionary
-	 *
 	 * @param string $default
 	 */
 	public function loadAllDomains($default)
@@ -229,7 +213,7 @@ class GettextSetup implements \Iterator, Localization\ITranslator
 	 */
 	public function setSession(Http\Session $session, $live = '+1 week')
 	{
-		$this->section = $session->getSection(__CLASS__);
+		$this->section = $session->getSection('h4kuna.gettext');
 		if (!isset($this->section->language)) {
 			$this->setLanguage($this->detectLanguage());
 			$this->section->setExpiration($live);
@@ -251,7 +235,6 @@ class GettextSetup implements \Iterator, Localization\ITranslator
 
 	/**
 	 * Load language dictionary
-	 *
 	 * @throws GettextException
 	 */
 	private function loadDictionary()
@@ -298,7 +281,6 @@ class GettextSetup implements \Iterator, Localization\ITranslator
 
 	/**
 	 * List of avaible languages
-	 *
 	 * @param array $langs
 	 * @return self
 	 */
@@ -320,10 +302,9 @@ class GettextSetup implements \Iterator, Localization\ITranslator
 
 	/**
 	 * Show you posibble languages
-	 *
 	 * @return array
 	 */
-	static function showAvailableLanguages()
+	public static function showAvailableLanguages()
 	{
 		$return = NULL;
 		exec('locale -a', $return);

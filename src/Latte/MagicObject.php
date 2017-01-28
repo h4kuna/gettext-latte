@@ -3,7 +3,6 @@
 namespace h4kuna\Gettext\Latte;
 
 /**
- *
  * @author Milan Matějček
  */
 class MagicObject

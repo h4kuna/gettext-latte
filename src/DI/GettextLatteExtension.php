@@ -40,7 +40,7 @@ class GettextLatteExtension extends DI\CompilerExtension
 		// dictionary
 		$builder->addDefinition($this->prefix('dictionary'))
 			->setClass('h4kuna\Gettext\Dictionary')
-			->setArguments([$config['dictionaryPath'], '@cacheStorage']);
+			->setArguments([$config['dictionaryPath'], '@cache.storage']);
 
 		// setup
 		$gettext = $builder->addDefinition($this->prefix('gettext'))
@@ -51,17 +51,17 @@ class GettextLatteExtension extends DI\CompilerExtension
 			$gettext->addSetup('loadAllDomains', [$config['loadAllDomains']]);
 		}
 
-		if ($config['session'] !== NULL && $config['session'] !== FALSE && PHP_SAPI != 'cli') {
-			$gettext->addSetup('setSession', [$builder->getDefinition('session'), $config['session']]);
+		if ($config['session'] && PHP_SAPI != 'cli') {
+			$gettext->addSetup('setSession', [$builder->getDefinition('session.session'), $config['session']]);
 		}
 
 		// compiler
 		$builder->addDefinition($this->prefix('compiler'))
 			->setClass('h4kuna\Gettext\Latte\LatteCompiler')
-			->setArguments([$builder->getDefinition('nette.templateFactory')]);
+			->setArguments([$builder->getDefinition('latte.templateFactory')]);
 
-		$latte = $builder->getDefinition('nette.latteFactory');
-		$latte->addSetup('?->onCompile[] = function($engine) { h4kuna\Gettext\Macros\Latte::install($engine->getCompiler()); }', ['@self']);
+		$latte = $builder->getDefinition('latte.latteFactory');
+		$latte->addSetup('?->onCompile[] = function($engine) { h4kuna\Gettext\Macros\Gettext::install($engine->getCompiler()); }', ['@self']);
 	}
 
 	public function afterCompile(PhpGenerator\ClassType $class)

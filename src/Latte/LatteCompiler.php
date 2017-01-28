@@ -2,13 +2,9 @@
 
 namespace h4kuna\Gettext\Latte;
 
-use Latte\RuntimeException;
-use Nette\Bridges\ApplicationLatte\Template;
-use Nette\Bridges\ApplicationLatte\TemplateFactory;
-use Latte\CompileException;
-use Latte\Engine;
-use Nette\Utils\Finder;
-use SplFileInfo;
+use Latte,
+	Nette\Bridges\ApplicationLatte,
+	Nette\Utils;
 
 class LatteCompiler
 {
@@ -16,21 +12,21 @@ class LatteCompiler
 	/** @var array */
 	private $mask = ['*.latte'];
 
-	/** @var Template */
+	/** @var ApplicationLatte\Template */
 	private $template;
 
-	/** @var SplFileInfo[] */
+	/** @var \SplFileInfo[] */
 	private $skippedFiles = [];
 
-	/** @var SplFileInfo[] */
+	/** @var \SplFileInfo[] */
 	private $files = [];
 
 	/** @var string */
 	private $temp;
 
-	public function __construct(TemplateFactory $templateFactory)
+	public function __construct(ApplicationLatte\TemplateFactory $templateFactory)
 	{
-		$this->template = $templateFactory->createTemplate(new FakeControl());
+		$this->template = $templateFactory->createTemplate();
 		$this->temp = dirname($this->template->getLatte()->getCacheFile('foo'));
 	}
 
@@ -54,11 +50,11 @@ class LatteCompiler
 	/**
 	 *
 	 * @param string $path
-	 * @return SplFileInfo[]
+	 * @return \SplFileInfo[]
 	 */
 	private function getFiles($path)
 	{
-		$fileInfo = new SplFileInfo($path);
+		$fileInfo = new \SplFileInfo($path);
 		if ($fileInfo->isFile()) {
 			return [$fileInfo->getRealPath() => $fileInfo];
 		}
@@ -74,14 +70,6 @@ class LatteCompiler
 	public function getTemp()
 	{
 		return $this->temp;
-	}
-
-	private function clearTemp()
-	{
-		/* @var $file SplFileInfo  */
-		foreach (Finder::findFiles('*')->from($this->temp) as $file) {
-			@unlink($file->getPathname());
-		}
 	}
 
 	public function getTemplate()
@@ -108,24 +96,24 @@ class LatteCompiler
 		}
 
 		$latte = $this->template->getLatte();
-		/* @var $file SplFileInfo */
+		/* @var $file \SplFileInfo */
 		foreach ($this->prepareFiles() as $file) {
 			try {
 				echo $file->getPathname() . "\n";
 				$code = $latte->compile($file->getPathname());
 				file_put_contents($latte->getCacheFile($file->getPathname()), $code);
-			} catch (RuntimeException $e) {
+			} catch (Latte\RuntimeException $e) {
 				if (substr($e->getMessage(), 0, 30) !== 'Cannot include undefined block') {
 					throw $e;
 				}
-			} catch (CompileException $e) {
+			} catch (Latte\CompileException $e) {
 				$find = NULL;
 				if (!preg_match('/Unknown macro \{(.*)\}/U', $e->getMessage(), $find)) {
 					throw $e;
 				}
 
 				$macroName = $find[1];
-				$this->template->getLatte()->onCompile[] = function(Engine $engine) use ($macroName) {
+				$this->template->getLatte()->onCompile[] = function(Latte\Engine $engine) use ($macroName) {
 					$engine->addMacro($macroName, new EmptyMacro());
 //goto checkFile;
 				};
@@ -134,6 +122,14 @@ class LatteCompiler
 		}
 		if ($this->skippedFiles) {
 			$this->run();
+		}
+	}
+
+	private function clearTemp()
+	{
+		/* @var $file \SplFileInfo  */
+		foreach (Utils\Finder::findFiles('*')->from($this->temp) as $file) {
+			@unlink($file->getPathname());
 		}
 	}
 
