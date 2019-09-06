@@ -69,14 +69,14 @@ abstract class BasePresenter extends Presenter {
     /** @persistent */
     public $lang;
 
-    /** @var \h4kuna\GettextSetup */
+    /** @var \h4kuna\Gettext\GettextSetup */
     protected $translator;
 
     /**
      * Inject translator
-     * @param \h4kuna\GettextSetup
+     * @param \h4kuna\Gettext\GettextSetup
      */
-    public function injectTranslator(\h4kuna\GettextSetup $translator) {
+    public function injectTranslator(\h4kuna\Gettext\GettextSetup $translator) {
         $this->translator = $translator;
     }
 
@@ -86,7 +86,7 @@ abstract class BasePresenter extends Presenter {
     }
     
     /**
-     * PHP 5.4+ ****************************************************************
+     * Or PHP 5.4+ ****************************************************************
      * *************************************************************************
      */
     use \h4kuna\Gettext\InjectTranslator;
