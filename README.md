@@ -1,3 +1,5 @@
+# [Abandoned]
+
 GettextLatte
 ============
 
